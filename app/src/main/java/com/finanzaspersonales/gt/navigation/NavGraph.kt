@@ -39,22 +39,22 @@ fun AppNavHost(
             WelcomeScreen(navController)
         }
         composable(Screen.Login.route) {
-            LoginScreen(navController)
+            LoginScreen(navController, androidx.lifecycle.viewmodel.compose.viewModel())
         }
         composable(Screen.Register.route) {
-            RegisterScreen(navController)
+            RegisterScreen(navController, androidx.lifecycle.viewmodel.compose.viewModel())
         }
         composable(Screen.Inicio.route) {
-            InicioScreen(navController)
+            InicioScreen(navController, androidx.lifecycle.viewmodel.compose.viewModel())
         }
         composable(Screen.Graficas.route) {
-            GraficasScreen(navController)
+            GraficasScreen(navController, androidx.lifecycle.viewmodel.compose.viewModel())
         }
         composable(Screen.Metas.route) {
-            MetasScreen(navController)
+            MetasScreen(navController, androidx.lifecycle.viewmodel.compose.viewModel())
         }
         composable(Screen.Perfil.route) {
-            PerfilScreen(navController)
+            PerfilScreen(navController, androidx.lifecycle.viewmodel.compose.viewModel())
         }
         composable(Screen.Configuracion.route) {
             ConfiguracionScreen(navController)

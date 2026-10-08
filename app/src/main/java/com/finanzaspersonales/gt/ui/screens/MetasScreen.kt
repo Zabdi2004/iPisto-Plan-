@@ -3,19 +3,24 @@
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.finanzaspersonales.gt.viewModel.FinanzasViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
+import com.finanzaspersonales.gt.data.local.entity.MetaAhorro
 
 @Composable
 fun MetasScreen(
     navController: NavHostController,
-    finanzasViewModel: FinanzasViewModel
+    finanzasViewModel: FinanzasViewModel = viewModel()
 ) {
-    val uiState by finanzasViewModel.uiState.collectAsState()
+    val uiState: androidx.compose.runtime.State<com.finanzaspersonales.gt.viewmodel.FinanzasUiState> = 
+        finanzasViewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -29,7 +34,7 @@ fun MetasScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (uiState.metas.isEmpty()) {
+        if (uiState.value.metas.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -42,7 +47,7 @@ fun MetasScreen(
                 )
             }
         } else {
-            uiState.metas.forEach { meta ->
+            uiState.value.metas.forEach { meta: MetaAhorro ->
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(

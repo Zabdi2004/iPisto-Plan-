@@ -22,7 +22,7 @@ object BalanceCalculator {
     private const val MENSUAL = "Mensual"
 
     private fun normalizarAMensual(cantidad: Double, periodicidad: String): Double {
-        return when (periodicity) {
+        return when (periodicidad) {
             SEMANAL -> cantidad * 52 / 12
             QUINCENAL -> cantidad * 26 / 12
             MENSUAL -> cantidad

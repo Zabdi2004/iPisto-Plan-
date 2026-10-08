@@ -3,20 +3,24 @@
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 
 @Composable
 fun InicioScreen(
     navController: NavHostController,
-    finanzasViewModel: FinanzasViewModel
+    finanzasViewModel: FinanzasViewModel = viewModel()
 ) {
-    val uiState by finanzasViewModel.uiState.collectAsState()
+    val uiState: androidx.compose.runtime.State<com.finanzaspersonales.gt.viewmodel.FinanzasUiState> = 
+        finanzasViewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -30,7 +34,7 @@ fun InicioScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (uiState.isLoading) {
+        if (uiState.value.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -38,7 +42,7 @@ fun InicioScreen(
                 ProgressBar()
             }
         } else {
-            val balance = uiState.balance
+            val balance = uiState.value.balance
             if (balance != null) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),

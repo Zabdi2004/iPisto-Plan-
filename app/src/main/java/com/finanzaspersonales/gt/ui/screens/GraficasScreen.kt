@@ -3,19 +3,23 @@
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.finanzaspersonales.gt.viewModel.FinanzasViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 
 @Composable
 fun GraficasScreen(
     navController: NavHostController,
-    finanzasViewModel: FinanzasViewModel
+    finanzasViewModel: FinanzasViewModel = viewModel()
 ) {
-    val uiState by finanzasViewModel.uiState.collectAsState()
+    val uiState: androidx.compose.runtime.State<com.finanzaspersonales.gt.viewmodel.FinanzasUiState> = 
+        finanzasViewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -29,7 +33,7 @@ fun GraficasScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (uiState.balance == null) {
+        if (uiState.value.balance == null) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -58,23 +62,23 @@ fun GraficasScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Ingresos: ${finanzasViewModel.formatCurrency(uiState.balance!!.ingresosMensuales)}",
+                        text = "Ingresos: ${finanzasViewModel.formatCurrency(uiState.value.balance!!.ingresosMensuales)}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = "Gastos Fijos: ${finanzasViewModel.formatCurrency(uiState.balance!!.gastosFijosMensuales)}",
+                        text = "Gastos Fijos: ${finanzasViewModel.formatCurrency(uiState.value.balance!!.gastosFijosMensuales)}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = "Gastos Variables: ${finanzasViewModel.formatCurrency(uiState.balance!!.gastosVariablesMensuales)}",
+                        text = "Gastos Variables: ${finanzasViewModel.formatCurrency(uiState.value.balance!!.gastosVariablesMensuales)}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = "Pagos Deuda: ${finanzasViewModel.formatCurrency(uiState.balance!!.pagosDeudaMensuales)}",
+                        text = "Pagos Deuda: ${finanzasViewModel.formatCurrency(uiState.value.balance!!.pagosDeudaMensuales)}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = "Dinero Disponible: ${finanzasViewModel.formatCurrency(uiState.balance!!.dineroDisponible)}",
+                        text = "Dinero Disponible: ${finanzasViewModel.formatCurrency(uiState.value.balance!!.dineroDisponible)}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

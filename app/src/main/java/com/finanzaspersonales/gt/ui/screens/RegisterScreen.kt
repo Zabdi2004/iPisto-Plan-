@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.finanzaspersonales.gt.viewmodel.AuthViewModel
+import com.finanzaspersonales.gt.viewmodel.AuthState
+import com.finanzaspersonales.gt.ui.components.ProgressBar
 
 @Composable
 fun RegisterScreen(
@@ -39,7 +41,7 @@ fun RegisterScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp),
-        horizontalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
@@ -150,13 +152,4 @@ fun RegisterScreen(
             )
         }
     }
-}
-
-@Composable
-fun ProgressBar() {
-    CircularProgressIndicator(
-        modifier = Modifier.size(24.dp),
-        color = MaterialTheme.colorScheme.onPrimary,
-        strokeWidth = 2.dp
-    )
 }

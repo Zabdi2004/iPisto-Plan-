@@ -9,7 +9,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.finanzaspersonales.gt.R
+import com.finanzaspersonales.gt.ui.components.ProgressBar
 
 @Composable
 fun WelcomeScreen(navController: NavHostController) {
@@ -17,7 +17,7 @@ fun WelcomeScreen(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp),
-        horizontalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(

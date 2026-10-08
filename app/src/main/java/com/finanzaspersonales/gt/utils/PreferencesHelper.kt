@@ -11,7 +11,8 @@ object PreferencesHelper {
     private const val KEY_THEME = "theme"
 
     fun getPreferences(context: Context) =
-        context.applicationContext.preferences
+        context.applicationContext
+            .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     fun saveLanguage(context: Context, language: String) {
         getPreferences(context).edit().putString(KEY_LANGUAGE, language).apply()

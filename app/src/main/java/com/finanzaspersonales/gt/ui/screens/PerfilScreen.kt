@@ -3,19 +3,24 @@
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.finanzaspersonales.gt.viewModel.AuthViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import com.finanzaspersonales.gt.viewmodel.AuthViewModel
+import com.finanzaspersonales.gt.data.local.entity.User
 
 @Composable
 fun PerfilScreen(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel = viewModel()
 ) {
-    val currentUser by authViewModel.currentUser.collectAsState()
+    val currentUser: User? by authViewModel.currentUser.collectAsState()
 
     Column(
         modifier = Modifier
@@ -83,7 +88,7 @@ fun PerfilScreen(
                     containerColor = MaterialTheme.colorScheme.secondary
                 )
             ) {
-                Text(" idioma")
+                Text("Idioma")
             }
             Spacer(modifier = Modifier.height(8.dp))
             Button(
