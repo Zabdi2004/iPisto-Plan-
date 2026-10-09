@@ -83,6 +83,23 @@ fun GraficasScreen(
                     )
                 }
             }
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("GRÁFICAS EN DESARROLLO", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Las visualizaciones gráficas (barras, pastel, líneas) se implementarán en la próxima versión.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text("Próximamente:", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("• Ingresos vs Gastos mensuales (gráfico de barras)", style = MaterialTheme.typography.bodySmall)
+                    Text("• Distribución de gastos por categoría (gráfico de pastel)", style = MaterialTheme.typography.bodySmall)
+                    Text("• Evolución de deudas (gráfico de líneas)", style = MaterialTheme.typography.bodySmall)
+                    Text("• Progreso de metas de ahorro", style = MaterialTheme.typography.bodySmall)
+                }
+            }
         }
     }
 }

@@ -10,6 +10,10 @@ import com.finanzaspersonales.gt.ui.screens.WelcomeScreen
 import com.finanzaspersonales.gt.ui.screens.InicioScreen
 import com.finanzaspersonales.gt.ui.screens.GraficasScreen
 import com.finanzaspersonales.gt.ui.screens.MetasScreen
+import com.finanzaspersonales.gt.ui.screens.MetaDetailScreen
+import com.finanzaspersonales.gt.ui.screens.MetaNuevaScreen
+import com.finanzaspersonales.gt.ui.screens.MetaEditarScreen
+import com.finanzaspersonales.gt.ui.screens.MetaAgregarAporteScreen
 import com.finanzaspersonales.gt.ui.screens.PerfilScreen
 import com.finanzaspersonales.gt.ui.screens.ConfiguracionScreen
 import com.finanzaspersonales.gt.ui.screens.EducacionFinancieraScreen

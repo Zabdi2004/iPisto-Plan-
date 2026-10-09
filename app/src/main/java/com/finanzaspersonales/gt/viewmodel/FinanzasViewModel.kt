@@ -84,7 +84,16 @@ class FinanzasViewModel(
 
     fun insertIngreso(ingreso: Ingreso) {
         viewModelScope.launch {
-            finanzasRepository.insertIngreso(ingreso)
+            val ingresoWithUser = ingreso.copy(userId = userId)
+            finanzasRepository.insertIngreso(ingresoWithUser)
+            loadData()
+        }
+    }
+
+    fun updateIngreso(ingreso: Ingreso) {
+        viewModelScope.launch {
+            val ingresoWithUser = ingreso.copy(userId = userId)
+            finanzasRepository.updateIngreso(ingresoWithUser)
             loadData()
         }
     }
@@ -98,7 +107,16 @@ class FinanzasViewModel(
 
     fun insertGastoFijo(gastoFijo: GastoFijo) {
         viewModelScope.launch {
-            finanzasRepository.insertGastoFijo(gastoFijo)
+            val gastoWithUser = gastoFijo.copy(userId = userId)
+            finanzasRepository.insertGastoFijo(gastoWithUser)
+            loadData()
+        }
+    }
+
+    fun updateGastoFijo(gastoFijo: GastoFijo) {
+        viewModelScope.launch {
+            val gastoWithUser = gastoFijo.copy(userId = userId)
+            finanzasRepository.updateGastoFijo(gastoWithUser)
             loadData()
         }
     }
@@ -112,7 +130,16 @@ class FinanzasViewModel(
 
     fun insertGastoVariable(gastoVariable: GastoVariable) {
         viewModelScope.launch {
-            finanzasRepository.insertGastoVariable(gastoVariable)
+            val gastoWithUser = gastoVariable.copy(userId = userId)
+            finanzasRepository.insertGastoVariable(gastoWithUser)
+            loadData()
+        }
+    }
+
+    fun updateGastoVariable(gastoVariable: GastoVariable) {
+        viewModelScope.launch {
+            val gastoWithUser = gastoVariable.copy(userId = userId)
+            finanzasRepository.updateGastoVariable(gastoWithUser)
             loadData()
         }
     }
@@ -126,7 +153,16 @@ class FinanzasViewModel(
 
     fun insertDeuda(deuda: Deuda) {
         viewModelScope.launch {
-            finanzasRepository.insertDeuda(deuda)
+            val deudaWithUser = deuda.copy(userId = userId)
+            finanzasRepository.insertDeuda(deudaWithUser)
+            loadData()
+        }
+    }
+
+    fun updateDeuda(deuda: Deuda) {
+        viewModelScope.launch {
+            val deudaWithUser = deuda.copy(userId = userId)
+            finanzasRepository.updateDeuda(deudaWithUser)
             loadData()
         }
     }
@@ -140,7 +176,16 @@ class FinanzasViewModel(
 
     fun insertMeta(meta: MetaAhorro) {
         viewModelScope.launch {
-            metasRepository.insertMeta(meta)
+            val metaWithUser = meta.copy(userId = userId)
+            metasRepository.insertMeta(metaWithUser)
+            loadData()
+        }
+    }
+
+    fun updateMeta(meta: MetaAhorro) {
+        viewModelScope.launch {
+            val metaWithUser = meta.copy(userId = userId)
+            metasRepository.updateMeta(metaWithUser)
             loadData()
         }
     }

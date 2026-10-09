@@ -1,0 +1,63 @@
+﻿package com.finanzaspersonales.gt.ui.screens
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import com.finanzaspersonales.gt.data.local.entity.MetaAhorro
+import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
+import com.finanzaspersonales.gt.ui.components.MetaAhorroDialog
+
+@Composable
+fun MetaEditarScreen(
+    navController: NavHostController,
+    metaId: Long,
+    finanzasViewModel: FinanzasViewModel = viewModel()
+) {
+    val uiState: androidx.compose.runtime.State<com.finanzaspersonales.gt.viewmodel.FinanzasUiState> = 
+        finanzasViewModel.uiState.collectAsState()
+    
+    val meta = remember(metaId) {
+        derivedStateOf { uiState.value.metas.find { it.id == metaId } }
+    }.value
+
+    if (meta == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Meta no encontrada", style = MaterialTheme.typography.bodyLarge) }
+        return
+    }
+
+    var showDialog by remember { mutableStateOf(true) }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp)
+    ) {
+        if (showDialog) {
+            MetaAhorroDialog(
+                onDismiss = { showDialog = false; navController.popBackStack() },
+                onConfirm = { name, objetivo, ahorrado, aporte ->
+                    val updatedMeta = meta.copy(
+                        nombre = name,
+                        cantidadObjetivo = objetivo,
+                        cantidadAhorrada = ahorrado,
+                        aporteMensual = aporte
+                    )
+                    finanzasViewModel.updateMeta(updatedMeta)
+                    showDialog = false
+                    navController.popBackStack()
+                },
+                initialName = meta.nombre,
+                initialObjetivo = meta.cantidadObjetivo.toString(),
+                initialAhorrado = meta.cantidadAhorrada.toString(),
+                initialAporte = meta.aporteMensual.toString(),
+                isEditing = true
+            )
+        }
+    }
+}
