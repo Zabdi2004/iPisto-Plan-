@@ -101,7 +101,7 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
         }
         composable(Screen.Perfil) { PrivateRoute(user != null && financeViewModel != null, navController) { PerfilScreen(navController, authViewModel, financeViewModel!!) } }
         composable(Screen.Configuracion) { PrivateRoute(user != null, navController) { ConfiguracionScreen(navController) } }
-        composable(Screen.EducacionFinanciera) { PrivateRoute(user != null, navController) { EducacionFinancieraScreen(navController) } }
+        composable(Screen.EducacionFinanciera) { PrivateRoute(user != null, navController) { EducacionFinancieraScreen() } }
     }
     }
 }

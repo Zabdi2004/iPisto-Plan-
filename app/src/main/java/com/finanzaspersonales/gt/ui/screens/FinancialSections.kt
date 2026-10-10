@@ -113,7 +113,7 @@ fun InicioScreen(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                     ) {
                         Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("INGRESOS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("INGRESO MENSUAL ESTIMADO", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(finanzasViewModel.formatCurrency(balance.ingresosMensuales), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Income)
                         }

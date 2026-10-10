@@ -1,6 +1,9 @@
 ﻿package com.finanzaspersonales.gt.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -11,18 +14,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EducacionFinancieraScreen(
-    navController: NavHostController
-) {
+fun EducacionFinancieraScreen() {
     val tips = remember {
         listOf(
             TipItem("Regla del 50/30/20", "Presupuesto", Icons.Default.AccountBalanceWallet, "Divide tus ingresos: 50% necesidades (vivienda, comida, transporte), 30% deseos (entretenimiento, compras), 20% ahorro e inversiones. Ajusta según tu realidad guatemalteca."),
             TipItem("Fondo de Emergencia", "Seguridad", Icons.Default.Security, "Mantén 3-6 meses de gastos básicos en una cuenta separada y accesible. En Guatemala, considera Q15,000-Q30,000 como base para imprevistos médicos, reparaciones o pérdida de empleo."),
-            TipItem("Interés Compuesto", "Inversión", Icons.Default.TrendingUp, "El interés compuesto hace que tus ganancias generen más ganancias. Empezar temprano es clave: Q500/mes al 8% anual = Q294,000 en 20 años vs Q73,000 en 10 años. El tiempo es tu mejor aliado."),
+            TipItem("Interés Compuesto", "Inversión", Icons.AutoMirrored.Filled.TrendingUp, "El interés compuesto hace que tus ganancias generen más ganancias. Empezar temprano es clave: Q500/mes al 8% anual = Q294,000 en 20 años vs Q73,000 en 10 años. El tiempo es tu mejor aliado."),
             TipItem("Diversificación", "Riesgo", Icons.Default.Hub, "No pongas todos los huevos en la misma canasta. Diversifica: efectivo, certificados de depósito, bonos, acciones, bienes raíces. En Guatemala: bancas, cooperativas, fondos de inversión, propiedades."),
             TipItem("Horizonte de Inversión", "Planificación", Icons.Default.CalendarMonth, "Tu horizonte temporal determina el riesgo: Corto plazo (0-3 años) = conservador (depósitos, bonos). Mediano (3-7 años) = mixto. Largo plazo (7+ años) = puede asumir más riesgo (acciones, fondos)."),
             TipItem("Deuda Inteligente", "Deuda", Icons.Default.CreditCard, "Diferencia deuda buena (genera valor: educación, vivienda, negocio) de deuda mala (consumo: tarjetas, préstamos personales). Prioriza pagar deudas con interés alto (>20%) antes de invertir."),
@@ -36,6 +36,7 @@ fun EducacionFinancieraScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {

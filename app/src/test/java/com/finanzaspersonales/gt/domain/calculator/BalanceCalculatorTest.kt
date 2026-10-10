@@ -4,6 +4,9 @@ import com.finanzaspersonales.gt.data.local.entity.Deuda
 import com.finanzaspersonales.gt.data.local.entity.GastoFijo
 import com.finanzaspersonales.gt.data.local.entity.GastoVariable
 import com.finanzaspersonales.gt.data.local.entity.Ingreso
+import com.finanzaspersonales.gt.utils.formatMonthly
+import java.math.BigDecimal
+import java.math.RoundingMode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
@@ -18,6 +21,19 @@ class BalanceCalculatorTest {
             Ingreso(userId = 1, nombre = "Mensual", cantidad = 500.0, periodicidad = "Mensual")
         ))
         assertEquals(120.0 * 52 / 12 + 300.0 * 365 / 15 / 12 + 500.0, monthly, 0.000001)
+    }
+
+    @Test fun estimatedMonthlyEquivalentsAreExplicitAndConsistent() {
+        fun rounded(amount: Double) = BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP).toDouble()
+
+        val weekly = Ingreso(userId = 1, nombre = "Extra semanal", cantidad = 100.0, periodicidad = "Semanal")
+        val weeklyEstimate = BalanceCalculator.equivalenteMensualEstimado(weekly.cantidad, weekly.periodicidad)
+        assertEquals(433.33, rounded(weeklyEstimate), 0.0)
+        assertEquals(weeklyEstimate, BalanceCalculator.calcularIngresosMensuales(listOf(weekly)), 0.0)
+        assertEquals(weeklyEstimate, weekly.formatMonthly(), 0.0)
+
+        assertEquals(100.0, BalanceCalculator.equivalenteMensualEstimado(100.0, "Mensual"), 0.0)
+        assertEquals(3041.67, rounded(BalanceCalculator.equivalenteMensualEstimado(100.0, "Diario")), 0.0)
     }
 
     @Test fun normalizesExpensesAndDebtPayments() {
@@ -63,12 +79,12 @@ class BalanceCalculatorTest {
 
     @Test fun normalizesDailyAndSingleMovementsForCurrentMonthOnly() {
         val now = System.currentTimeMillis()
-        assertEquals(10.0 * 365 / 12, BalanceCalculator.normalizarAMensual(10.0, "Diario"), .000001)
-        assertEquals(10.0 * 365 / 15 / 12, BalanceCalculator.normalizarAMensual(10.0, "Quincenal"), .000001)
-        assertEquals(75.0, BalanceCalculator.normalizarAMensual(75.0, "Único", now), .000001)
+        assertEquals(10.0 * 365 / 12, BalanceCalculator.equivalenteMensualEstimado(10.0, "Diario"), .000001)
+        assertEquals(10.0 * 365 / 15 / 12, BalanceCalculator.equivalenteMensualEstimado(10.0, "Quincenal"), .000001)
+        assertEquals(75.0, BalanceCalculator.equivalenteMensualEstimado(75.0, "Único", now), .000001)
         val oldDate = java.util.Calendar.getInstance().apply { add(java.util.Calendar.MONTH, -2) }.timeInMillis
-        assertEquals(0.0, BalanceCalculator.normalizarAMensual(75.0, "Único", oldDate), 0.0)
-        assertEquals(0.0, BalanceCalculator.normalizarAMensual(75.0, "Único", null), 0.0)
+        assertEquals(0.0, BalanceCalculator.equivalenteMensualEstimado(75.0, "Único", oldDate), 0.0)
+        assertEquals(0.0, BalanceCalculator.equivalenteMensualEstimado(75.0, "Único", null), 0.0)
     }
 
     @Test fun rejectsNegativeNonFiniteAndUnknownPeriodAmounts() {

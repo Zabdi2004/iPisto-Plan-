@@ -95,11 +95,10 @@ fun IngresoItem(
             Column {
                 Text(ingreso.nombre, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(formatter(monthly), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Income)
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        "/mes (${ingreso.periodicidad}: ${formatter(ingreso.cantidad)})",
+                        "Equivalente mensual estimado · ${ingreso.periodicidad}: ${formatter(ingreso.cantidad)}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -188,13 +187,11 @@ fun GastoFijoItem(
             Column {
                 Text(gasto.nombre, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(gasto.categoria, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(formatter(monthly), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        "/mes (${gasto.periodicidad}: ${formatter(gasto.cantidad)})",
+                        "Equivalente mensual estimado · ${gasto.periodicidad}: ${formatter(gasto.cantidad)}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -283,13 +280,11 @@ fun GastoVariableItem(
             Column {
                 Text(gasto.nombre, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(gasto.categoria, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(formatter(monthly), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Expense)
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        "/mes (${gasto.periodicidad}: ${formatter(gasto.cantidad)})",
+                        "Equivalente mensual estimado · ${gasto.periodicidad}: ${formatter(gasto.cantidad)}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -391,7 +386,7 @@ fun DeudaItem(
             ) {
                 Column {
                     Text("Monto total: ${formatter(deuda.montoTotal)}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Pago mensual: ${formatter(monthlyPayment)}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
+                    Text("Pago mensual estimado: ${formatter(monthlyPayment)}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
                 }
                 Text(
                     "(${deuda.periodicidad}: ${formatter(deuda.pagoPeriodico)})",

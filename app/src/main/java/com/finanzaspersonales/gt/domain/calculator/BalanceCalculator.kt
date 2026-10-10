@@ -32,7 +32,13 @@ object BalanceCalculator {
             date.get(java.util.Calendar.MONTH) == now.get(java.util.Calendar.MONTH)
     }
 
-    fun normalizarAMensual(cantidad: Double, periodicidad: String, fechaMillis: Long? = null): Double {
+    /**
+     * Estimated monthly equivalent for comparing recurring amounts with different frequencies.
+     * Daily uses 365/12, weekly 52/12, every-15-days 365/15/12, and monthly 1.
+     * A one-time movement is actual only in the month of its recorded date; it is never annualized.
+     * This is not a historical-period total: recurring entries describe schedules, not dated occurrences.
+     */
+    fun equivalenteMensualEstimado(cantidad: Double, periodicidad: String, fechaMillis: Long? = null): Double {
         require(cantidad.isFinite() && cantidad >= 0.0) { "Las cantidades deben ser finitas y no negativas" }
         return when (periodicidad) {
             UNICO -> if (mismoMes(fechaMillis)) cantidad else 0.0
@@ -44,24 +50,28 @@ object BalanceCalculator {
         }
     }
 
+    /** Compatibility alias for existing callers; new UI and domain code should use the explicit name. */
+    fun normalizarAMensual(cantidad: Double, periodicidad: String, fechaMillis: Long? = null): Double =
+        equivalenteMensualEstimado(cantidad, periodicidad, fechaMillis)
+
     private fun checkedSum(values: List<Double>): Double = values.sum().also {
         require(it.isFinite()) { "El total calculado excede el rango permitido" }
     }
 
     fun calcularIngresosMensuales(ingresos: List<Ingreso>): Double {
-        return checkedSum(ingresos.map { normalizarAMensual(it.cantidad, it.periodicidad, it.fechaMillis) })
+        return checkedSum(ingresos.map { equivalenteMensualEstimado(it.cantidad, it.periodicidad, it.fechaMillis) })
     }
 
     fun calcularGastosFijosMensuales(gastos: List<GastoFijo>): Double {
-        return checkedSum(gastos.map { normalizarAMensual(it.cantidad, it.periodicidad, it.fechaMillis) })
+        return checkedSum(gastos.map { equivalenteMensualEstimado(it.cantidad, it.periodicidad, it.fechaMillis) })
     }
 
     fun calcularGastosVariablesMensuales(gastos: List<GastoVariable>): Double {
-        return checkedSum(gastos.map { normalizarAMensual(it.cantidad, it.periodicidad, it.fechaMillis) })
+        return checkedSum(gastos.map { equivalenteMensualEstimado(it.cantidad, it.periodicidad, it.fechaMillis) })
     }
 
     fun calcularPagosDeudaMensuales(deudas: List<Deuda>): Double {
-        return checkedSum(deudas.map { normalizarAMensual(it.pagoPeriodico, it.periodicidad, it.fechaMillis) })
+        return checkedSum(deudas.map { equivalenteMensualEstimado(it.pagoPeriodico, it.periodicidad, it.fechaMillis) })
     }
 
     fun calcularDeudaTotal(deudas: List<Deuda>): Double {

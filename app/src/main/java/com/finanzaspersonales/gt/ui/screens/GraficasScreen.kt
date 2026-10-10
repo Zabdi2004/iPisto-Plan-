@@ -34,10 +34,10 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
     val balance = state.balance
     val gastosPorCategoria = buildMap<String, Double> {
         state.gastosFijos.forEach { gasto ->
-            put(gasto.categoria, (get(gasto.categoria) ?: 0.0) + BalanceCalculator.normalizarAMensual(gasto.cantidad, gasto.periodicidad, gasto.fechaMillis))
+            put(gasto.categoria, (get(gasto.categoria) ?: 0.0) + BalanceCalculator.equivalenteMensualEstimado(gasto.cantidad, gasto.periodicidad, gasto.fechaMillis))
         }
         state.gastosVariables.forEach { gasto ->
-            put(gasto.categoria, (get(gasto.categoria) ?: 0.0) + BalanceCalculator.normalizarAMensual(gasto.cantidad, gasto.periodicidad, gasto.fechaMillis))
+            put(gasto.categoria, (get(gasto.categoria) ?: 0.0) + BalanceCalculator.equivalenteMensualEstimado(gasto.cantidad, gasto.periodicidad, gasto.fechaMillis))
         }
     }.filterValues { it > 0.0 }.toList().sortedByDescending { it.second }
 
@@ -47,7 +47,7 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
     ) {
         Text("Gráficas y resúmenes", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
         Text(
-            "Importes mensuales normalizados a partir de tus registros guardados.",
+            "Equivalentes mensuales estimados a partir de tus registros; no son totales recibidos o pagados en un mes específico.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -59,7 +59,7 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
         } else if (balance == null || (state.ingresos.isEmpty() && state.gastosFijos.isEmpty() && state.gastosVariables.isEmpty() && state.deudas.isEmpty() && state.metas.isEmpty())) {
             EmptyChartMessage("Aún no hay datos financieros para resumir. Agrega ingresos, gastos, deudas o metas.")
         } else {
-            ChartSection("Ingresos y gastos mensuales") {
+            ChartSection("Equivalente mensual estimado") {
                 val rows = listOf(
                     ChartRow("Ingresos", balance.ingresosMensuales),
                     ChartRow("Gastos fijos", balance.gastosFijosMensuales),
@@ -70,7 +70,7 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
                 AmountBars(rows, finanzasViewModel, useAbsoluteScale = true)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Período mensual equivalente. El saldo disponible conserva valores negativos.",
+                    "Proyección mensual promedio: semanal × 52/12, quincenal (cada 15 días) × 365/15/12, diario × 365/12. Los movimientos únicos solo cuentan en el mes de su fecha. El saldo conserva valores negativos.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -83,7 +83,7 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
 
             ChartSection("Deudas registradas") {
                 val debts = state.deudas.map {
-                    ChartRow(it.nombre, it.montoTotal, "Pago: ${finanzasViewModel.formatCurrency(BalanceCalculator.normalizarAMensual(it.pagoPeriodico, it.periodicidad))}/mes")
+                    ChartRow(it.nombre, it.montoTotal, "Pago estimado: ${finanzasViewModel.formatCurrency(BalanceCalculator.equivalenteMensualEstimado(it.pagoPeriodico, it.periodicidad, it.fechaMillis))}/mes")
                 }
                 if (debts.isEmpty()) EmptyChartMessage("No tienes deudas registradas.")
                 else AmountBars(debts, finanzasViewModel)

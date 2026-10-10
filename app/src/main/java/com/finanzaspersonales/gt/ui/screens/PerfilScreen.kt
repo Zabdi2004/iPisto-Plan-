@@ -71,7 +71,7 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel,
                     Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text("Resumen guardado", style = MaterialTheme.typography.titleMedium)
                         ProfileMetric("Ingresos equivalentes al mes", financeViewModel.formatCurrency(balance.ingresosMensuales))
-                        ProfileMetric("Gastos y pagos mensuales", financeViewModel.formatCurrency(balance.gastosFijosMensuales + balance.gastosVariablesMensuales + balance.pagosDeudaMensuales))
+                        ProfileMetric("Gastos y pagos mensuales estimados", financeViewModel.formatCurrency(balance.gastosFijosMensuales + balance.gastosVariablesMensuales + balance.pagosDeudaMensuales))
                         ProfileMetric("Registros", (state.ingresos.size + state.gastosFijos.size + state.gastosVariables.size + state.deudas.size).toString())
                     }
                 }
