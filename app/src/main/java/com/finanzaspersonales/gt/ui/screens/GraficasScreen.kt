@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.finanzaspersonales.gt.ui.components.FoxMascot
 import com.finanzaspersonales.gt.domain.calculator.BalanceCalculator
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 
@@ -142,5 +143,8 @@ private fun AmountBars(rows: List<ChartRow>, viewModel: FinanzasViewModel, useAb
 
 @Composable
 private fun EmptyChartMessage(message: String) {
-    Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Start)
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        FoxMascot(size = 46.dp)
+        Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Start)
+    }
 }

@@ -4,12 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.compose.ui.platform.LocalContext
 import com.finanzaspersonales.gt.FinanzasApp
@@ -22,6 +26,7 @@ object Screen {
     const val Register = "register"
     const val Inicio = "inicio"
     const val Graficas = "graficas"
+    const val NuevoRegistro = "registro/nuevo"
     const val Metas = "metas"
     const val MetaDetail = "metas/detalle/{metaId}"
     const val MetaNueva = "metas/nueva"
@@ -52,7 +57,14 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
         }
     }
 
-    NavHost(navController = navController, startDestination = Screen.Welcome) {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    Scaffold(
+        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
+        bottomBar = {
+            if (user != null) IpistoBottomBar(backStackEntry?.destination?.route, navController)
+        }
+    ) { paddingValues ->
+    NavHost(navController = navController, startDestination = Screen.Welcome, modifier = Modifier.padding(paddingValues)) {
         composable(Screen.Welcome) { WelcomeScreen(navController) }
         composable(Screen.Login) { LoginScreen(navController, authViewModel) }
         composable(Screen.Register) { RegisterScreen(navController, authViewModel) }
@@ -62,6 +74,9 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
         }
         composable(Screen.Graficas) {
             PrivateRoute(user != null && financeViewModel != null, navController) { GraficasScreen(financeViewModel!!) }
+        }
+        composable(Screen.NuevoRegistro) {
+            PrivateRoute(user != null && financeViewModel != null, navController) { NuevoRegistroScreen(navController, financeViewModel!!) }
         }
         composable(Screen.Metas) {
             PrivateRoute(user != null && financeViewModel != null, navController) { MetasScreen(navController, financeViewModel!!) }
@@ -84,9 +99,10 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
                 MetaAgregarAporteScreen(navController, entry.arguments?.getLong("metaId") ?: 0L, financeViewModel!!)
             }
         }
-        composable(Screen.Perfil) { PrivateRoute(user != null, navController) { PerfilScreen(navController, authViewModel) } }
+        composable(Screen.Perfil) { PrivateRoute(user != null && financeViewModel != null, navController) { PerfilScreen(navController, authViewModel, financeViewModel!!) } }
         composable(Screen.Configuracion) { PrivateRoute(user != null, navController) { ConfiguracionScreen(navController) } }
         composable(Screen.EducacionFinanciera) { PrivateRoute(user != null, navController) { EducacionFinancieraScreen(navController) } }
+    }
     }
 }
 

@@ -121,6 +121,30 @@ class AuthViewModel(
         _authState.value = AuthState.Idle
     }
 
+    fun renameCurrentUser(username: String) {
+        val user = _currentUser.value ?: run {
+            _authState.value = AuthState.Error("Inicia sesión para editar el perfil")
+            return
+        }
+        val normalized = username.trim()
+        if (!normalized.matches(Regex("^[a-zA-Z0-9_]{3,24}$"))) {
+            _authState.value = AuthState.Error("Usa entre 3 y 24 letras, números o guiones bajos")
+            return
+        }
+        _authState.value = AuthState.Loading
+        viewModelScope.launch {
+            userRepository.renameUser(user.id, normalized).fold(
+                onSuccess = {
+                    val updated = user.copy(nombreUsuario = normalized)
+                    _currentUser.value = updated
+                    sessionManager.saveSession(updated.id, updated.nombreUsuario)
+                    _authState.value = AuthState.Success
+                },
+                onFailure = { _authState.value = AuthState.Error(it.localizedMessage ?: "No se pudo actualizar el nombre") }
+            )
+        }
+    }
+
     fun changePassword(currentPassword: String, newPassword: String, confirmation: String) {
         val user = _currentUser.value ?: run {
             _authState.value = AuthState.Error("Inicia sesión para cambiar la contraseña")

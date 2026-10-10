@@ -44,6 +44,7 @@ fun MetaAgregarAporteScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text("AGREGAR APORTE", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+        uiState.value.error?.let { error -> Text("No se completó la operación: $error", color = MaterialTheme.colorScheme.error) }
         Spacer(modifier = Modifier.height(8.dp))
         Text("Meta: ${meta.nombre}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Ahorrado: ${finanzasViewModel.formatCurrency(meta.cantidadAhorrada)} / ${finanzasViewModel.formatCurrency(meta.cantidadObjetivo)}", style = MaterialTheme.typography.bodyMedium)
@@ -75,9 +76,9 @@ fun MetaAgregarAporteScreen(
                 onConfirm = {
                     val amount = MoneyInput.parseAmount(aporte) ?: 0.0
                     val updatedMeta = meta.copy(cantidadAhorrada = meta.cantidadAhorrada + amount)
-                    finanzasViewModel.updateMeta(updatedMeta)
-                    showConfirm = false
-                    navController.popBackStack()
+                    finanzasViewModel.updateMeta(updatedMeta) { saved ->
+                        if (saved) { showConfirm = false; navController.popBackStack() }
+                    }
                 },
                 title = "Confirmar aporte",
                 message = "¿Agregar ${finanzasViewModel.formatCurrency(MoneyInput.parseAmount(aporte) ?: 0.0)} a \"${meta.nombre}\"?",

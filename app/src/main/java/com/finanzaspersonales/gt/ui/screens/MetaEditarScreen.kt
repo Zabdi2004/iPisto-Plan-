@@ -38,6 +38,9 @@ fun MetaEditarScreen(
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
+        uiState.value.error?.let { error ->
+            Text("No se completó la operación: $error", color = MaterialTheme.colorScheme.error)
+        }
         if (showDialog) {
             MetaAhorroDialog(
                 onDismiss = { showDialog = false; navController.popBackStack() },
@@ -48,9 +51,9 @@ fun MetaEditarScreen(
                         cantidadAhorrada = ahorrado,
                         aporteMensual = aporte
                     )
-                    finanzasViewModel.updateMeta(updatedMeta)
-                    showDialog = false
-                    navController.popBackStack()
+                    finanzasViewModel.updateMeta(updatedMeta) { saved ->
+                        if (saved) { showDialog = false; navController.popBackStack() }
+                    }
                 },
                 initialName = meta.nombre,
                 initialObjetivo = meta.cantidadObjetivo.toString(),

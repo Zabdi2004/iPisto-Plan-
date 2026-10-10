@@ -6,6 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.finanzaspersonales.gt.data.local.AppDatabase
 import com.finanzaspersonales.gt.data.local.entity.Ingreso
+import com.finanzaspersonales.gt.data.local.entity.GastoFijo
+import com.finanzaspersonales.gt.data.local.entity.GastoVariable
 import com.finanzaspersonales.gt.data.repository.FinanzasRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -56,6 +58,33 @@ class FinancialRepositoryInstrumentedTest {
         assertTrue(repository(ownerId).deleteIngreso(Ingreso(ownId, ownerId, "", 0.0, "Mensual")).isSuccess)
         assertTrue(database.ingresoDao().getAllByUserOnce(ownerId).isEmpty())
         assertEquals(1, database.ingresoDao().getAllByUserOnce(otherUserId).size)
+    }
+
+    @Test fun fixedAndVariableExpensesStayInSeparateTablesAndBelongToOwner() = runBlocking {
+        val ownerId = 31L
+        val otherUserId = 32L
+        val repository = repository(ownerId)
+
+        repository.insertGastoFijo(GastoFijo(userId = otherUserId, nombre = "Renta", categoria = "Hogar", cantidad = 1200.0, periodicidad = "Mensual")).getOrThrow()
+        repository.insertGastoVariable(GastoVariable(userId = otherUserId, nombre = "Cine", categoria = "Ocio", cantidad = 100.0, periodicidad = "Mensual")).getOrThrow()
+
+        val fixed = database.gastoFijoDao().getAllByUserOnce(ownerId)
+        val variable = database.gastoVariableDao().getAllByUserOnce(ownerId)
+        assertEquals(listOf("Renta"), fixed.map { it.nombre })
+        assertEquals(listOf("Cine"), variable.map { it.nombre })
+        assertTrue(database.gastoFijoDao().getAllByUserOnce(otherUserId).isEmpty())
+        assertTrue(database.gastoVariableDao().getAllByUserOnce(otherUserId).isEmpty())
+
+        val fixedId = fixed.single().id
+        val variableId = variable.single().id
+        assertTrue(repository.updateGastoFijo(fixed.single().copy(cantidad = 1300.0)).isSuccess)
+        assertTrue(repository.updateGastoVariable(variable.single().copy(cantidad = 150.0)).isSuccess)
+        assertEquals(1300.0, database.gastoFijoDao().findById(fixedId, ownerId)?.cantidad ?: 0.0, 0.0)
+        assertEquals(150.0, database.gastoVariableDao().findById(variableId, ownerId)?.cantidad ?: 0.0, 0.0)
+        assertTrue(repository.deleteGastoFijo(fixed.single()).isSuccess)
+        assertTrue(repository.deleteGastoVariable(variable.single()).isSuccess)
+        assertTrue(database.gastoFijoDao().getAllByUserOnce(ownerId).isEmpty())
+        assertTrue(database.gastoVariableDao().getAllByUserOnce(ownerId).isEmpty())
     }
 
     private fun newDatabase() = Room.databaseBuilder(context, AppDatabase::class.java, databaseName).build()

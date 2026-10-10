@@ -2,8 +2,6 @@
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,6 +22,7 @@ import com.finanzaspersonales.gt.data.local.entity.MetaAhorro
 import com.finanzaspersonales.gt.ui.components.ConfirmDialog
 import com.finanzaspersonales.gt.utils.CurrencyFormatter
 import com.finanzaspersonales.gt.utils.formatMonthly
+import com.finanzaspersonales.gt.ui.theme.IpistoPalette
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,9 +40,9 @@ fun IngresoSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("INGRESOS", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                Text("INGRESOS", style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Income)
                 IconButton(onClick = onAdd) {
-                    Icon(Icons.Filled.Add, contentDescription = "Agregar ingreso", tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.Filled.Add, contentDescription = "Agregar ingreso", tint = IpistoPalette.Income)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -56,11 +55,11 @@ fun IngresoSection(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
                 )
             } else {
-                LazyColumn(
+                Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(ingresos) { ingreso ->
+                    ingresos.forEach { ingreso ->
                         IngresoItem(
                             ingreso = ingreso,
                             onEdit = { onEdit(ingreso) },
@@ -97,7 +96,7 @@ fun IngresoItem(
                 Text(ingreso.nombre, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(formatter(monthly), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                    Text(formatter(monthly), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Income)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         "/mes (${ingreso.periodicidad}: ${formatter(ingreso.cantidad)})",
@@ -149,11 +148,11 @@ fun GastoFijoSection(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
                 )
             } else {
-                LazyColumn(
+                Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(gastos) { gasto ->
+                    gastos.forEach { gasto ->
                         GastoFijoItem(
                             gasto = gasto,
                             onEdit = { onEdit(gasto) },
@@ -229,9 +228,9 @@ fun GastoVariableSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("GASTOS VARIABLES", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.tertiary)
+                Text("GASTOS VARIABLES", style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Expense)
                 IconButton(onClick = onAdd) {
-                    Icon(Icons.Filled.Add, contentDescription = "Agregar gasto variable", tint = MaterialTheme.colorScheme.tertiary)
+                    Icon(Icons.Filled.Add, contentDescription = "Agregar gasto variable", tint = IpistoPalette.Expense)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -244,11 +243,11 @@ fun GastoVariableSection(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
                 )
             } else {
-                LazyColumn(
+                Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(gastos) { gasto ->
+                    gastos.forEach { gasto ->
                         GastoVariableItem(
                             gasto = gasto,
                             onEdit = { onEdit(gasto) },
@@ -287,7 +286,7 @@ fun GastoVariableItem(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(gasto.categoria, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(formatter(monthly), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.tertiary)
+                    Text(formatter(monthly), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Expense)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         "/mes (${gasto.periodicidad}: ${formatter(gasto.cantidad)})",
@@ -339,11 +338,11 @@ fun DeudaSection(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
                 )
             } else {
-                LazyColumn(
+                Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(deudas) { deuda ->
+                    deudas.forEach { deuda ->
                         DeudaItem(
                             deuda = deuda,
                             onEdit = { onEdit(deuda) },
@@ -435,11 +434,11 @@ fun MetaAhorroSection(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
                 )
             } else {
-                LazyColumn(
+                Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(metas) { meta ->
+                    metas.forEach { meta ->
                         MetaAhorroItem(
                             meta = meta,
                             onEdit = { onEdit(meta) },

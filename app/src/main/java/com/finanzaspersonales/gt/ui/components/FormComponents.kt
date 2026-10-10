@@ -1,6 +1,7 @@
 ﻿package com.finanzaspersonales.gt.ui.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
@@ -8,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,7 +27,8 @@ fun CustomTextField(
     isError: Boolean = false,
     errorText: String? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
-    supportingText: (@Composable () -> Unit)? = null
+    supportingText: (@Composable () -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     Column(modifier = modifier) {
         OutlinedTextField(
@@ -37,6 +40,7 @@ fun CustomTextField(
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = trailingIcon,
             supportingText = supportingText,
+            keyboardOptions = keyboardOptions,
             isError = isError,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
@@ -78,7 +82,8 @@ fun AmountTextField(
         placeholder = "0.00",
         modifier = modifier,
         isError = isError,
-        errorText = errorText
+        errorText = errorText,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
     )
 }
 

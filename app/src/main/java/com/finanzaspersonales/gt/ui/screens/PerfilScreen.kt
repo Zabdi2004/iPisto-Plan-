@@ -6,28 +6,39 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.navigation.NavHostController
 import com.finanzaspersonales.gt.data.local.entity.User
+import com.finanzaspersonales.gt.ui.components.FoxMascot
 import com.finanzaspersonales.gt.viewmodel.AuthState
 import com.finanzaspersonales.gt.viewmodel.AuthViewModel
+import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 
 @Composable
-fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel) {
+fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel, financeViewModel: FinanzasViewModel? = null) {
     val currentUser: User? by authViewModel.currentUser.collectAsState()
     val authState by authViewModel.authState.collectAsState()
+    val financeState = financeViewModel?.uiState?.collectAsState()?.value
     var showPasswordDialog by remember { mutableStateOf(false) }
+    var showNameDialog by remember { mutableStateOf(false) }
+    var editableName by remember { mutableStateOf("") }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var deleteRequested by remember { mutableStateOf(false) }
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    LaunchedEffect(authState, currentUser, showPasswordDialog, deleteRequested) {
+    LaunchedEffect(authState, currentUser, showPasswordDialog, showNameDialog, deleteRequested) {
         if (authState == AuthState.Success && showPasswordDialog) {
             showPasswordDialog = false
             oldPassword = ""
             newPassword = ""
             confirmPassword = ""
+            authViewModel.resetAuthState()
+        }
+        if (authState == AuthState.Success && showNameDialog) {
+            showNameDialog = false
             authViewModel.resetAuthState()
         }
         if (deleteRequested && authState == AuthState.Idle && currentUser == null) {
@@ -40,11 +51,40 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel)
         }
     }
 
-    Column(Modifier.fillMaxSize().padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("PERFIL", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Text("Tu perfil", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
         currentUser?.let { user ->
-            Text("Usuario: ${user.nombreUsuario}", style = MaterialTheme.typography.titleLarge)
-            Text("Cuenta creada: ${java.text.DateFormat.getDateInstance().format(java.util.Date(user.fechaCreacion))}")
+            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant), shape = MaterialTheme.shapes.large) {
+                Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(user.nombreUsuario, style = MaterialTheme.typography.headlineSmall)
+                        Text("Cuenta local · ${java.text.DateFormat.getDateInstance().format(java.util.Date(user.fechaCreacion))}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        TextButton(onClick = { editableName = user.nombreUsuario; authViewModel.resetAuthState(); showNameDialog = true }) {
+                            Text("Editar nombre")
+                        }
+                    }
+                    FoxMascot(size = 62.dp)
+                }
+            }
+            financeState?.let { state -> state.balance?.let { balance ->
+                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text("Resumen guardado", style = MaterialTheme.typography.titleMedium)
+                        ProfileMetric("Ingresos equivalentes al mes", financeViewModel.formatCurrency(balance.ingresosMensuales))
+                        ProfileMetric("Gastos y pagos mensuales", financeViewModel.formatCurrency(balance.gastosFijosMensuales + balance.gastosVariablesMensuales + balance.pagosDeudaMensuales))
+                        ProfileMetric("Registros", (state.ingresos.size + state.gastosFijos.size + state.gastosVariables.size + state.deudas.size).toString())
+                    }
+                }
+            } }
+            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+                Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text("iPisto Premium", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Text("Vista informativa. No hay compras ni suscripciones habilitadas.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                }
+            }
+            Text("Herramientas", style = MaterialTheme.typography.titleLarge)
+            OutlinedButton(onClick = { navController.navigate("metas") }, modifier = Modifier.fillMaxWidth()) { Text("Plan de ahorros") }
+            OutlinedButton(onClick = { navController.navigate("graficas") }, modifier = Modifier.fillMaxWidth()) { Text("Informes") }
             Button(onClick = { showPasswordDialog = true; authViewModel.resetAuthState() }, modifier = Modifier.fillMaxWidth()) {
                 Text("Cambiar contraseña")
             }
@@ -61,6 +101,28 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel)
             }
         }
     }
+
+    if (showNameDialog) AlertDialog(
+        onDismissRequest = { if (authState != AuthState.Loading) { showNameDialog = false; authViewModel.resetAuthState() } },
+        title = { Text("Editar nombre de usuario") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = editableName,
+                    onValueChange = { editableName = it },
+                    label = { Text("Nombre de usuario") },
+                    singleLine = true
+                )
+                (authState as? AuthState.Error)?.let { Text(it.message, color = MaterialTheme.colorScheme.error) }
+            }
+        },
+        confirmButton = {
+            TextButton(enabled = authState != AuthState.Loading, onClick = { authViewModel.renameCurrentUser(editableName) }) {
+                Text(if (authState == AuthState.Loading) "Guardando…" else "Guardar")
+            }
+        },
+        dismissButton = { TextButton(onClick = { showNameDialog = false; authViewModel.resetAuthState() }) { Text("Cancelar") } }
+    )
 
     if (showPasswordDialog) AlertDialog(
         onDismissRequest = { if (authState != AuthState.Loading) showPasswordDialog = false },
@@ -97,4 +159,12 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel)
         },
         dismissButton = { TextButton(onClick = { showDeleteDialog = false }) { Text("Cancelar") } }
     )
+}
+
+@Composable
+private fun ProfileMetric(label: String, value: String) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+        Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
+    }
 }

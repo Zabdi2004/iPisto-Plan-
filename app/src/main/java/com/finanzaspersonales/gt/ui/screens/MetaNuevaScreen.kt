@@ -22,6 +22,9 @@ fun MetaNuevaScreen(
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
+        finanzasViewModel.uiState.collectAsState().value.error?.let { error ->
+            Text("No se completó la operación: $error", color = MaterialTheme.colorScheme.error)
+        }
         if (showDialog) {
             MetaAhorroDialog(
                 onDismiss = { showDialog = false; navController.popBackStack() },
@@ -34,9 +37,9 @@ fun MetaNuevaScreen(
                         cantidadAhorrada = ahorrado,
                         aporteMensual = aporte
                     )
-                    finanzasViewModel.insertMeta(meta)
-                    showDialog = false
-                    navController.popBackStack()
+                    finanzasViewModel.insertMeta(meta) { saved ->
+                        if (saved) { showDialog = false; navController.popBackStack() }
+                    }
                 },
                 isEditing = false
             )

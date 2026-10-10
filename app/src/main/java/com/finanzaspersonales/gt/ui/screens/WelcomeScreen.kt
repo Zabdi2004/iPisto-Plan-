@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.finanzaspersonales.gt.ui.components.ProgressBar
+import com.finanzaspersonales.gt.ui.components.FoxMascot
 
 @Composable
 fun WelcomeScreen(navController: NavHostController) {
@@ -20,6 +21,8 @@ fun WelcomeScreen(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        FoxMascot(size = 92.dp)
+        Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "iPisto",
             style = MaterialTheme.typography.headlineLarge,

@@ -77,6 +77,22 @@ class AuthViewModelInstrumentedTest {
         assertFalse(session.isLoggedIn())
     }
 
+    @Test fun profileRenamePersistsAndUpdatesSession() = runBlocking {
+        viewModel.register("perfil_original", "secreto123", "secreto123")
+        assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
+        val userId = viewModel.currentUser.value?.id ?: error("No se creó el usuario")
+
+        viewModel.renameCurrentUser("perfil_nuevo")
+        assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
+        assertEquals("perfil_nuevo", viewModel.currentUser.value?.nombreUsuario)
+        assertEquals("perfil_nuevo", session.getCurrentUsername())
+        assertEquals("perfil_nuevo", UserRepository(database).getUserById(userId)?.nombreUsuario)
+
+        viewModel.renameCurrentUser("x")
+        assertTrue(viewModel.authState.value is AuthState.Error)
+        assertEquals("perfil_nuevo", viewModel.currentUser.value?.nombreUsuario)
+    }
+
     private suspend fun awaitState(predicate: (AuthState) -> Boolean): AuthState = withTimeout(30_000) {
         while (!predicate(viewModel.authState.value)) delay(25)
         viewModel.authState.value

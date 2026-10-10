@@ -1,74 +1,79 @@
-﻿package com.finanzaspersonales.gt.ui.theme
+package com.finanzaspersonales.gt.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-// Colores del sistema - Aplicación Bancaria Moderna
-val PrimaryBlue = Color(0xFF1A73E8)
-val PrimaryDark = Color(0xFF0D47A1)
-val SecondaryTeal = Color(0xFF00897B)
-val BackgroundLight = Color(0xFFF5F5F5)
-val BackgroundDark = Color(0xFF121212)
-val SurfaceLight = Color(0xFFFFFFFF)
-val SurfaceDark = Color(0xFF1E1E1E)
-val ErrorRed = Color(0xFFD32F2F)
-val SuccessGreen = Color(0xFF388E3C)
-val WarningAmber = Color(0xFFF57C00)
+/** Shared iPisto palette. Screen code should use MaterialTheme.colorScheme or these semantic accents. */
+object IpistoPalette {
+    val Background = Color(0xFF1F2638)
+    val Surface = Color(0xFF2A3350)
+    val Elevated = Color(0xFF343E5E)
+    val Outline = Color(0xFF3F4A6B)
+    val Accent = Color(0xFF8FA8F5)
+    val AccentPressed = Color(0xFFB3C4FA)
+    val AccentContent = Color(0xFF1B2133)
+    val Expense = Color(0xFFF2909B)
+    val Income = Color(0xFF85D9B5)
+    val Balance = Color(0xFF8CC8F2)
+    val Lavender = Color(0xFFB7A6F0)
+    val Peach = Color(0xFFF5C28A)
+    val Rose = Color(0xFFF2A9C9)
+    val Turquoise = Color(0xFF7FD3D6)
+    val Butter = Color(0xFFF3DF93)
+    val Sage = Color(0xFFA8D5A2)
+    val Text = Color(0xFFEEF1FA)
+    val TextSecondary = Color(0xFFA9B3CC)
+    val Disabled = Color(0xFF6F7A99)
+}
 
-// Colores financieros
-val MoneyGreen = Color(0xFF43A047)
-val DebtRed = Color(0xFFE53935)
-val WarningYellow = Color(0xFFFBFF00)
-val NeutralGray = Color(0xFF757575)
-
-private val LightColors = lightColorScheme(
-    primary = PrimaryBlue,
-    onPrimary = Color.White,
-    secondary = SecondaryTeal,
-    onSecondary = Color.White,
-    background = BackgroundLight,
-    onBackground = Color(0xFF212121),
-    surface = SurfaceLight,
-    onSurface = Color(0xFF212121),
-    error = ErrorRed,
-    onError = Color.White
-)
-
-private val DarkColors = darkColorScheme(
-    primary = PrimaryBlue,
-    onPrimary = Color.White,
-    secondary = SecondaryTeal,
-    onSecondary = Color.White,
-    background = BackgroundDark,
-    onBackground = Color(0xFFE0E0E0),
-    surface = SurfaceDark,
-    onSurface = Color(0xFFE0E0E0),
-    error = ErrorRed,
-    onError = Color.White
+private val IpistoDarkColors = darkColorScheme(
+    primary = IpistoPalette.Accent,
+    onPrimary = IpistoPalette.AccentContent,
+    primaryContainer = Color(0xFF3A4770),
+    onPrimaryContainer = IpistoPalette.Text,
+    secondary = IpistoPalette.Lavender,
+    onSecondary = IpistoPalette.AccentContent,
+    secondaryContainer = Color(0xFF46405F),
+    onSecondaryContainer = IpistoPalette.Text,
+    tertiary = IpistoPalette.Balance,
+    onTertiary = IpistoPalette.AccentContent,
+    tertiaryContainer = Color(0xFF30475F),
+    onTertiaryContainer = IpistoPalette.Text,
+    error = IpistoPalette.Expense,
+    onError = IpistoPalette.AccentContent,
+    errorContainer = Color(0xFF5A3542),
+    onErrorContainer = IpistoPalette.Text,
+    background = IpistoPalette.Background,
+    onBackground = IpistoPalette.Text,
+    surface = IpistoPalette.Surface,
+    onSurface = IpistoPalette.Text,
+    surfaceVariant = IpistoPalette.Elevated,
+    onSurfaceVariant = IpistoPalette.TextSecondary,
+    outline = IpistoPalette.Outline,
+    outlineVariant = IpistoPalette.Outline,
+    scrim = Color(0x990B1020),
+    inverseSurface = IpistoPalette.Text,
+    inverseOnSurface = IpistoPalette.Background,
+    inversePrimary = Color(0xFF526BB7)
 )
 
 val FinanzasShapes = Shapes(
-    small = RoundedCornerShape(4.dp),
-    medium = RoundedCornerShape(8.dp),
-    large = RoundedCornerShape(16.dp),
-    extraLarge = RoundedCornerShape(28.dp)
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(18.dp),
+    large = RoundedCornerShape(22.dp),
+    extraLarge = RoundedCornerShape(24.dp)
 )
 
 @Composable
-fun FinanzasPersonalesGTTheme(
-    darkTheme: Boolean = false,
-    content: @Composable () -> Unit
-) {
-    val colors = if (darkTheme) DarkColors else LightColors
-
+fun FinanzasPersonalesGTTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = colors,
+        colorScheme = IpistoDarkColors,
         shapes = FinanzasShapes,
         content = content
     )

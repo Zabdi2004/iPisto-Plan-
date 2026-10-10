@@ -67,13 +67,13 @@ fun IngresoDialog(
         dismissButton = {
             TextButton(
                 onClick = {
-                    val amountValue = MoneyInput.parseAmount(amount.text) ?: 0.0
-                    val valid = name.text.isNotBlank() && amountValue.isFinite() && amountValue > 0
+                    val parsedAmount = MoneyInput.parseAmount(amount.text)
+                    val amountValue = parsedAmount ?: 0.0
+                    val valid = name.text.isNotBlank() && parsedAmount != null && amountValue > 0
                     nameError = name.text.isBlank()
-                    amountError = !amountValue.isFinite() || amountValue <= 0
+                    amountError = parsedAmount == null || amountValue <= 0
                     if (valid) {
                         onConfirm(name.text, amountValue, periodicity)
-                        onDismiss()
                     }
                 }
             ) { Text("Guardar") }
@@ -152,13 +152,13 @@ fun GastoFijoDialog(
         dismissButton = {
             TextButton(
                 onClick = {
-                    val amountValue = MoneyInput.parseAmount(amount.text) ?: 0.0
-                    val valid = name.text.isNotBlank() && amountValue.isFinite() && amountValue > 0
+                    val parsedAmount = MoneyInput.parseAmount(amount.text)
+                    val amountValue = parsedAmount ?: 0.0
+                    val valid = name.text.isNotBlank() && parsedAmount != null && amountValue > 0
                     nameError = name.text.isBlank()
-                    amountError = !amountValue.isFinite() || amountValue <= 0
+                    amountError = parsedAmount == null || amountValue <= 0
                     if (valid) {
                         onConfirm(name.text, category, amountValue, periodicity)
-                        onDismiss()
                     }
                 }
             ) { Text("Guardar") }
@@ -237,13 +237,13 @@ fun GastoVariableDialog(
         dismissButton = {
             TextButton(
                 onClick = {
-                    val amountValue = MoneyInput.parseAmount(amount.text) ?: 0.0
-                    val valid = name.text.isNotBlank() && amountValue.isFinite() && amountValue > 0
+                    val parsedAmount = MoneyInput.parseAmount(amount.text)
+                    val amountValue = parsedAmount ?: 0.0
+                    val valid = name.text.isNotBlank() && parsedAmount != null && amountValue > 0
                     nameError = name.text.isBlank()
-                    amountError = !amountValue.isFinite() || amountValue <= 0
+                    amountError = parsedAmount == null || amountValue <= 0
                     if (valid) {
                         onConfirm(name.text, category, amountValue, periodicity)
-                        onDismiss()
                     }
                 }
             ) { Text("Guardar") }
@@ -320,15 +320,16 @@ fun DeudaDialog(
         dismissButton = {
             TextButton(
                 onClick = {
-                    val monto = MoneyInput.parseAmount(montoTotal.text) ?: 0.0
-                    val pago = MoneyInput.parseAmount(pagoPeriodico.text) ?: 0.0
-                    val valid = name.text.isNotBlank() && monto.isFinite() && monto > 0 && pago.isFinite() && pago > 0
+                    val parsedMonto = MoneyInput.parseAmount(montoTotal.text)
+                    val parsedPago = MoneyInput.parseAmount(pagoPeriodico.text)
+                    val monto = parsedMonto ?: 0.0
+                    val pago = parsedPago ?: 0.0
+                    val valid = name.text.isNotBlank() && parsedMonto != null && monto > 0 && parsedPago != null && pago > 0
                     nameError = name.text.isBlank()
-                    montoError = !monto.isFinite() || monto <= 0
-                    pagoError = !pago.isFinite() || pago <= 0
+                    montoError = parsedMonto == null || monto <= 0
+                    pagoError = parsedPago == null || pago <= 0
                     if (valid) {
                         onConfirm(name.text, monto, pago, periodicity)
-                        onDismiss()
                     }
                 }
             ) { Text("Guardar") }
@@ -409,17 +410,19 @@ fun MetaAhorroDialog(
         dismissButton = {
             TextButton(
                 onClick = {
-                    val obj = MoneyInput.parseAmount(objetivo.text) ?: 0.0
-                    val ahr = MoneyInput.parseAmount(ahorrado.text) ?: 0.0
-                    val apr = MoneyInput.parseAmount(aporte.text) ?: 0.0
-                    val valid = name.text.isNotBlank() && obj.isFinite() && obj > 0 && ahr.isFinite() && ahr >= 0 && apr.isFinite() && apr >= 0
+                    val parsedObj = MoneyInput.parseAmount(objetivo.text)
+                    val parsedAhr = MoneyInput.parseAmount(ahorrado.text)
+                    val parsedApr = MoneyInput.parseAmount(aporte.text)
+                    val obj = parsedObj ?: 0.0
+                    val ahr = parsedAhr ?: 0.0
+                    val apr = parsedApr ?: 0.0
+                    val valid = name.text.isNotBlank() && parsedObj != null && obj > 0 && parsedAhr != null && ahr >= 0 && parsedApr != null && apr >= 0
                     nameError = name.text.isBlank()
-                    objetivoError = !obj.isFinite() || obj <= 0
-                    ahorradoError = !ahr.isFinite() || ahr < 0
-                    aporteError = !apr.isFinite() || apr < 0
+                    objetivoError = parsedObj == null || obj <= 0
+                    ahorradoError = parsedAhr == null || ahr < 0
+                    aporteError = parsedApr == null || apr < 0
                     if (valid) {
                         onConfirm(name.text, obj, ahr, apr)
-                        onDismiss()
                     }
                 }
             ) { Text("Guardar") }

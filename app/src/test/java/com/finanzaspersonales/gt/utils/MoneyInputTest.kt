@@ -17,6 +17,17 @@ class MoneyInputTest {
         assertEquals(2, inserted.selectionEnd)
     }
 
+    @Test fun editingDoesNotReorderDigitsOrLoseCursorPosition() {
+        assertEquals("0.50", MoneyInput.normalizeEditingValue("0.50", 4).text)
+        assertEquals("125.75", MoneyInput.normalizeEditingValue("125.75", 6).text)
+        val deletedMiddleDigit = "3500".removeRange(1, 2)
+        assertEquals("300", MoneyInput.normalizeEditingValue(deletedMiddleDigit, 1).text)
+        val replacedSelection = MoneyInput.normalizeEditingValue("2468", 2)
+        assertEquals("2468", replacedSelection.text)
+        assertEquals(2, replacedSelection.selectionStart)
+        assertNull(MoneyInput.parseAmount("125.755"))
+    }
+
     @Test fun acceptsDotAndCommaDecimalAndGroupedInput() {
         assertEquals(125.50, MoneyInput.parseAmount("125.50")!!, 0.0)
         assertEquals(125.50, MoneyInput.parseAmount("125,50")!!, 0.0)
@@ -30,5 +41,7 @@ class MoneyInputTest {
         assertNull(MoneyInput.parseAmount("."))
         assertNull(MoneyInput.parseAmount("no válido"))
         assertNull(MoneyInput.parseAmount("9".repeat(400)))
+        assertNull(MoneyInput.parseAmount("-25.00"))
+        assertNull(MoneyInput.parseAmount("1000000000001"))
     }
 }

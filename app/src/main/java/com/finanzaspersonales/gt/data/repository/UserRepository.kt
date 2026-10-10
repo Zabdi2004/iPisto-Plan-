@@ -59,6 +59,24 @@ class UserRepository(
         }
     }
 
+    suspend fun renameUser(id: Long, username: String): Result<Unit> = withContext(ioDispatcher) {
+        try {
+            database.withTransaction {
+                val existing = userTypeDao.findByUsername(username)
+                when {
+                    existing != null && existing.id != id -> Result.failure(IllegalArgumentException("Ese nombre de usuario ya está en uso"))
+                    userTypeDao.findById(id) == null -> Result.failure(IllegalArgumentException("La cuenta ya no existe"))
+                    else -> {
+                        userTypeDao.updateUsername(id, username)
+                        Result.success(Unit)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun deleteUser(id: Long): Result<Unit> = withContext(ioDispatcher) {
         try {
             database.withTransaction {

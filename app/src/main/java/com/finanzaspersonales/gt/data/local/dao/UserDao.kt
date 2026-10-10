@@ -30,6 +30,9 @@ interface UserTypeDao {
     @Query("UPDATE User SET passwordHash = :passwordHash WHERE id = :id")
     suspend fun updatePassword(id: Long, passwordHash: String)
 
+    @Query("UPDATE User SET nombreUsuario = :username WHERE id = :id")
+    suspend fun updateUsername(id: Long, username: String)
+
     @Query("DELETE FROM User")
     suspend fun deleteAll()
 }

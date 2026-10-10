@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
@@ -19,6 +21,8 @@ import com.finanzaspersonales.gt.data.local.entity.Deuda
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 import com.finanzaspersonales.gt.ui.components.*
 import com.finanzaspersonales.gt.utils.CurrencyFormatter
+import com.finanzaspersonales.gt.navigation.Screen
+import com.finanzaspersonales.gt.ui.theme.IpistoPalette
 
 @Composable
 fun InicioScreen(
@@ -43,6 +47,7 @@ fun InicioScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
         Text(
@@ -50,6 +55,27 @@ fun InicioScreen(
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary
         )
+        uiState.value.error?.let { message ->
+            Text(
+                text = "No se completó la operación: $message",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            shape = MaterialTheme.shapes.large
+        ) {
+            Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text("Un consejo para hoy", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    Text("Anota tus gastos pequeños: juntos también cuentan.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+                }
+                FoxMascot(size = 58.dp)
+            }
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         if (uiState.value.isLoading) {
@@ -72,7 +98,7 @@ fun InicioScreen(
                         Text(
                             text = finanzasViewModel.formatCurrency(balance.dineroDisponible),
                             style = MaterialTheme.typography.headlineLarge,
-                            color = if (balance.dineroDisponible >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                            color = if (balance.dineroDisponible >= 0) IpistoPalette.Balance else IpistoPalette.Expense
                         )
                     }
                 }
@@ -89,7 +115,7 @@ fun InicioScreen(
                         Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("INGRESOS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text(finanzasViewModel.formatCurrency(balance.ingresosMensuales), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                            Text(finanzasViewModel.formatCurrency(balance.ingresosMensuales), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Income)
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -113,12 +139,18 @@ fun InicioScreen(
                 ) {
                     Text("CALCULAR BALANCE")
                 }
+                OutlinedButton(
+                    onClick = { navController.navigate(Screen.Graficas) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("VER GRÁFICAS")
+                }
             } else {
                 Text(
                     "No hay datos suficientes. Comienza agregando ingresos y gastos.",
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp)
                 )
             }
         }
@@ -216,7 +248,7 @@ fun FinancialSections(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 100.dp),
+            .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         IngresoSection(
@@ -283,13 +315,13 @@ fun FinancialSections(
                     periodicidad = periodicity
                 )
                 if (editingIngreso != null) {
-                    finanzasViewModel.updateIngreso(ingreso)
+                    finanzasViewModel.updateIngreso(ingreso) { saved -> if (saved) onDismissIngresoDialog() }
                 } else {
-                    finanzasViewModel.insertIngreso(ingreso)
+                    finanzasViewModel.insertIngreso(ingreso) { saved -> if (saved) onDismissIngresoDialog() }
                 }
             },
             initialName = editingIngreso?.nombre ?: "",
-            initialAmount = editingIngreso?.cantidad.toString() ?: "",
+            initialAmount = editingIngreso?.cantidad?.toString() ?: "",
             initialPeriodicity = editingIngreso?.periodicidad ?: "Mensual",
             isEditing = editingIngreso != null
         )
@@ -308,16 +340,16 @@ fun FinancialSections(
                     periodicidad = periodicity
                 )
                 if (editingGastoFijo != null) {
-                    finanzasViewModel.updateGastoFijo(gasto)
+                    finanzasViewModel.updateGastoFijo(gasto) { saved -> if (saved) onDismissGastoFijoDialog() }
                 } else {
-                    finanzasViewModel.insertGastoFijo(gasto)
+                    finanzasViewModel.insertGastoFijo(gasto) { saved -> if (saved) onDismissGastoFijoDialog() }
                 }
             },
             initialName = editingGastoFijo?.nombre ?: "",
             initialCategory = editingGastoFijo?.categoria ?: "Alimentación",
             existingCategories = (uiState.gastosFijos.map { it.categoria } + uiState.gastosVariables.map { it.categoria })
                 .filterNot { it.equals(editingGastoFijo?.categoria, ignoreCase = true) },
-            initialAmount = editingGastoFijo?.cantidad.toString() ?: "",
+            initialAmount = editingGastoFijo?.cantidad?.toString() ?: "",
             initialPeriodicity = editingGastoFijo?.periodicidad ?: "Mensual",
             isEditing = editingGastoFijo != null
         )
@@ -336,16 +368,16 @@ fun FinancialSections(
                     periodicidad = periodicity
                 )
                 if (editingGastoVariable != null) {
-                    finanzasViewModel.updateGastoVariable(gasto)
+                    finanzasViewModel.updateGastoVariable(gasto) { saved -> if (saved) onDismissGastoVariableDialog() }
                 } else {
-                    finanzasViewModel.insertGastoVariable(gasto)
+                    finanzasViewModel.insertGastoVariable(gasto) { saved -> if (saved) onDismissGastoVariableDialog() }
                 }
             },
             initialName = editingGastoVariable?.nombre ?: "",
             initialCategory = editingGastoVariable?.categoria ?: "Entretenimiento",
             existingCategories = (uiState.gastosFijos.map { it.categoria } + uiState.gastosVariables.map { it.categoria })
                 .filterNot { it.equals(editingGastoVariable?.categoria, ignoreCase = true) },
-            initialAmount = editingGastoVariable?.cantidad.toString() ?: "",
+            initialAmount = editingGastoVariable?.cantidad?.toString() ?: "",
             initialPeriodicity = editingGastoVariable?.periodicidad ?: "Mensual",
             isEditing = editingGastoVariable != null
         )
@@ -364,14 +396,14 @@ fun FinancialSections(
                     periodicidad = periodicity
                 )
                 if (editingDeuda != null) {
-                    finanzasViewModel.updateDeuda(deuda)
+                    finanzasViewModel.updateDeuda(deuda) { saved -> if (saved) onDismissDeudaDialog() }
                 } else {
-                    finanzasViewModel.insertDeuda(deuda)
+                    finanzasViewModel.insertDeuda(deuda) { saved -> if (saved) onDismissDeudaDialog() }
                 }
             },
             initialName = editingDeuda?.nombre ?: "",
-            initialMontoTotal = editingDeuda?.montoTotal.toString() ?: "",
-            initialPagoPeriodico = editingDeuda?.pagoPeriodico.toString() ?: "",
+            initialMontoTotal = editingDeuda?.montoTotal?.toString() ?: "",
+            initialPagoPeriodico = editingDeuda?.pagoPeriodico?.toString() ?: "",
             initialPeriodicity = editingDeuda?.periodicidad ?: "Mensual",
             isEditing = editingDeuda != null
         )
@@ -390,15 +422,15 @@ fun FinancialSections(
                     aporteMensual = aporte
                 )
                 if (editingMeta != null) {
-                    finanzasViewModel.updateMeta(meta)
+                    finanzasViewModel.updateMeta(meta) { saved -> if (saved) onDismissMetaDialog() }
                 } else {
-                    finanzasViewModel.insertMeta(meta)
+                    finanzasViewModel.insertMeta(meta) { saved -> if (saved) onDismissMetaDialog() }
                 }
             },
             initialName = editingMeta?.nombre ?: "",
-            initialObjetivo = editingMeta?.cantidadObjetivo.toString() ?: "",
-            initialAhorrado = editingMeta?.cantidadAhorrada.toString() ?: "",
-            initialAporte = editingMeta?.aporteMensual.toString() ?: "",
+            initialObjetivo = editingMeta?.cantidadObjetivo?.toString() ?: "",
+            initialAhorrado = editingMeta?.cantidadAhorrada?.toString() ?: "",
+            initialAporte = editingMeta?.aporteMensual?.toString() ?: "",
             isEditing = editingMeta != null
         )
     }
