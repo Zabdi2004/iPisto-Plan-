@@ -18,29 +18,27 @@ class SessionManager(private val context: Context) {
             putBoolean(KEY_LOGGED_IN, true)
             putLong(KEY_USER_ID, userId)
             putString(KEY_USERNAME, username)
-            apply()
-        }
+        }.commit()
     }
 
     fun getCurrentUserId(): Long? {
-        if (!isLoggedIn()) return null
+        if (!getPrefs().getBoolean(KEY_LOGGED_IN, false)) return null
         return getPrefs().getLong(KEY_USER_ID, -1L).takeIf { it != -1L }
     }
 
     fun getCurrentUsername(): String? {
-        if (!isLoggedIn()) return null
+        if (!getPrefs().getBoolean(KEY_LOGGED_IN, false)) return null
         return getPrefs().getString(KEY_USERNAME, null)
     }
 
-    fun isLoggedIn(): Boolean = getPrefs().getBoolean(KEY_LOGGED_IN, false)
+    fun isLoggedIn(): Boolean = getCurrentUserId() != null && !getCurrentUsername().isNullOrBlank()
 
     fun logout() {
         getPrefs().edit().apply {
             putBoolean(KEY_LOGGED_IN, false)
             remove(KEY_USER_ID)
             remove(KEY_USERNAME)
-            apply()
-        }
+        }.commit()
     }
 
     fun clearSession() = logout()

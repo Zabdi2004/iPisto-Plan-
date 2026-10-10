@@ -5,10 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.finanzaspersonales.gt.data.local.entity.User
 import com.finanzaspersonales.gt.data.repository.UserRepository
 import com.finanzaspersonales.gt.utils.PasswordHasher
+import com.finanzaspersonales.gt.utils.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 sealed class AuthState {
     object Idle : AuthState()
@@ -18,7 +21,8 @@ sealed class AuthState {
 }
 
 class AuthViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
@@ -47,7 +51,7 @@ class AuthViewModel(
 
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            val passwordHash = PasswordHasher.hashPassword(password)
+            val passwordHash = withContext(Dispatchers.Default) { PasswordHasher.hashPassword(password) }
             val user = User(
                 nombreUsuario = username,
                 passwordHash = passwordHash,
@@ -55,6 +59,11 @@ class AuthViewModel(
             )
             val result = userRepository.registerUser(user)
             result.onSuccess { userId ->
+                val registeredUser = userRepository.getUserById(userId)
+                if (registeredUser != null) {
+                    _currentUser.value = registeredUser
+                    sessionManager.saveSession(registeredUser.id, registeredUser.nombreUsuario)
+                }
                 _authState.value = AuthState.Success
             }.onFailure { error ->
                 _authState.value = AuthState.Error(error.message ?: "Error al registrar usuario")
@@ -69,10 +78,21 @@ class AuthViewModel(
         }
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            val passwordHash = PasswordHasher.hashPassword(password)
-            val result = userRepository.authenticateUser(username, passwordHash)
+            val result = userRepository.findByUsername(username)?.let { user ->
+                val valid = withContext(Dispatchers.Default) { PasswordHasher.verifyPassword(password, user.passwordHash) }
+                if (valid) {
+                    val authenticatedUser = if (PasswordHasher.needsUpgrade(user.passwordHash)) {
+                        val upgradedHash = withContext(Dispatchers.Default) { PasswordHasher.hashPassword(password) }
+                        userRepository.updateUser(user.copy(passwordHash = upgradedHash))
+                            .fold(onSuccess = { user.copy(passwordHash = upgradedHash) }, onFailure = { user })
+                    } else user
+                    Result.success(authenticatedUser)
+                }
+                else Result.failure(IllegalArgumentException("Credenciales incorrectas"))
+            } ?: Result.failure(IllegalArgumentException("Credenciales incorrectas"))
             result.onSuccess { user ->
                 _currentUser.value = user
+                sessionManager.saveSession(user.id, user.nombreUsuario)
                 _authState.value = AuthState.Success
             }.onFailure {
                 _authState.value = AuthState.Error("Nombre de usuario o contraseña incorrectos")
@@ -85,16 +105,51 @@ class AuthViewModel(
             val user = userRepository.getUserById(userId)
             if (user != null) {
                 _currentUser.value = user
+                sessionManager.saveSession(user.id, user.nombreUsuario)
                 _authState.value = AuthState.Success
             } else {
+                sessionManager.logout()
+                _currentUser.value = null
                 _authState.value = AuthState.Idle
             }
         }
     }
 
     fun logout() {
+        sessionManager.logout()
         _currentUser.value = null
         _authState.value = AuthState.Idle
+    }
+
+    fun changePassword(currentPassword: String, newPassword: String, confirmation: String) {
+        val user = _currentUser.value ?: run {
+            _authState.value = AuthState.Error("Inicia sesión para cambiar la contraseña")
+            return
+        }
+        if (newPassword.length < 8) {
+            _authState.value = AuthState.Error("La nueva contraseña debe tener al menos 8 caracteres")
+            return
+        }
+        if (newPassword != confirmation) {
+            _authState.value = AuthState.Error("Las contraseñas nuevas no coinciden")
+            return
+        }
+        _authState.value = AuthState.Loading
+        viewModelScope.launch {
+            val valid = withContext(Dispatchers.Default) { PasswordHasher.verifyPassword(currentPassword, user.passwordHash) }
+            if (!valid) {
+                _authState.value = AuthState.Error("La contraseña actual es incorrecta")
+                return@launch
+            }
+            val hash = withContext(Dispatchers.Default) { PasswordHasher.hashPassword(newPassword) }
+            userRepository.updateUser(user.copy(passwordHash = hash)).fold(
+                onSuccess = {
+                    _currentUser.value = user.copy(passwordHash = hash)
+                    _authState.value = AuthState.Success
+                },
+                onFailure = { _authState.value = AuthState.Error(it.message ?: "No se pudo cambiar la contraseña") }
+            )
+        }
     }
 
     fun deleteUser(userId: Long) {
@@ -102,6 +157,7 @@ class AuthViewModel(
         viewModelScope.launch {
             val result = userRepository.deleteUser(userId)
             result.onSuccess {
+                sessionManager.logout()
                 _currentUser.value = null
                 _authState.value = AuthState.Idle
             }.onFailure { error ->

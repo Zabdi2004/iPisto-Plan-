@@ -1,4 +1,4 @@
-﻿package com.finanzaspersonales.gt.viewmodel
+package com.finanzaspersonales.gt.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +15,8 @@ import com.finanzaspersonales.gt.utils.CurrencyFormatter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 data class FinanzasUiState(
@@ -44,15 +46,15 @@ class FinanzasViewModel(
     private fun loadData() {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
-            try {
-                val ingresos = finanzasRepository.getIngresosByUserOnce(userId)
-                val gastosFijos = finanzasRepository.getGastosFijosByUserOnce(userId)
-                val gastosVariables = finanzasRepository.getGastosVariablesByUserOnce(userId)
-                val deudas = finanzasRepository.getDeudasByUserOnce(userId)
-                val metas = metasRepository.getMetasByUserOnce(userId)
+            combine(
+                finanzasRepository.getIngresosByUser(),
+                finanzasRepository.getGastosFijosByUser(),
+                finanzasRepository.getGastosVariablesByUser(),
+                finanzasRepository.getDeudasByUser(),
+                metasRepository.getMetasByUser()
+            ) { ingresos, gastosFijos, gastosVariables, deudas, metas ->
                 val balance = BalanceCalculator.calcularBalance(ingresos, gastosFijos, gastosVariables, deudas)
-
-                _uiState.value = FinanzasUiState(
+                FinanzasUiState(
                     ingresos = ingresos,
                     gastosFijos = gastosFijos,
                     gastosVariables = gastosVariables,
@@ -61,21 +63,18 @@ class FinanzasViewModel(
                     balance = balance,
                     isLoading = false
                 )
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = e.message ?: "Error al cargar datos"
-                )
-            }
+            }.catch { e ->
+                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message ?: "Error al cargar datos")
+            }.collect { _uiState.value = it }
         }
     }
 
     fun calcularBalance() {
         viewModelScope.launch {
-            val ingresos = finanzasRepository.getIngresosByUserOnce(userId)
-            val gastosFijos = finanzasRepository.getGastosFijosByUserOnce(userId)
-            val gastosVariables = finanzasRepository.getGastosVariablesByUserOnce(userId)
-            val deudas = finanzasRepository.getDeudasByUserOnce(userId)
+            val ingresos = finanzasRepository.getIngresosByUserOnce()
+            val gastosFijos = finanzasRepository.getGastosFijosByUserOnce()
+            val gastosVariables = finanzasRepository.getGastosVariablesByUserOnce()
+            val deudas = finanzasRepository.getDeudasByUserOnce()
             val balance = BalanceCalculator.calcularBalance(ingresos, gastosFijos, gastosVariables, deudas)
 
             _uiState.value = _uiState.value.copy(balance = balance)
@@ -86,7 +85,6 @@ class FinanzasViewModel(
         viewModelScope.launch {
             val ingresoWithUser = ingreso.copy(userId = userId)
             finanzasRepository.insertIngreso(ingresoWithUser)
-            loadData()
         }
     }
 
@@ -94,14 +92,12 @@ class FinanzasViewModel(
         viewModelScope.launch {
             val ingresoWithUser = ingreso.copy(userId = userId)
             finanzasRepository.updateIngreso(ingresoWithUser)
-            loadData()
         }
     }
 
     fun deleteIngreso(ingreso: Ingreso) {
         viewModelScope.launch {
             finanzasRepository.deleteIngreso(ingreso)
-            loadData()
         }
     }
 
@@ -109,7 +105,6 @@ class FinanzasViewModel(
         viewModelScope.launch {
             val gastoWithUser = gastoFijo.copy(userId = userId)
             finanzasRepository.insertGastoFijo(gastoWithUser)
-            loadData()
         }
     }
 
@@ -117,14 +112,12 @@ class FinanzasViewModel(
         viewModelScope.launch {
             val gastoWithUser = gastoFijo.copy(userId = userId)
             finanzasRepository.updateGastoFijo(gastoWithUser)
-            loadData()
         }
     }
 
     fun deleteGastoFijo(gastoFijo: GastoFijo) {
         viewModelScope.launch {
             finanzasRepository.deleteGastoFijo(gastoFijo)
-            loadData()
         }
     }
 
@@ -132,7 +125,6 @@ class FinanzasViewModel(
         viewModelScope.launch {
             val gastoWithUser = gastoVariable.copy(userId = userId)
             finanzasRepository.insertGastoVariable(gastoWithUser)
-            loadData()
         }
     }
 
@@ -140,14 +132,12 @@ class FinanzasViewModel(
         viewModelScope.launch {
             val gastoWithUser = gastoVariable.copy(userId = userId)
             finanzasRepository.updateGastoVariable(gastoWithUser)
-            loadData()
         }
     }
 
     fun deleteGastoVariable(gastoVariable: GastoVariable) {
         viewModelScope.launch {
             finanzasRepository.deleteGastoVariable(gastoVariable)
-            loadData()
         }
     }
 
@@ -155,7 +145,6 @@ class FinanzasViewModel(
         viewModelScope.launch {
             val deudaWithUser = deuda.copy(userId = userId)
             finanzasRepository.insertDeuda(deudaWithUser)
-            loadData()
         }
     }
 
@@ -163,14 +152,12 @@ class FinanzasViewModel(
         viewModelScope.launch {
             val deudaWithUser = deuda.copy(userId = userId)
             finanzasRepository.updateDeuda(deudaWithUser)
-            loadData()
         }
     }
 
     fun deleteDeuda(deuda: Deuda) {
         viewModelScope.launch {
             finanzasRepository.deleteDeuda(deuda)
-            loadData()
         }
     }
 
@@ -178,7 +165,6 @@ class FinanzasViewModel(
         viewModelScope.launch {
             val metaWithUser = meta.copy(userId = userId)
             metasRepository.insertMeta(metaWithUser)
-            loadData()
         }
     }
 
@@ -186,22 +172,19 @@ class FinanzasViewModel(
         viewModelScope.launch {
             val metaWithUser = meta.copy(userId = userId)
             metasRepository.updateMeta(metaWithUser)
-            loadData()
         }
     }
 
     fun deleteMeta(meta: MetaAhorro) {
         viewModelScope.launch {
             metasRepository.deleteMeta(meta)
-            loadData()
         }
     }
 
     fun nuevaEvaluacion() {
         viewModelScope.launch {
-            finanzasRepository.deleteAllFinancialData(userId)
-            metasRepository.deleteAllMetasByUser(userId)
-            loadData()
+            finanzasRepository.deleteAllFinancialData()
+            metasRepository.deleteAllMetasByUser()
         }
     }
 

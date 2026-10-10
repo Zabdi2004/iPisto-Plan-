@@ -8,8 +8,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finanzaspersonales.gt.utils.MoneyInput
 
 @Composable
 fun CustomTextField(
@@ -63,15 +65,12 @@ fun AmountTextField(
     CustomTextField(
         value = value,
         onValueChange = { newValue ->
-            val filtered = newValue.text.filter { it == '.' || it == ',' || it.isDigit() }
-            val normalized = filtered.replace(',', '.')
-            val parts = normalized.split('.')
-            val result = if (parts.size > 2) {
-                parts[0] + '.' + parts.drop(1).joinToString("")
-            } else {
-                normalized
-            }
-            onValueChange(TextFieldValue(result))
+            val normalized = MoneyInput.normalizeEditingValue(
+                newValue.text,
+                newValue.selection.start,
+                newValue.selection.end
+            )
+            onValueChange(TextFieldValue(normalized.text, TextRange(normalized.selectionStart, normalized.selectionEnd)))
         },
         label = label,
         placeholder = "0.00",

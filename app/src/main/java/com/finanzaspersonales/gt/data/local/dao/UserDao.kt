@@ -25,7 +25,7 @@ interface UserTypeDao {
     fun getAllUsers(): Flow<List<User>>
 
     @Query("DELETE FROM User WHERE id = :id")
-    suspend fun deleteById(id: Int)
+    suspend fun deleteById(id: Long)
 
     @Query("UPDATE User SET passwordHash = :passwordHash WHERE id = :id")
     suspend fun updatePassword(id: Long, passwordHash: String)

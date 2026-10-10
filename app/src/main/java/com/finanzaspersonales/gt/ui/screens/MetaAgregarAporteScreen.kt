@@ -15,6 +15,7 @@ import com.finanzaspersonales.gt.data.local.entity.MetaAhorro
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 import com.finanzaspersonales.gt.ui.components.AmountTextField
 import com.finanzaspersonales.gt.ui.components.ConfirmDialog
+import com.finanzaspersonales.gt.utils.MoneyInput
 
 @Composable
 fun MetaAgregarAporteScreen(
@@ -58,8 +59,8 @@ fun MetaAgregarAporteScreen(
         )
 
         Button(onClick = {
-            val amount = aporte.replace(",", ".").toDoubleOrNull()
-            if (amount != null && amount > 0) {
+            val amount = MoneyInput.parseAmount(aporte)
+            if (amount != null && amount.isFinite() && amount > 0 && (meta.cantidadAhorrada + amount).isFinite()) {
                 showConfirm = true
             } else {
                 aporteError = true
@@ -72,14 +73,14 @@ fun MetaAgregarAporteScreen(
             ConfirmDialog(
                 onDismiss = { showConfirm = false },
                 onConfirm = {
-                    val amount = aporte.replace(",", ".").toDoubleOrNull() ?: 0.0
+                    val amount = MoneyInput.parseAmount(aporte) ?: 0.0
                     val updatedMeta = meta.copy(cantidadAhorrada = meta.cantidadAhorrada + amount)
                     finanzasViewModel.updateMeta(updatedMeta)
                     showConfirm = false
                     navController.popBackStack()
                 },
                 title = "Confirmar aporte",
-                message = "¿Agregar ${finanzasViewModel.formatCurrency(aporte.replace(",", ".").toDoubleOrNull() ?: 0.0)} a \"${meta.nombre}\"?",
+                message = "¿Agregar ${finanzasViewModel.formatCurrency(MoneyInput.parseAmount(aporte) ?: 0.0)} a \"${meta.nombre}\"?",
                 confirmText = "Confirmar",
                 confirmColor = MaterialTheme.colorScheme.primary
             )

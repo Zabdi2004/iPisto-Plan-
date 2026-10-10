@@ -12,7 +12,7 @@ data class BalanceFinanciero(
     val pagosDeudaMensuales: Double,
     val deudaTotal: Double,
     val dineroDisponible: Double,
-    val porcentajeUtilizado: Double,
+    val porcentajeUtilizado: Double?,
     val estadoFinanciero: String
 )
 
@@ -22,32 +22,37 @@ object BalanceCalculator {
     private const val MENSUAL = "Mensual"
 
     private fun normalizarAMensual(cantidad: Double, periodicidad: String): Double {
+        require(cantidad.isFinite() && cantidad >= 0.0) { "Las cantidades deben ser finitas y no negativas" }
         return when (periodicidad) {
             SEMANAL -> cantidad * 52 / 12
             QUINCENAL -> cantidad * 26 / 12
             MENSUAL -> cantidad
-            else -> cantidad
+            else -> throw IllegalArgumentException("Periodicidad no reconocida: $periodicidad")
         }
     }
 
+    private fun checkedSum(values: List<Double>): Double = values.sum().also {
+        require(it.isFinite()) { "El total calculado excede el rango permitido" }
+    }
+
     fun calcularIngresosMensuales(ingresos: List<Ingreso>): Double {
-        return ingresos.sumOf { normalizarAMensual(it.cantidad, it.periodicidad) }
+        return checkedSum(ingresos.map { normalizarAMensual(it.cantidad, it.periodicidad) })
     }
 
     fun calcularGastosFijosMensuales(gastos: List<GastoFijo>): Double {
-        return gastos.sumOf { normalizarAMensual(it.cantidad, it.periodicidad) }
+        return checkedSum(gastos.map { normalizarAMensual(it.cantidad, it.periodicidad) })
     }
 
     fun calcularGastosVariablesMensuales(gastos: List<GastoVariable>): Double {
-        return gastos.sumOf { normalizarAMensual(it.cantidad, it.periodicidad) }
+        return checkedSum(gastos.map { normalizarAMensual(it.cantidad, it.periodicidad) })
     }
 
     fun calcularPagosDeudaMensuales(deudas: List<Deuda>): Double {
-        return deudas.sumOf { normalizarAMensual(it.pagoPeriodico, it.periodicidad) }
+        return checkedSum(deudas.map { normalizarAMensual(it.pagoPeriodico, it.periodicidad) })
     }
 
     fun calcularDeudaTotal(deudas: List<Deuda>): Double {
-        return deudas.sumOf { it.montoTotal }
+        return checkedSum(deudas.map { it.montoTotal.also { amount -> require(amount.isFinite() && amount >= 0.0) } })
     }
 
     fun calcularBalance(
@@ -62,13 +67,19 @@ object BalanceCalculator {
         val pagosDeudaMensuales = calcularPagosDeudaMensuales(deudas)
         val deudaTotal = calcularDeudaTotal(deudas)
 
-        val dineroDisponible = ingresosMensuales - gastosFijosMensuales - gastosVariablesMensuales - pagosDeudaMensuales
+        val gastosMensuales = checkedSum(listOf(gastosFijosMensuales, gastosVariablesMensuales, pagosDeudaMensuales))
+        val dineroDisponible = (ingresosMensuales - gastosMensuales).also {
+            require(it.isFinite()) { "El balance calculado excede el rango permitido" }
+        }
 
         val porcentajeUtilizado = if (ingresosMensuales > 0) {
-            ((gastosFijosMensuales + gastosVariablesMensuales + pagosDeudaMensuales) / ingresosMensuales) * 100
-        } else 0.0
+            (gastosMensuales / ingresosMensuales * 100).also {
+                require(it.isFinite()) { "El porcentaje calculado excede el rango permitido" }
+            }
+        } else null
 
         val estadoFinanciero = when {
+            porcentajeUtilizado == null -> "Sin ingresos"
             porcentajeUtilizado < 60 -> "Saludable"
             porcentajeUtilizado < 80 -> "Precaución"
             else -> "Crítico"

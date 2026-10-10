@@ -13,16 +13,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
-import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 import com.finanzaspersonales.gt.ui.components.ConfirmDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfiguracionScreen(
-    navController: NavHostController,
-    finanzasViewModel: FinanzasViewModel = viewModel()
+    navController: NavHostController
 ) {
     val showDeleteConfirm = remember { mutableStateOf(false) }
 

@@ -39,9 +39,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DATABASE_NAME
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
+                ).build()
                     .also { INSTANCE = it }
             }
         }

@@ -18,91 +18,116 @@ class FinanzasRepository(
     private val gastoFijoDao: GastoFijoDao,
     private val gastoVariableDao: GastoVariableDao,
     private val deudaDao: DeudaDao,
+    private val ownerId: Long,
     private val ioDispatcher: CoroutineContext = Dispatchers.IO
 ) {
     // Ingresos
     suspend fun insertIngreso(ingreso: Ingreso): Result<Long> = withContext(ioDispatcher) {
-        try { Result.success(ingresoDao.insert(ingreso)) }
+        try { Result.success(ingresoDao.insert(ingreso.copy(userId = ownerId))) }
         catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun updateIngreso(ingreso: Ingreso): Result<Unit> = withContext(ioDispatcher) {
-        try { ingresoDao.update(ingreso); Result.success(Unit) }
+        try {
+            if (ingresoDao.findById(ingreso.id, ownerId) == null) return@withContext Result.failure(SecurityException("Registro no encontrado"))
+            ingresoDao.update(ingreso.copy(userId = ownerId)); Result.success(Unit)
+        }
         catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun deleteIngreso(ingreso: Ingreso): Result<Unit> = withContext(ioDispatcher) {
-        try { ingresoDao.delete(ingreso); Result.success(Unit) }
+        try {
+            val owned = ingresoDao.findById(ingreso.id, ownerId) ?: return@withContext Result.failure(SecurityException("Registro no encontrado"))
+            ingresoDao.delete(owned); Result.success(Unit)
+        }
         catch (e: Exception) { Result.failure(e) }
     }
 
-    fun getIngresosByUser(userId: Long): Flow<List<Ingreso>> = ingresoDao.getAllByUser(userId)
-    suspend fun getIngresosByUserOnce(userId: Long): List<Ingreso> = ingresoDao.getAllByUserOnce(userId)
+    fun getIngresosByUser(): Flow<List<Ingreso>> = ingresoDao.getAllByUser(ownerId)
+    suspend fun getIngresosByUserOnce(): List<Ingreso> = ingresoDao.getAllByUserOnce(ownerId)
 
     // Gastos Fijos
     suspend fun insertGastoFijo(gastoFijo: GastoFijo): Result<Long> = withContext(ioDispatcher) {
-        try { Result.success(gastoFijoDao.insert(gastoFijo)) }
+        try { Result.success(gastoFijoDao.insert(gastoFijo.copy(userId = ownerId))) }
         catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun updateGastoFijo(gastoFijo: GastoFijo): Result<Unit> = withContext(ioDispatcher) {
-        try { gastoFijoDao.update(gastoFijo); Result.success(Unit) }
+        try {
+            if (gastoFijoDao.findById(gastoFijo.id, ownerId) == null) return@withContext Result.failure(SecurityException("Registro no encontrado"))
+            gastoFijoDao.update(gastoFijo.copy(userId = ownerId)); Result.success(Unit)
+        }
         catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun deleteGastoFijo(gastoFijo: GastoFijo): Result<Unit> = withContext(ioDispatcher) {
-        try { gastoFijoDao.delete(gastoFijo); Result.success(Unit) }
+        try {
+            val owned = gastoFijoDao.findById(gastoFijo.id, ownerId) ?: return@withContext Result.failure(SecurityException("Registro no encontrado"))
+            gastoFijoDao.delete(owned); Result.success(Unit)
+        }
         catch (e: Exception) { Result.failure(e) }
     }
 
-    fun getGastosFijosByUser(userId: Long): Flow<List<GastoFijo>> = gastoFijoDao.getAllByUser(userId)
-    suspend fun getGastosFijosByUserOnce(userId: Long): List<GastoFijo> = gastoFijoDao.getAllByUserOnce(userId)
+    fun getGastosFijosByUser(): Flow<List<GastoFijo>> = gastoFijoDao.getAllByUser(ownerId)
+    suspend fun getGastosFijosByUserOnce(): List<GastoFijo> = gastoFijoDao.getAllByUserOnce(ownerId)
 
     // Gastos Variables
     suspend fun insertGastoVariable(gastoVariable: GastoVariable): Result<Long> = withContext(ioDispatcher) {
-        try { Result.success(gastoVariableDao.insert(gastoVariable)) }
+        try { Result.success(gastoVariableDao.insert(gastoVariable.copy(userId = ownerId))) }
         catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun updateGastoVariable(gastoVariable: GastoVariable): Result<Unit> = withContext(ioDispatcher) {
-        try { gastoVariableDao.update(gastoVariable); Result.success(Unit) }
+        try {
+            if (gastoVariableDao.findById(gastoVariable.id, ownerId) == null) return@withContext Result.failure(SecurityException("Registro no encontrado"))
+            gastoVariableDao.update(gastoVariable.copy(userId = ownerId)); Result.success(Unit)
+        }
         catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun deleteGastoVariable(gastoVariable: GastoVariable): Result<Unit> = withContext(ioDispatcher) {
-        try { gastoVariableDao.delete(gastoVariable); Result.success(Unit) }
+        try {
+            val owned = gastoVariableDao.findById(gastoVariable.id, ownerId) ?: return@withContext Result.failure(SecurityException("Registro no encontrado"))
+            gastoVariableDao.delete(owned); Result.success(Unit)
+        }
         catch (e: Exception) { Result.failure(e) }
     }
 
-    fun getGastosVariablesByUser(userId: Long): Flow<List<GastoVariable>> = gastoVariableDao.getAllByUser(userId)
-    suspend fun getGastosVariablesByUserOnce(userId: Long): List<GastoVariable> = gastoVariableDao.getAllByUserOnce(userId)
+    fun getGastosVariablesByUser(): Flow<List<GastoVariable>> = gastoVariableDao.getAllByUser(ownerId)
+    suspend fun getGastosVariablesByUserOnce(): List<GastoVariable> = gastoVariableDao.getAllByUserOnce(ownerId)
 
     // Deudas
     suspend fun insertDeuda(deuda: Deuda): Result<Long> = withContext(ioDispatcher) {
-        try { Result.success(deudaDao.insert(deuda)) }
+        try { Result.success(deudaDao.insert(deuda.copy(userId = ownerId))) }
         catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun updateDeuda(deuda: Deuda): Result<Unit> = withContext(ioDispatcher) {
-        try { deudaDao.update(deuda); Result.success(Unit) }
+        try {
+            if (deudaDao.findById(deuda.id, ownerId) == null) return@withContext Result.failure(SecurityException("Registro no encontrado"))
+            deudaDao.update(deuda.copy(userId = ownerId)); Result.success(Unit)
+        }
         catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun deleteDeuda(deuda: Deuda): Result<Unit> = withContext(ioDispatcher) {
-        try { deudaDao.delete(deuda); Result.success(Unit) }
+        try {
+            val owned = deudaDao.findById(deuda.id, ownerId) ?: return@withContext Result.failure(SecurityException("Registro no encontrado"))
+            deudaDao.delete(owned); Result.success(Unit)
+        }
         catch (e: Exception) { Result.failure(e) }
     }
 
-    fun getDeudasByUser(userId: Long): Flow<List<Deuda>> = deudaDao.getAllByUser(userId)
-    suspend fun getDeudasByUserOnce(userId: Long): List<Deuda> = deudaDao.getAllByUserOnce(userId)
+    fun getDeudasByUser(): Flow<List<Deuda>> = deudaDao.getAllByUser(ownerId)
+    suspend fun getDeudasByUserOnce(): List<Deuda> = deudaDao.getAllByUserOnce(ownerId)
 
     // Nueva Evaluación
-    suspend fun deleteAllFinancialData(userId: Long): Result<Unit> = withContext(ioDispatcher) {
+    suspend fun deleteAllFinancialData(): Result<Unit> = withContext(ioDispatcher) {
         try {
-            ingresoDao.deleteAllByUser(userId)
-            gastoFijoDao.deleteAllByUser(userId)
-            gastoVariableDao.deleteAllByUser(userId)
-            deudaDao.deleteAllByUser(userId)
+            ingresoDao.deleteAllByUser(ownerId)
+            gastoFijoDao.deleteAllByUser(ownerId)
+            gastoVariableDao.deleteAllByUser(ownerId)
+            deudaDao.deleteAllByUser(ownerId)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

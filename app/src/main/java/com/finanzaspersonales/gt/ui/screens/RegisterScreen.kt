@@ -2,6 +2,9 @@
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,17 +28,6 @@ fun RegisterScreen(
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
     val authState by authViewModel.authState.collectAsState()
-
-    LaunchedEffect(authState) {
-        when (authState) {
-            is AuthState.Success -> {
-                navController.navigate("inicio") {
-                    popUpTo("register") { inclusive = true }
-                }
-            }
-            else -> {}
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -72,14 +64,14 @@ fun RegisterScreen(
             onValueChange = { password = it },
             label = { Text("Contraseña") },
             singleLine = true,
-            visualTransformation = if (passwordVisible) PasswordVisualTransformation() else PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible) androidx.compose.ui.text.input.VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
             supportingText = { Text("Mínimo 6 caracteres.") },
             trailingIcon = {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Text(
-                        text = if (passwordVisible) "Ocultar" else "Mostrar",
-                        style = MaterialTheme.typography.bodySmall
+                    Icon(
+                        imageVector = if (passwordVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                        contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                     )
                 }
             },
@@ -95,13 +87,13 @@ fun RegisterScreen(
             onValueChange = { confirmPassword = it },
             label = { Text("Confirmar contraseña") },
             singleLine = true,
-            visualTransformation = if (confirmPasswordVisible) PasswordVisualTransformation() else PasswordVisualTransformation(),
+            visualTransformation = if (confirmPasswordVisible) androidx.compose.ui.text.input.VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
                 IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                    Text(
-                        text = if (confirmPasswordVisible) "Ocultar" else "Mostrar",
-                        style = MaterialTheme.typography.bodySmall
+                    Icon(
+                        imageVector = if (confirmPasswordVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                        contentDescription = if (confirmPasswordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                     )
                 }
             },

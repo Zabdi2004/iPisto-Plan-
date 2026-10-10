@@ -9,28 +9,35 @@ import kotlinx.coroutines.Dispatchers
 
 class MetasRepository(
     private val metaAhorroDao: MetaAhorroDao,
+    private val ownerId: Long,
     private val ioDispatcher: CoroutineContext = Dispatchers.IO
 ) {
     suspend fun insertMeta(metaAhorro: MetaAhorro): Result<Long> = withContext(ioDispatcher) {
-        try { Result.success(metaAhorroDao.insert(metaAhorro)) }
+        try { Result.success(metaAhorroDao.insert(metaAhorro.copy(userId = ownerId))) }
         catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun updateMeta(metaAhorro: MetaAhorro): Result<Unit> = withContext(ioDispatcher) {
-        try { metaAhorroDao.update(metaAhorro); Result.success(Unit) }
+        try {
+            if (metaAhorroDao.findById(metaAhorro.id, ownerId) == null) return@withContext Result.failure(SecurityException("Meta no encontrada"))
+            metaAhorroDao.update(metaAhorro.copy(userId = ownerId)); Result.success(Unit)
+        }
         catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun deleteMeta(metaAhorro: MetaAhorro): Result<Unit> = withContext(ioDispatcher) {
-        try { metaAhorroDao.delete(metaAhorro); Result.success(Unit) }
+        try {
+            val owned = metaAhorroDao.findById(metaAhorro.id, ownerId) ?: return@withContext Result.failure(SecurityException("Meta no encontrada"))
+            metaAhorroDao.delete(owned); Result.success(Unit)
+        }
         catch (e: Exception) { Result.failure(e) }
     }
 
-    fun getMetasByUser(userId: Long): Flow<List<MetaAhorro>> = metaAhorroDao.getAllByUser(userId)
-    suspend fun getMetasByUserOnce(userId: Long): List<MetaAhorro> = metaAhorroDao.getAllByUserOnce(userId)
+    fun getMetasByUser(): Flow<List<MetaAhorro>> = metaAhorroDao.getAllByUser(ownerId)
+    suspend fun getMetasByUserOnce(): List<MetaAhorro> = metaAhorroDao.getAllByUserOnce(ownerId)
 
-    suspend fun deleteAllMetasByUser(userId: Long): Result<Unit> = withContext(ioDispatcher) {
-        try { metaAhorroDao.deleteAllByUser(userId); Result.success(Unit) }
+    suspend fun deleteAllMetasByUser(): Result<Unit> = withContext(ioDispatcher) {
+        try { metaAhorroDao.deleteAllByUser(ownerId); Result.success(Unit) }
         catch (e: Exception) { Result.failure(e) }
     }
 }

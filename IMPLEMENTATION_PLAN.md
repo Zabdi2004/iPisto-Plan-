@@ -2,7 +2,7 @@
 
 ## Proyecto
 
-**Nombre:** iPisto  
+**Nombre:** iPisto Plan
 **Aplicación:** Finanzas Personales GT  
 **Plataforma:** Android  
 **Moneda:** Quetzales Guatemaltecos (Q)

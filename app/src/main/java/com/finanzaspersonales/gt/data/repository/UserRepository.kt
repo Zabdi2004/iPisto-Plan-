@@ -1,35 +1,38 @@
 ﻿package com.finanzaspersonales.gt.data.repository
 
-import com.finanzaspersonales.gt.data.local.dao.UserTypeDao
+import com.finanzaspersonales.gt.data.local.AppDatabase
 import com.finanzaspersonales.gt.data.local.entity.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.Dispatchers
+import androidx.room.withTransaction
+import com.finanzaspersonales.gt.utils.PasswordHasher
 
 class UserRepository(
-    private val userTypeDao: UserTypeDao,
+    private val database: AppDatabase,
     private val ioDispatcher: CoroutineContext = Dispatchers.IO
 ) {
+    private val userTypeDao get() = database.userTypeDao()
     suspend fun registerUser(user: User): Result<Long> = withContext(ioDispatcher) {
         try {
-            val existing = userTypeDao.findByUsername(user.nombreUsuario)
-            if (existing != null) {
-                Result.failure(Exception("El nombre de usuario ya existe"))
-            } else {
-                val id = userTypeDao.insert(user)
-                Result.success(id)
+            database.withTransaction {
+                if (userTypeDao.findByUsername(user.nombreUsuario) != null) {
+                    Result.failure(IllegalArgumentException("El nombre de usuario ya existe"))
+                } else {
+                    Result.success(userTypeDao.insert(user))
+                }
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun authenticateUser(username: String, passwordHash: String): Result<User> = withContext(ioDispatcher) {
+    suspend fun authenticateUser(username: String, password: String): Result<User> = withContext(ioDispatcher) {
         try {
             val user = userTypeDao.findByUsername(username)
-            if (user != null && user.passwordHash == passwordHash) {
+            if (user != null && PasswordHasher.verifyPassword(password, user.passwordHash)) {
                 Result.success(user)
             } else {
                 Result.failure(Exception("Credenciales incorrectas"))
@@ -58,7 +61,14 @@ class UserRepository(
 
     suspend fun deleteUser(id: Long): Result<Unit> = withContext(ioDispatcher) {
         try {
-            userTypeDao.deleteById(id.toInt())
+            database.withTransaction {
+                database.ingresoDao().deleteAllByUser(id)
+                database.gastoFijoDao().deleteAllByUser(id)
+                database.gastoVariableDao().deleteAllByUser(id)
+                database.deudaDao().deleteAllByUser(id)
+                database.metaAhorroDao().deleteAllByUser(id)
+                userTypeDao.deleteById(id)
+            }
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

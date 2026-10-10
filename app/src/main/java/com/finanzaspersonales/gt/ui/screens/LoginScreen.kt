@@ -1,10 +1,20 @@
 ﻿package com.finanzaspersonales.gt.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -23,22 +33,15 @@ fun LoginScreen(
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var passwordVisible by remember { mutableStateOf(false) }
     val authState by authViewModel.authState.collectAsState()
-
-    LaunchedEffect(authState) {
-        when (authState) {
-            is AuthState.Success -> {
-                navController.navigate("inicio") {
-                    popUpTo("login") { inclusive = true }
-                }
-            }
-            else -> {}
-        }
-    }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val loading = authState is AuthState.Loading
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp),
+            .verticalScroll(rememberScrollState())
+            .imePadding()
+            .padding(horizontal = 24.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -55,6 +58,8 @@ fun LoginScreen(
             label = { Text("Nombre de usuario") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
+            enabled = !loading,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
@@ -67,13 +72,19 @@ fun LoginScreen(
             onValueChange = { password = it },
             label = { Text("Contraseña") },
             singleLine = true,
-            visualTransformation = if (passwordVisible) PasswordVisualTransformation() else PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible) androidx.compose.ui.text.input.VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
+            enabled = !loading,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = {
+                keyboardController?.hide()
+                if (!loading) authViewModel.login(username.text, password.text)
+            }),
             trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Text(
-                        text = if (passwordVisible) "Ocultar" else "Mostrar",
-                        style = MaterialTheme.typography.bodySmall
+                IconButton(onClick = { passwordVisible = !passwordVisible }, enabled = !loading) {
+                    Icon(
+                        imageVector = if (passwordVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                        contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                     )
                 }
             },
@@ -101,22 +112,24 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            enabled = authState !is AuthState.Loading,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            )
+            enabled = !loading,
+            shape = MaterialTheme.shapes.large,
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
         ) {
-            if (authState is AuthState.Loading) {
+            if (loading) {
                 ProgressBar()
+                Spacer(Modifier.width(12.dp))
+                Text("Ingresando…")
             } else {
-                Text("INICIAR SESIÓN", style = MaterialTheme.typography.labelLarge)
+                Text("Iniciar sesión", style = MaterialTheme.typography.labelLarge)
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         TextButton(
-            onClick = { navController.navigate("register") }
+            onClick = { navController.navigate("register") },
+            enabled = !loading
         ) {
             Text(
                 text = "¿No tienes cuenta? Créala aquí",
