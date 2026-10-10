@@ -315,6 +315,8 @@ fun FinancialSections(
             },
             initialName = editingGastoFijo?.nombre ?: "",
             initialCategory = editingGastoFijo?.categoria ?: "Alimentación",
+            existingCategories = (uiState.gastosFijos.map { it.categoria } + uiState.gastosVariables.map { it.categoria })
+                .filterNot { it.equals(editingGastoFijo?.categoria, ignoreCase = true) },
             initialAmount = editingGastoFijo?.cantidad.toString() ?: "",
             initialPeriodicity = editingGastoFijo?.periodicidad ?: "Mensual",
             isEditing = editingGastoFijo != null
@@ -341,6 +343,8 @@ fun FinancialSections(
             },
             initialName = editingGastoVariable?.nombre ?: "",
             initialCategory = editingGastoVariable?.categoria ?: "Entretenimiento",
+            existingCategories = (uiState.gastosFijos.map { it.categoria } + uiState.gastosVariables.map { it.categoria })
+                .filterNot { it.equals(editingGastoVariable?.categoria, ignoreCase = true) },
             initialAmount = editingGastoVariable?.cantidad.toString() ?: "",
             initialPeriodicity = editingGastoVariable?.periodicidad ?: "Mensual",
             isEditing = editingGastoVariable != null

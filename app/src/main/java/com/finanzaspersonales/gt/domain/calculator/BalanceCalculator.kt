@@ -21,7 +21,7 @@ object BalanceCalculator {
     private const val QUINCENAL = "Quincenal"
     private const val MENSUAL = "Mensual"
 
-    private fun normalizarAMensual(cantidad: Double, periodicidad: String): Double {
+    fun normalizarAMensual(cantidad: Double, periodicidad: String): Double {
         require(cantidad.isFinite() && cantidad >= 0.0) { "Las cantidades deben ser finitas y no negativas" }
         return when (periodicidad) {
             SEMANAL -> cantidad * 52 / 12

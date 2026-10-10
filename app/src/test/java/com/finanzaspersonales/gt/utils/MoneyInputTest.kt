@@ -21,6 +21,7 @@ class MoneyInputTest {
         assertEquals(125.50, MoneyInput.parseAmount("125.50")!!, 0.0)
         assertEquals(125.50, MoneyInput.parseAmount("125,50")!!, 0.0)
         assertEquals(1234.56, MoneyInput.parseAmount("1,234.56")!!, 0.0)
+        assertEquals(1250.50, MoneyInput.parseAmount("1,250.50")!!, 0.0)
         assertEquals(1234.56, MoneyInput.parseAmount("1.234,56")!!, 0.0)
     }
 

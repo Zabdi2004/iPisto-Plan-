@@ -87,6 +87,7 @@ fun GastoFijoDialog(
     onConfirm: (String, String, Double, String) -> Unit,
     initialName: String = "",
     initialCategory: String = "Alimentación",
+    existingCategories: List<String> = emptyList(),
     initialAmount: String = "",
     initialPeriodicity: String = "Mensual",
     isEditing: Boolean = false
@@ -98,7 +99,8 @@ fun GastoFijoDialog(
     var nameError by remember { mutableStateOf(false) }
     var amountError by remember { mutableStateOf(false) }
 
-    val categories = listOf("Electricidad", "Agua", "Alquiler", "Alimentación", "Transporte", "Internet", "Teléfono", "Seguros", "Otro")
+    val categories = (listOf("Electricidad", "Agua", "Alquiler", "Alimentación", "Transporte", "Internet", "Teléfono", "Seguros", "Otro") + existingCategories)
+        .distinctBy { it.trim().lowercase() }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -122,6 +124,7 @@ fun GastoFijoDialog(
                     selectedCategory = category,
                     categories = categories,
                     onCategoryChange = { category = it },
+                    existingCategories = existingCategories,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -169,6 +172,7 @@ fun GastoVariableDialog(
     onConfirm: (String, String, Double, String) -> Unit,
     initialName: String = "",
     initialCategory: String = "Entretenimiento",
+    existingCategories: List<String> = emptyList(),
     initialAmount: String = "",
     initialPeriodicity: String = "Mensual",
     isEditing: Boolean = false
@@ -180,7 +184,8 @@ fun GastoVariableDialog(
     var nameError by remember { mutableStateOf(false) }
     var amountError by remember { mutableStateOf(false) }
 
-    val categories = listOf("Entretenimiento", "Transporte", "Higiene", "Salud", "Ropa", "Educación", "Regalos", "Otro")
+    val categories = (listOf("Entretenimiento", "Transporte", "Higiene", "Salud", "Ropa", "Educación", "Regalos", "Otro") + existingCategories)
+        .distinctBy { it.trim().lowercase() }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -204,6 +209,7 @@ fun GastoVariableDialog(
                     selectedCategory = category,
                     categories = categories,
                     onCategoryChange = { category = it },
+                    existingCategories = existingCategories,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))

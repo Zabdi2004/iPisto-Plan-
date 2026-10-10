@@ -17,7 +17,6 @@ object MoneyInput {
         }
         val normalized = StringBuilder()
         var decimalAdded = false
-        var mappedCursor = 0
         val safeStart = selectionStart.coerceIn(0, source.length)
         val safeEnd = selectionEnd.coerceIn(0, source.length)
         var mappedStart = 0

@@ -61,7 +61,7 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
             PrivateRoute(user != null && financeViewModel != null, navController) { InicioScreen(navController, financeViewModel!!) }
         }
         composable(Screen.Graficas) {
-            PrivateRoute(user != null && financeViewModel != null, navController) { GraficasScreen(navController, financeViewModel!!) }
+            PrivateRoute(user != null && financeViewModel != null, navController) { GraficasScreen(financeViewModel!!) }
         }
         composable(Screen.Metas) {
             PrivateRoute(user != null && financeViewModel != null, navController) { MetasScreen(navController, financeViewModel!!) }

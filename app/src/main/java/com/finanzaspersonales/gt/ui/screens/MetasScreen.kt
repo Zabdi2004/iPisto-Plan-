@@ -139,7 +139,9 @@ fun MetaDetailScreen(
         Math.ceil(montoFaltante / aporte).toInt()
     } else 0
 val fechaEstimada = if (mesesRestantes > 0) {
-        java.time.LocalDate.now().plusMonths(mesesRestantes.toLong()).format(java.time.format.DateTimeFormatter.ofPattern("MMMM yyyy"))
+        val fecha = java.util.Calendar.getInstance()
+        fecha.add(java.util.Calendar.MONTH, mesesRestantes)
+        java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale("es", "GT")).format(fecha.time)
     } else "—"
 
     var showDeleteDialog by remember { mutableStateOf(false) }

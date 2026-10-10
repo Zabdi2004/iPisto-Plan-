@@ -12,6 +12,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finanzaspersonales.gt.utils.MoneyInput
+import com.finanzaspersonales.gt.utils.CategoryNameValidator
 
 @Composable
 fun CustomTextField(
@@ -31,6 +32,7 @@ fun CustomTextField(
             value = value,
             onValueChange = onValueChange,
             label = { Text(label) },
+            placeholder = placeholder.takeIf { it.isNotEmpty() }?.let { text -> ({ Text(text) }) },
             singleLine = singleLine,
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = trailingIcon,
@@ -101,10 +103,15 @@ fun CategoryDropdown(
     categories: List<String>,
     onCategoryChange: (String) -> Unit,
     allowCustom: Boolean = true,
+    existingCategories: List<String> = emptyList(),
     modifier: Modifier = Modifier
 ) {
+    var showCustomCategoryDialog by remember { mutableStateOf(false) }
+    var customCategory by remember { mutableStateOf("") }
+    var customCategoryError by remember { mutableStateOf(false) }
+    var customCategoryErrorMessage by remember { mutableStateOf("") }
     val options = if (allowCustom) {
-        categories + "Otra..."
+        (categories + existingCategories).distinctBy { it.trim().lowercase() } + "Otra..."
     } else {
         categories
     }
@@ -113,13 +120,55 @@ fun CategoryDropdown(
         options = options,
         onOptionClick = { selected ->
             if (selected == "Otra...") {
-                // TODO: Show dialog for custom category
+                customCategory = ""
+                customCategoryError = false
+                customCategoryErrorMessage = ""
+                showCustomCategoryDialog = true
             } else {
                 onCategoryChange(selected)
             }
         },
         modifier = modifier
     )
+
+    if (showCustomCategoryDialog) {
+        AlertDialog(
+            onDismissRequest = { showCustomCategoryDialog = false },
+            title = { Text("Nueva categoría") },
+            text = {
+                OutlinedTextField(
+                    value = customCategory,
+                    onValueChange = { customCategory = it; customCategoryError = false; customCategoryErrorMessage = "" },
+                    label = { Text("Nombre de categoría") },
+                    singleLine = true,
+                    isError = customCategoryError,
+                    supportingText = if (customCategoryError) ({ Text(customCategoryErrorMessage) }) else null
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    val name = customCategory.trim()
+                    when (CategoryNameValidator.validate(name, options.filterNot { it == "Otra..." })) {
+                        CategoryNameValidator.Error.EMPTY -> {
+                            customCategoryError = true
+                            customCategoryErrorMessage = "Escribe un nombre para continuar."
+                        }
+                        CategoryNameValidator.Error.DUPLICATE -> {
+                            customCategoryError = true
+                            customCategoryErrorMessage = "Esa categoría ya existe."
+                        }
+                        null -> {
+                            onCategoryChange(name)
+                            showCustomCategoryDialog = false
+                        }
+                    }
+                }) { Text("Agregar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showCustomCategoryDialog = false }) { Text("Cancelar") }
+            }
+        )
+    }
 }
 
 @Composable
