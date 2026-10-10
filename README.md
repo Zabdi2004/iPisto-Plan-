@@ -27,24 +27,27 @@ El APK de depuración se genera en `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## Estado conocido
 
-- La identidad visual usa el tema oscuro azul noche de iPisto, tokens centralizados en `ui/theme/Theme.kt`, tarjetas redondeadas y una mascota vectorial original dibujada con Compose.
-- La navegación inferior ofrece Inicio, Informes, Nuevo registro y Perfil. Cuentas aparece deshabilitado porque aún no existe un modelo persistente de cuentas; Transferencia también permanece deshabilitada. Nuevo registro guarda ingresos, gastos fijos o variables en sus tablas existentes.
-- Los registros no guardan fecha/hora ni notas separadas (la descripción es el nombre existente); por eso Informes muestra equivalentes mensuales actuales y no historial diario. Cuentas, transferencias, calendarios, libros, búsqueda histórica y fotos de recibos no están implementados.
-- La equivalencia mensual usada por `BalanceCalculator` es semanal × 52 / 12, quincenal × 26 / 12 y mensual × 1. Los importes introducidos se analizan con `BigDecimal`, se limitan a dos decimales y después se guardan como `Double`, conforme al esquema existente; no se ha hecho una migración a unidades menores.
+- La identidad visual usa el tema oscuro azul noche de iPisto, tokens centralizados en `ui/theme/Theme.kt`, tarjetas redondeadas y una mascota original de quetzal dibujada en Compose.
+- La navegación inferior ofrece Inicio, Informes, Nuevo registro y Perfil. Nuevo registro guarda ingresos, gastos fijos o variables en sus tablas existentes; cuentas y transferencias siguen fuera del alcance actual.
+- Los registros tienen fecha opcional para los movimientos únicos. Room v2 añade esa columna de forma nullable; las filas antiguas conservan fecha desconocida. Informes presenta el mes actual, sin inventar historial.
+- `BalanceCalculator` es la fuente única de normalización mensual: diario × 365/12, semanal × 52/12, quincenal (cada 15 días) × 365/15/12, mensual × 1 y único en el mes de su fecha. Los importes se analizan con `BigDecimal`, se limitan a dos decimales y se guardan como `Double`.
 - Incluye registro e inicio de sesión local, almacenamiento de contraseñas con PBKDF2 y migración de verificación para hashes antiguos, datos financieros por usuario, metas y cálculo reactivo del balance.
 - Los campos monetarios comparten `MoneyInput`; no agrupan cifras mientras se escribe y conservan la selección/cursor. Los decimales con punto o coma se convierten al guardar.
 - La distribución de idiomas no está completa: hay recursos en `values` únicamente. La opción K’iche’ selecciona locale `qu`, pero no existe un conjunto de traducciones K’iche’ revisadas.
-- `GraficasScreen` muestra comparativas mensuales normalizadas, gastos por categoría, saldos de deuda y progreso de metas con los datos actuales de Room. El modelo no incluye fechas de transacción ni rangos históricos, así que no puede representar una serie temporal real.
+- `GraficasScreen` muestra comparativas mensuales normalizadas, gastos por categoría, saldos de deuda y progreso de metas con los datos actuales de Room. No representa series históricas.
 - Las categorías personalizadas se pueden ingresar desde el selector de categorías. La pantalla de configuración declara las opciones que aún no están disponibles en vez de ofrecer controles sin acción.
-- Las pruebas instrumentadas en `app/src/androidTest` cubren CRUD/persistencia e aislamiento por usuario en Room, separación de gastos fijos y variables, hashing de contraseñas, restauración/cierre de sesión y flujos de registro, inicio de sesión y renombrado del `AuthViewModel`. Se compilan, pero no se ejecutaron: no hay dispositivo conectado y ADB no pudo iniciar su servidor en este entorno. La navegación todavía requiere pruebas instrumentadas.
-- El esquema Room continúa en versión 1; no se han comprobado migraciones desde instalaciones con datos reales.
-- La aplicación no registra transacciones con fechas, cuentas bancarias ni transferencias.
+- Las pruebas instrumentadas en `app/src/androidTest` cubren CRUD/persistencia e aislamiento por usuario en Room, separación de gastos fijos y variables, recreación posterior a eliminar, hashing de contraseñas, sesión y flujos de autenticación. La migración v1→v2 añade fechas sin asignarlas a filas anteriores.
+- La aplicación todavía no incluye cuentas bancarias ni transferencias.
 
 ## Verificación reciente
 
 En el entorno local con JDK Temurin 17:
 
-- `testDebugUnitTest`: correcto (11 pruebas unitarias, 0 fallos; balance, entrada monetaria —incluye decimales, negativos, límite y edición del cursor— y validación de categorías).
-- `assembleDebug`: correcto; genera `app/build/outputs/apk/debug/app-debug.apk` (19,351,764 bytes, 2026-10-09 23:11 local).
-- `lintDebug`: correcto, 0 errores y 101 advertencias. Incluye revisiones Compose omitidas por una incompatibilidad de APIs en la biblioteca de lint, además de advertencias de recursos, icono y preferencias ya existentes.
-- `assembleDebugAndroidTest`: correcto; las pruebas instrumentadas se compilaron, pero no se ejecutaron porque ADB no pudo iniciar su servidor y no había dispositivo conectado. No se instalaron controladores ni se modificó configuración del sistema.
+- `testDebugUnitTest`: correcto, 12 pruebas unitarias.
+- `assembleDebug`: correcto; genera `app/build/outputs/apk/debug/app-debug.apk`.
+- `lintDebug`: correcto, 0 errores y 101 advertencias.
+- `assembleDebugAndroidTest`: correcto; el APK instrumentado compila.
+- `connectedDebugAndroidTest`: correcto en NIC-LX3 / Android 15, 6 pruebas ejecutadas y 0 fallos. La navegación todavía no tiene prueba instrumentada de interacción.
+# Cálculo del balance mensual
+
+Los importes recurrentes se estiman en un mes promedio: diario × 365/12, semanal × 52/12, cada 15 días × 365/15/12 y mensual × 1. «Quincenal» significa exactamente cada 15 días (no dos veces por mes). «Único» solo cuenta en el mes de su fecha de registro. Las fechas se guardan en milisegundos Unix; en registros anteriores a la migración permanecen desconocidas y no se les atribuye una fecha histórica.

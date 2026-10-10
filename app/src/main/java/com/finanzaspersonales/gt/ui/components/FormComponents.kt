@@ -3,6 +3,8 @@
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.*
@@ -13,6 +15,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.text.DateFormat
+import java.util.Date
 import com.finanzaspersonales.gt.utils.MoneyInput
 import com.finanzaspersonales.gt.utils.CategoryNameValidator
 
@@ -93,13 +97,36 @@ fun PeriodicityDropdown(
     onPeriodicityChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val periodicities = listOf("Semanal", "Quincenal", "Mensual")
+    val periodicities = listOf("Único", "Diario", "Semanal", "Quincenal", "Mensual")
     MenuDropdown(
         selectedValue = selectedPeriodicity,
         options = periodicities,
         onOptionClick = onPeriodicityChange,
         modifier = modifier
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TransactionDateField(selectedDateMillis: Long, onDateSelected: (Long) -> Unit) {
+    var showPicker by remember { mutableStateOf(false) }
+    OutlinedButton(onClick = { showPicker = true }, modifier = Modifier.fillMaxWidth()) {
+        val formatter = remember { DateFormat.getDateInstance().apply { timeZone = java.util.TimeZone.getTimeZone("UTC") } }
+        Text("Fecha del movimiento: ${formatter.format(Date(selectedDateMillis))}")
+    }
+    if (showPicker) {
+        val pickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
+        DatePickerDialog(
+            onDismissRequest = { showPicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    pickerState.selectedDateMillis?.let(onDateSelected)
+                    showPicker = false
+                }) { Text("Elegir fecha") }
+            },
+            dismissButton = { TextButton(onClick = { showPicker = false }) { Text("Cancelar") } }
+        ) { DatePicker(state = pickerState) }
+    }
 }
 
 @Composable

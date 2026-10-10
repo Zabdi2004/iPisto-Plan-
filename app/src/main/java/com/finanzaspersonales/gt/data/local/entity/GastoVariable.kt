@@ -15,5 +15,6 @@ data class GastoVariable(
     val nombre: String,
     val categoria: String,
     val cantidad: Double,
-    val periodicidad: String
+    val periodicidad: String,
+    val fechaMillis: Long? = null
 )

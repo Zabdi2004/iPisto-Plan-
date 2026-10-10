@@ -1,4 +1,4 @@
-﻿package com.finanzaspersonales.gt.ui.screens
+package com.finanzaspersonales.gt.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -73,7 +73,7 @@ fun InicioScreen(
                     Text("Un consejo para hoy", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                     Text("Anota tus gastos pequeños: juntos también cuentan.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                 }
-                FoxMascot(size = 58.dp)
+                QuetzalMascot(size = 58.dp)
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -306,13 +306,14 @@ fun FinancialSections(
     if (showIngresoDialog) {
         IngresoDialog(
             onDismiss = onDismissIngresoDialog,
-            onConfirm = { name, amount, periodicity ->
+            onConfirm = { name, amount, periodicity, dateMillis ->
                 val ingreso = Ingreso(
                     id = editingIngreso?.id ?: 0,
                     userId = 0, // Se asignará en el ViewModel
                     nombre = name,
                     cantidad = amount,
-                    periodicidad = periodicity
+                    periodicidad = periodicity,
+                    fechaMillis = if (periodicity == "Único") dateMillis else null
                 )
                 if (editingIngreso != null) {
                     finanzasViewModel.updateIngreso(ingreso) { saved -> if (saved) onDismissIngresoDialog() }
@@ -323,21 +324,23 @@ fun FinancialSections(
             initialName = editingIngreso?.nombre ?: "",
             initialAmount = editingIngreso?.cantidad?.toString() ?: "",
             initialPeriodicity = editingIngreso?.periodicidad ?: "Mensual",
-            isEditing = editingIngreso != null
+            isEditing = editingIngreso != null,
+            initialDateMillis = editingIngreso?.fechaMillis ?: System.currentTimeMillis()
         )
     }
 
     if (showGastoFijoDialog) {
         GastoFijoDialog(
             onDismiss = onDismissGastoFijoDialog,
-            onConfirm = { name, category, amount, periodicity ->
+            onConfirm = { name, category, amount, periodicity, dateMillis ->
                 val gasto = GastoFijo(
                     id = editingGastoFijo?.id ?: 0,
                     userId = 0,
                     nombre = name,
                     categoria = category,
                     cantidad = amount,
-                    periodicidad = periodicity
+                    periodicidad = periodicity,
+                    fechaMillis = if (periodicity == "Único") dateMillis else null
                 )
                 if (editingGastoFijo != null) {
                     finanzasViewModel.updateGastoFijo(gasto) { saved -> if (saved) onDismissGastoFijoDialog() }
@@ -351,21 +354,23 @@ fun FinancialSections(
                 .filterNot { it.equals(editingGastoFijo?.categoria, ignoreCase = true) },
             initialAmount = editingGastoFijo?.cantidad?.toString() ?: "",
             initialPeriodicity = editingGastoFijo?.periodicidad ?: "Mensual",
-            isEditing = editingGastoFijo != null
+            isEditing = editingGastoFijo != null,
+            initialDateMillis = editingGastoFijo?.fechaMillis ?: System.currentTimeMillis()
         )
     }
 
     if (showGastoVariableDialog) {
         GastoVariableDialog(
             onDismiss = onDismissGastoVariableDialog,
-            onConfirm = { name, category, amount, periodicity ->
+            onConfirm = { name, category, amount, periodicity, dateMillis ->
                 val gasto = GastoVariable(
                     id = editingGastoVariable?.id ?: 0,
                     userId = 0,
                     nombre = name,
                     categoria = category,
                     cantidad = amount,
-                    periodicidad = periodicity
+                    periodicidad = periodicity,
+                    fechaMillis = if (periodicity == "Único") dateMillis else null
                 )
                 if (editingGastoVariable != null) {
                     finanzasViewModel.updateGastoVariable(gasto) { saved -> if (saved) onDismissGastoVariableDialog() }
@@ -379,21 +384,23 @@ fun FinancialSections(
                 .filterNot { it.equals(editingGastoVariable?.categoria, ignoreCase = true) },
             initialAmount = editingGastoVariable?.cantidad?.toString() ?: "",
             initialPeriodicity = editingGastoVariable?.periodicidad ?: "Mensual",
-            isEditing = editingGastoVariable != null
+            isEditing = editingGastoVariable != null,
+            initialDateMillis = editingGastoVariable?.fechaMillis ?: System.currentTimeMillis()
         )
     }
 
     if (showDeudaDialog) {
         DeudaDialog(
             onDismiss = onDismissDeudaDialog,
-            onConfirm = { name, montoTotal, pagoPeriodico, periodicity ->
+            onConfirm = { name, montoTotal, pagoPeriodico, periodicity, dateMillis ->
                 val deuda = Deuda(
                     id = editingDeuda?.id ?: 0,
                     userId = 0,
                     nombre = name,
                     montoTotal = montoTotal,
                     pagoPeriodico = pagoPeriodico,
-                    periodicidad = periodicity
+                    periodicidad = periodicity,
+                    fechaMillis = if (periodicity == "Único") dateMillis else null
                 )
                 if (editingDeuda != null) {
                     finanzasViewModel.updateDeuda(deuda) { saved -> if (saved) onDismissDeudaDialog() }
@@ -405,7 +412,8 @@ fun FinancialSections(
             initialMontoTotal = editingDeuda?.montoTotal?.toString() ?: "",
             initialPagoPeriodico = editingDeuda?.pagoPeriodico?.toString() ?: "",
             initialPeriodicity = editingDeuda?.periodicidad ?: "Mensual",
-            isEditing = editingDeuda != null
+            isEditing = editingDeuda != null,
+            initialDateMillis = editingDeuda?.fechaMillis ?: System.currentTimeMillis()
         )
     }
 

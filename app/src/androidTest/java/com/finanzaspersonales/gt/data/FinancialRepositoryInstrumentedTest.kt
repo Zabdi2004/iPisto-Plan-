@@ -57,6 +57,10 @@ class FinancialRepositoryInstrumentedTest {
         assertEquals("Privado", database.ingresoDao().findById(otherUserRecordId, otherUserId)?.nombre)
         assertTrue(repository(ownerId).deleteIngreso(Ingreso(ownId, ownerId, "", 0.0, "Mensual")).isSuccess)
         assertTrue(database.ingresoDao().getAllByUserOnce(ownerId).isEmpty())
+        val createdAfterDelete = repository(ownerId).insertIngreso(
+            Ingreso(userId = ownerId, nombre = "Nuevo después de editar", cantidad = 42.0, periodicidad = "Mensual")
+        ).getOrThrow()
+        assertEquals("Nuevo después de editar", database.ingresoDao().findById(createdAfterDelete, ownerId)?.nombre)
         assertEquals(1, database.ingresoDao().getAllByUserOnce(otherUserId).size)
     }
 

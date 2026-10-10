@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.finanzaspersonales.gt.ui.components.FoxMascot
+import com.finanzaspersonales.gt.ui.components.QuetzalMascot
 import com.finanzaspersonales.gt.domain.calculator.BalanceCalculator
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 
@@ -34,10 +34,10 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
     val balance = state.balance
     val gastosPorCategoria = buildMap<String, Double> {
         state.gastosFijos.forEach { gasto ->
-            put(gasto.categoria, (get(gasto.categoria) ?: 0.0) + BalanceCalculator.normalizarAMensual(gasto.cantidad, gasto.periodicidad))
+            put(gasto.categoria, (get(gasto.categoria) ?: 0.0) + BalanceCalculator.normalizarAMensual(gasto.cantidad, gasto.periodicidad, gasto.fechaMillis))
         }
         state.gastosVariables.forEach { gasto ->
-            put(gasto.categoria, (get(gasto.categoria) ?: 0.0) + BalanceCalculator.normalizarAMensual(gasto.cantidad, gasto.periodicidad))
+            put(gasto.categoria, (get(gasto.categoria) ?: 0.0) + BalanceCalculator.normalizarAMensual(gasto.cantidad, gasto.periodicidad, gasto.fechaMillis))
         }
     }.filterValues { it > 0.0 }.toList().sortedByDescending { it.second }
 
@@ -144,7 +144,7 @@ private fun AmountBars(rows: List<ChartRow>, viewModel: FinanzasViewModel, useAb
 @Composable
 private fun EmptyChartMessage(message: String) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        FoxMascot(size = 46.dp)
+        QuetzalMascot(size = 46.dp)
         Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Start)
     }
 }

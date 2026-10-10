@@ -1,4 +1,4 @@
-﻿package com.finanzaspersonales.gt.ui.screens
+package com.finanzaspersonales.gt.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.finanzaspersonales.gt.ui.components.ProgressBar
-import com.finanzaspersonales.gt.ui.components.FoxMascot
+import com.finanzaspersonales.gt.ui.components.QuetzalMascot
 
 @Composable
 fun WelcomeScreen(navController: NavHostController) {
@@ -21,7 +21,7 @@ fun WelcomeScreen(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        FoxMascot(size = 92.dp)
+        QuetzalMascot(size = 92.dp)
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "iPisto",

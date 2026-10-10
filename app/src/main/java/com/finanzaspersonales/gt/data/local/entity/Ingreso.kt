@@ -14,5 +14,7 @@ data class Ingreso(
     val userId: Long,
     val nombre: String,
     val cantidad: Double,
-    val periodicidad: String
+    val periodicidad: String,
+    /** Nullable for legacy records whose transaction date was never stored. Unix time in millis. */
+    val fechaMillis: Long? = null
 )

@@ -10,7 +10,7 @@ class SessionManager(private val context: Context) {
         const val KEY_LOGGED_IN = "logged_in"
     }
 
-    private fun getPrefs() = context.applicationContext
+    private fun getPrefs() = (context.applicationContext ?: context)
         .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     fun saveSession(userId: Long, username: String) {

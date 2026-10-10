@@ -17,15 +17,28 @@ data class BalanceFinanciero(
 )
 
 object BalanceCalculator {
+    private const val UNICO = "Único"
+    private const val DIARIO = "Diario"
     private const val SEMANAL = "Semanal"
     private const val QUINCENAL = "Quincenal"
     private const val MENSUAL = "Mensual"
 
-    fun normalizarAMensual(cantidad: Double, periodicidad: String): Double {
+    private fun mismoMes(fechaMillis: Long?): Boolean {
+        if (fechaMillis == null) return false // Legacy rows have no fabricated transaction history.
+        val utc = java.util.TimeZone.getTimeZone("UTC")
+        val date = java.util.Calendar.getInstance(utc).apply { timeInMillis = fechaMillis }
+        val now = java.util.Calendar.getInstance(utc)
+        return date.get(java.util.Calendar.YEAR) == now.get(java.util.Calendar.YEAR) &&
+            date.get(java.util.Calendar.MONTH) == now.get(java.util.Calendar.MONTH)
+    }
+
+    fun normalizarAMensual(cantidad: Double, periodicidad: String, fechaMillis: Long? = null): Double {
         require(cantidad.isFinite() && cantidad >= 0.0) { "Las cantidades deben ser finitas y no negativas" }
         return when (periodicidad) {
+            UNICO -> if (mismoMes(fechaMillis)) cantidad else 0.0
+            DIARIO -> cantidad * 365 / 12
             SEMANAL -> cantidad * 52 / 12
-            QUINCENAL -> cantidad * 26 / 12
+            QUINCENAL -> cantidad * 365 / 15 / 12
             MENSUAL -> cantidad
             else -> throw IllegalArgumentException("Periodicidad no reconocida: $periodicidad")
         }
@@ -36,19 +49,19 @@ object BalanceCalculator {
     }
 
     fun calcularIngresosMensuales(ingresos: List<Ingreso>): Double {
-        return checkedSum(ingresos.map { normalizarAMensual(it.cantidad, it.periodicidad) })
+        return checkedSum(ingresos.map { normalizarAMensual(it.cantidad, it.periodicidad, it.fechaMillis) })
     }
 
     fun calcularGastosFijosMensuales(gastos: List<GastoFijo>): Double {
-        return checkedSum(gastos.map { normalizarAMensual(it.cantidad, it.periodicidad) })
+        return checkedSum(gastos.map { normalizarAMensual(it.cantidad, it.periodicidad, it.fechaMillis) })
     }
 
     fun calcularGastosVariablesMensuales(gastos: List<GastoVariable>): Double {
-        return checkedSum(gastos.map { normalizarAMensual(it.cantidad, it.periodicidad) })
+        return checkedSum(gastos.map { normalizarAMensual(it.cantidad, it.periodicidad, it.fechaMillis) })
     }
 
     fun calcularPagosDeudaMensuales(deudas: List<Deuda>): Double {
-        return checkedSum(deudas.map { normalizarAMensual(it.pagoPeriodico, it.periodicidad) })
+        return checkedSum(deudas.map { normalizarAMensual(it.pagoPeriodico, it.periodicidad, it.fechaMillis) })
     }
 
     fun calcularDeudaTotal(deudas: List<Deuda>): Double {

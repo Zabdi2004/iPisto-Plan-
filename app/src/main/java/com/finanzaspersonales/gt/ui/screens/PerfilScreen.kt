@@ -10,7 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.navigation.NavHostController
 import com.finanzaspersonales.gt.data.local.entity.User
-import com.finanzaspersonales.gt.ui.components.FoxMascot
+import com.finanzaspersonales.gt.ui.components.QuetzalMascot
 import com.finanzaspersonales.gt.viewmodel.AuthState
 import com.finanzaspersonales.gt.viewmodel.AuthViewModel
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
@@ -63,7 +63,7 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel,
                             Text("Editar nombre")
                         }
                     }
-                    FoxMascot(size = 62.dp)
+                    QuetzalMascot(size = 62.dp)
                 }
             }
             financeState?.let { state -> state.balance?.let { balance ->
@@ -76,12 +76,6 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel,
                     }
                 }
             } }
-            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-                Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("iPisto Premium", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                    Text("Vista informativa. No hay compras ni suscripciones habilitadas.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                }
-            }
             Text("Herramientas", style = MaterialTheme.typography.titleLarge)
             OutlinedButton(onClick = { navController.navigate("metas") }, modifier = Modifier.fillMaxWidth()) { Text("Plan de ahorros") }
             OutlinedButton(onClick = { navController.navigate("graficas") }, modifier = Modifier.fillMaxWidth()) { Text("Informes") }

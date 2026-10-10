@@ -13,15 +13,17 @@ import com.finanzaspersonales.gt.utils.MoneyInput
 @Composable
 fun IngresoDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String, Double, String) -> Unit,
+    onConfirm: (String, Double, String, Long) -> Unit,
     initialName: String = "",
     initialAmount: String = "",
     initialPeriodicity: String = "Mensual",
-    isEditing: Boolean = false
+    isEditing: Boolean = false,
+    initialDateMillis: Long = System.currentTimeMillis()
 ) {
     var name by remember { mutableStateOf(TextFieldValue(initialName)) }
     var amount by remember { mutableStateOf(TextFieldValue(initialAmount)) }
     var periodicity by remember { mutableStateOf(initialPeriodicity) }
+    var dateMillis by remember(initialDateMillis) { mutableStateOf(initialDateMillis) }
     var nameError by remember { mutableStateOf(false) }
     var amountError by remember { mutableStateOf(false) }
 
@@ -59,12 +61,10 @@ fun IngresoDialog(
                     onPeriodicityChange = { periodicity = it },
                     modifier = Modifier.fillMaxWidth()
                 )
+                if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
-        },
-        dismissButton = {
             TextButton(
                 onClick = {
                     val parsedAmount = MoneyInput.parseAmount(amount.text)
@@ -73,29 +73,32 @@ fun IngresoDialog(
                     nameError = name.text.isBlank()
                     amountError = parsedAmount == null || amountValue <= 0
                     if (valid) {
-                        onConfirm(name.text, amountValue, periodicity)
+                        onConfirm(name.text, amountValue, periodicity, dateMillis)
                     }
                 }
             ) { Text("Guardar") }
-        }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
 @Composable
 fun GastoFijoDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String, String, Double, String) -> Unit,
+    onConfirm: (String, String, Double, String, Long) -> Unit,
     initialName: String = "",
     initialCategory: String = "Alimentación",
     existingCategories: List<String> = emptyList(),
     initialAmount: String = "",
     initialPeriodicity: String = "Mensual",
-    isEditing: Boolean = false
+    isEditing: Boolean = false,
+    initialDateMillis: Long = System.currentTimeMillis()
 ) {
     var name by remember { mutableStateOf(TextFieldValue(initialName)) }
     var category by remember { mutableStateOf(initialCategory) }
     var amount by remember { mutableStateOf(TextFieldValue(initialAmount)) }
     var periodicity by remember { mutableStateOf(initialPeriodicity) }
+    var dateMillis by remember(initialDateMillis) { mutableStateOf(initialDateMillis) }
     var nameError by remember { mutableStateOf(false) }
     var amountError by remember { mutableStateOf(false) }
 
@@ -144,12 +147,10 @@ fun GastoFijoDialog(
                     onPeriodicityChange = { periodicity = it },
                     modifier = Modifier.fillMaxWidth()
                 )
+                if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
-        },
-        dismissButton = {
             TextButton(
                 onClick = {
                     val parsedAmount = MoneyInput.parseAmount(amount.text)
@@ -158,29 +159,32 @@ fun GastoFijoDialog(
                     nameError = name.text.isBlank()
                     amountError = parsedAmount == null || amountValue <= 0
                     if (valid) {
-                        onConfirm(name.text, category, amountValue, periodicity)
+                        onConfirm(name.text, category, amountValue, periodicity, dateMillis)
                     }
                 }
             ) { Text("Guardar") }
-        }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
 @Composable
 fun GastoVariableDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String, String, Double, String) -> Unit,
+    onConfirm: (String, String, Double, String, Long) -> Unit,
     initialName: String = "",
     initialCategory: String = "Entretenimiento",
     existingCategories: List<String> = emptyList(),
     initialAmount: String = "",
     initialPeriodicity: String = "Mensual",
-    isEditing: Boolean = false
+    isEditing: Boolean = false,
+    initialDateMillis: Long = System.currentTimeMillis()
 ) {
     var name by remember { mutableStateOf(TextFieldValue(initialName)) }
     var category by remember { mutableStateOf(initialCategory) }
     var amount by remember { mutableStateOf(TextFieldValue(initialAmount)) }
     var periodicity by remember { mutableStateOf(initialPeriodicity) }
+    var dateMillis by remember(initialDateMillis) { mutableStateOf(initialDateMillis) }
     var nameError by remember { mutableStateOf(false) }
     var amountError by remember { mutableStateOf(false) }
 
@@ -229,12 +233,10 @@ fun GastoVariableDialog(
                     onPeriodicityChange = { periodicity = it },
                     modifier = Modifier.fillMaxWidth()
                 )
+                if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
-        },
-        dismissButton = {
             TextButton(
                 onClick = {
                     val parsedAmount = MoneyInput.parseAmount(amount.text)
@@ -243,28 +245,31 @@ fun GastoVariableDialog(
                     nameError = name.text.isBlank()
                     amountError = parsedAmount == null || amountValue <= 0
                     if (valid) {
-                        onConfirm(name.text, category, amountValue, periodicity)
+                        onConfirm(name.text, category, amountValue, periodicity, dateMillis)
                     }
                 }
             ) { Text("Guardar") }
-        }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
 @Composable
 fun DeudaDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String, Double, Double, String) -> Unit,
+    onConfirm: (String, Double, Double, String, Long) -> Unit,
     initialName: String = "",
     initialMontoTotal: String = "",
     initialPagoPeriodico: String = "",
     initialPeriodicity: String = "Mensual",
-    isEditing: Boolean = false
+    isEditing: Boolean = false,
+    initialDateMillis: Long = System.currentTimeMillis()
 ) {
     var name by remember { mutableStateOf(TextFieldValue(initialName)) }
     var montoTotal by remember { mutableStateOf(TextFieldValue(initialMontoTotal)) }
     var pagoPeriodico by remember { mutableStateOf(TextFieldValue(initialPagoPeriodico)) }
     var periodicity by remember { mutableStateOf(initialPeriodicity) }
+    var dateMillis by remember(initialDateMillis) { mutableStateOf(initialDateMillis) }
     var nameError by remember { mutableStateOf(false) }
     var montoError by remember { mutableStateOf(false) }
     var pagoError by remember { mutableStateOf(false) }
@@ -312,12 +317,10 @@ fun DeudaDialog(
                     onPeriodicityChange = { periodicity = it },
                     modifier = Modifier.fillMaxWidth()
                 )
+                if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
-        },
-        dismissButton = {
             TextButton(
                 onClick = {
                     val parsedMonto = MoneyInput.parseAmount(montoTotal.text)
@@ -329,11 +332,12 @@ fun DeudaDialog(
                     montoError = parsedMonto == null || monto <= 0
                     pagoError = parsedPago == null || pago <= 0
                     if (valid) {
-                        onConfirm(name.text, monto, pago, periodicity)
+                        onConfirm(name.text, monto, pago, periodicity, dateMillis)
                     }
                 }
             ) { Text("Guardar") }
-        }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 
@@ -405,9 +409,6 @@ fun MetaAhorroDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
-        },
-        dismissButton = {
             TextButton(
                 onClick = {
                     val parsedObj = MoneyInput.parseAmount(objetivo.text)
@@ -426,7 +427,8 @@ fun MetaAhorroDialog(
                     }
                 }
             ) { Text("Guardar") }
-        }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
 

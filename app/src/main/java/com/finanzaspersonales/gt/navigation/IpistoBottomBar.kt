@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.AccountBalanceWallet
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
@@ -65,14 +64,6 @@ fun IpistoBottomBar(currentRoute: String?, navController: NavHostController) {
                 enabled = false,
                 icon = { Spacer(Modifier.size(26.dp)) },
                 label = null,
-                colors = colors
-            )
-            NavigationBarItem(
-                selected = false,
-                onClick = {},
-                enabled = false,
-                icon = { Icon(Icons.Outlined.AccountBalanceWallet, contentDescription = "Cuentas no disponible") },
-                label = { Text("Cuentas") },
                 colors = colors
             )
             NavigationBarItem(

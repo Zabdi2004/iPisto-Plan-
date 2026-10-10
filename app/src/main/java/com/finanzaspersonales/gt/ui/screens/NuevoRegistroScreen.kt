@@ -42,8 +42,9 @@ import com.finanzaspersonales.gt.data.local.entity.Ingreso
 import com.finanzaspersonales.gt.ui.components.AmountTextField
 import com.finanzaspersonales.gt.ui.components.CategoryDropdown
 import com.finanzaspersonales.gt.ui.components.CustomTextField
-import com.finanzaspersonales.gt.ui.components.FoxMascot
+import com.finanzaspersonales.gt.ui.components.QuetzalMascot
 import com.finanzaspersonales.gt.ui.components.PeriodicityDropdown
+import com.finanzaspersonales.gt.ui.components.TransactionDateField
 import com.finanzaspersonales.gt.utils.MoneyInput
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 
@@ -56,6 +57,7 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
     var amount by remember { mutableStateOf(TextFieldValue("")) }
     var category by remember { mutableStateOf("Comida") }
     var periodicity by remember { mutableStateOf("Mensual") }
+    var occurrenceDate by remember { mutableStateOf(System.currentTimeMillis()) }
     var nameError by remember { mutableStateOf(false) }
     var amountError by remember { mutableStateOf(false) }
     var saveSucceeded by remember { mutableStateOf(false) }
@@ -72,7 +74,7 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
                 Icon(Icons.Default.Close, contentDescription = "Cerrar nuevo registro")
             }
             Text("Nuevo registro", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
-            FoxMascot(size = 48.dp)
+            QuetzalMascot(size = 48.dp)
         }
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -127,6 +129,7 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
                     errorText = if (amountError) "Ingresa un monto positivo hasta Q1,000,000,000,000." else null
                 )
                 PeriodicityDropdown(selectedPeriodicity = periodicity, onPeriodicityChange = { periodicity = it })
+                if (periodicity == "Único") TransactionDateField(occurrenceDate, { occurrenceDate = it })
             }
         }
 
@@ -135,7 +138,7 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
         }
         Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Text(
-                "Los registros actuales no almacenan fecha ni hora. La periodicidad se usa para calcular equivalentes mensuales.",
+                "Los movimientos únicos se asignan a la fecha de hoy; los registros anteriores conservan su fecha desconocida.",
                 modifier = Modifier.padding(16.dp),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -150,11 +153,11 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
                 if (!nameError && !amountError && parsed != null) {
                     val complete: (Boolean) -> Unit = { saved -> if (saved) saveSucceeded = true }
                     when (kind) {
-                        EntryKind.INCOME -> viewModel.insertIngreso(Ingreso(userId = 0, nombre = name.text.trim(), cantidad = parsed, periodicidad = periodicity), complete)
+                        EntryKind.INCOME -> viewModel.insertIngreso(Ingreso(userId = 0, nombre = name.text.trim(), cantidad = parsed, periodicidad = periodicity, fechaMillis = occurrenceDate), complete)
                         EntryKind.EXPENSE -> if (expenseKind == ExpenseKind.FIXED) {
-                            viewModel.insertGastoFijo(GastoFijo(userId = 0, nombre = name.text.trim(), categoria = category, cantidad = parsed, periodicidad = periodicity), complete)
+                            viewModel.insertGastoFijo(GastoFijo(userId = 0, nombre = name.text.trim(), categoria = category, cantidad = parsed, periodicidad = periodicity, fechaMillis = occurrenceDate), complete)
                         } else {
-                            viewModel.insertGastoVariable(GastoVariable(userId = 0, nombre = name.text.trim(), categoria = category, cantidad = parsed, periodicidad = periodicity), complete)
+                            viewModel.insertGastoVariable(GastoVariable(userId = 0, nombre = name.text.trim(), categoria = category, cantidad = parsed, periodicidad = periodicity, fechaMillis = occurrenceDate), complete)
                         }
                     }
                 }

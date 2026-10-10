@@ -17,14 +17,14 @@ class BalanceCalculatorTest {
             Ingreso(userId = 1, nombre = "Quincenal", cantidad = 300.0, periodicidad = "Quincenal"),
             Ingreso(userId = 1, nombre = "Mensual", cantidad = 500.0, periodicidad = "Mensual")
         ))
-        assertEquals(120.0 * 52 / 12 + 300.0 * 26 / 12 + 500.0, monthly, 0.000001)
+        assertEquals(120.0 * 52 / 12 + 300.0 * 365 / 15 / 12 + 500.0, monthly, 0.000001)
     }
 
     @Test fun normalizesExpensesAndDebtPayments() {
         assertEquals(52.0, BalanceCalculator.calcularGastosFijosMensuales(listOf(
             GastoFijo(userId = 1, nombre = "Renta", categoria = "Hogar", cantidad = 12.0, periodicidad = "Semanal")
         )), 0.000001)
-        assertEquals(65.0, BalanceCalculator.calcularGastosVariablesMensuales(listOf(
+        assertEquals(30.0 * 365 / 15 / 12, BalanceCalculator.calcularGastosVariablesMensuales(listOf(
             GastoVariable(userId = 1, nombre = "Compra", categoria = "Comida", cantidad = 30.0, periodicidad = "Quincenal")
         )), 0.000001)
         assertEquals(100.0, BalanceCalculator.calcularPagosDeudaMensuales(listOf(
@@ -59,6 +59,16 @@ class BalanceCalculatorTest {
         assertNull(result.porcentajeUtilizado)
         assertEquals("Sin ingresos", result.estadoFinanciero)
         assertTrue(result.dineroDisponible == 0.0)
+    }
+
+    @Test fun normalizesDailyAndSingleMovementsForCurrentMonthOnly() {
+        val now = System.currentTimeMillis()
+        assertEquals(10.0 * 365 / 12, BalanceCalculator.normalizarAMensual(10.0, "Diario"), .000001)
+        assertEquals(10.0 * 365 / 15 / 12, BalanceCalculator.normalizarAMensual(10.0, "Quincenal"), .000001)
+        assertEquals(75.0, BalanceCalculator.normalizarAMensual(75.0, "Único", now), .000001)
+        val oldDate = java.util.Calendar.getInstance().apply { add(java.util.Calendar.MONTH, -2) }.timeInMillis
+        assertEquals(0.0, BalanceCalculator.normalizarAMensual(75.0, "Único", oldDate), 0.0)
+        assertEquals(0.0, BalanceCalculator.normalizarAMensual(75.0, "Único", null), 0.0)
     }
 
     @Test fun rejectsNegativeNonFiniteAndUnknownPeriodAmounts() {

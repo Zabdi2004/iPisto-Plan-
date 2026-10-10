@@ -4,35 +4,20 @@ import com.finanzaspersonales.gt.data.local.entity.Ingreso
 import com.finanzaspersonales.gt.data.local.entity.GastoFijo
 import com.finanzaspersonales.gt.data.local.entity.GastoVariable
 import com.finanzaspersonales.gt.data.local.entity.Deuda
+import com.finanzaspersonales.gt.domain.calculator.BalanceCalculator
 
 fun Ingreso.formatMonthly(): Double {
-    return when (periodicidad) {
-        "Semanal" -> cantidad * 52 / 12
-        "Quincenal" -> cantidad * 26 / 12
-        else -> cantidad // Mensual
-    }
+    return BalanceCalculator.normalizarAMensual(cantidad, periodicidad, fechaMillis)
 }
 
 fun GastoFijo.formatMonthly(): Double {
-    return when (periodicidad) {
-        "Semanal" -> cantidad * 52 / 12
-        "Quincenal" -> cantidad * 26 / 12
-        else -> cantidad
-    }
+    return BalanceCalculator.normalizarAMensual(cantidad, periodicidad, fechaMillis)
 }
 
 fun GastoVariable.formatMonthly(): Double {
-    return when (periodicidad) {
-        "Semanal" -> cantidad * 52 / 12
-        "Quincenal" -> cantidad * 26 / 12
-        else -> cantidad
-    }
+    return BalanceCalculator.normalizarAMensual(cantidad, periodicidad, fechaMillis)
 }
 
 fun Deuda.formatMonthly(): Double {
-    return when (periodicidad) {
-        "Semanal" -> pagoPeriodico * 52 / 12
-        "Quincenal" -> pagoPeriodico * 26 / 12
-        else -> pagoPeriodico
-    }
+    return BalanceCalculator.normalizarAMensual(pagoPeriodico, periodicidad, fechaMillis)
 }

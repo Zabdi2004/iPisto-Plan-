@@ -15,5 +15,6 @@ data class Deuda(
     val nombre: String,
     val montoTotal: Double,
     val pagoPeriodico: Double,
-    val periodicidad: String
+    val periodicidad: String,
+    val fechaMillis: Long? = null
 )
