@@ -2,6 +2,8 @@
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,12 +40,18 @@ fun MetaAgregarAporteScreen(
     var aporte by remember { mutableStateOf("") }
     var aporteError by remember { mutableStateOf(false) }
     var showConfirm by remember { mutableStateOf(false) }
+    var isSaving by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("AGREGAR APORTE", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Volver sin guardar el aporte")
+            }
+            Text("AGREGAR APORTE", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+        }
         uiState.value.error?.let { error -> Text("No se completó la operación: $error", color = MaterialTheme.colorScheme.error) }
         Spacer(modifier = Modifier.height(8.dp))
         Text("Meta: ${meta.nombre}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -74,16 +82,21 @@ fun MetaAgregarAporteScreen(
             ConfirmDialog(
                 onDismiss = { showConfirm = false },
                 onConfirm = {
+                    isSaving = true
                     val amount = MoneyInput.parseAmount(aporte) ?: 0.0
                     val updatedMeta = meta.copy(cantidadAhorrada = meta.cantidadAhorrada + amount)
                     finanzasViewModel.updateMeta(updatedMeta) { saved ->
+                        isSaving = false
                         if (saved) { showConfirm = false; navController.popBackStack() }
                     }
                 },
                 title = "Confirmar aporte",
-                message = "¿Agregar ${finanzasViewModel.formatCurrency(MoneyInput.parseAmount(aporte) ?: 0.0)} a \"${meta.nombre}\"?",
-                confirmText = "Confirmar",
-                confirmColor = MaterialTheme.colorScheme.primary
+                message = "¿Agregar ${finanzasViewModel.formatCurrency(MoneyInput.parseAmount(aporte) ?: 0.0)} a \"${meta.nombre}\"?" +
+                    (uiState.value.error?.let { "\n\nNo se pudo guardar: $it" } ?: ""),
+                confirmText = if (isSaving) "Guardando…" else "Confirmar",
+                confirmColor = MaterialTheme.colorScheme.primary,
+                dismissOnConfirm = false,
+                confirmEnabled = !isSaving
             )
         }
     }

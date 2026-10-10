@@ -18,7 +18,8 @@ fun IngresoDialog(
     initialAmount: String = "",
     initialPeriodicity: String = "Mensual",
     isEditing: Boolean = false,
-    initialDateMillis: Long = System.currentTimeMillis()
+    initialDateMillis: Long = System.currentTimeMillis(),
+    saveError: String? = null
 ) {
     var name by remember { mutableStateOf(TextFieldValue(initialName)) }
     var amount by remember { mutableStateOf(TextFieldValue(initialAmount)) }
@@ -62,6 +63,7 @@ fun IngresoDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
+                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
         },
         confirmButton = {
@@ -92,7 +94,8 @@ fun GastoFijoDialog(
     initialAmount: String = "",
     initialPeriodicity: String = "Mensual",
     isEditing: Boolean = false,
-    initialDateMillis: Long = System.currentTimeMillis()
+    initialDateMillis: Long = System.currentTimeMillis(),
+    saveError: String? = null
 ) {
     var name by remember { mutableStateOf(TextFieldValue(initialName)) }
     var category by remember { mutableStateOf(initialCategory) }
@@ -148,6 +151,7 @@ fun GastoFijoDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
+                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
         },
         confirmButton = {
@@ -178,7 +182,8 @@ fun GastoVariableDialog(
     initialAmount: String = "",
     initialPeriodicity: String = "Mensual",
     isEditing: Boolean = false,
-    initialDateMillis: Long = System.currentTimeMillis()
+    initialDateMillis: Long = System.currentTimeMillis(),
+    saveError: String? = null
 ) {
     var name by remember { mutableStateOf(TextFieldValue(initialName)) }
     var category by remember { mutableStateOf(initialCategory) }
@@ -234,6 +239,7 @@ fun GastoVariableDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
+                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
         },
         confirmButton = {
@@ -263,7 +269,8 @@ fun DeudaDialog(
     initialPagoPeriodico: String = "",
     initialPeriodicity: String = "Mensual",
     isEditing: Boolean = false,
-    initialDateMillis: Long = System.currentTimeMillis()
+    initialDateMillis: Long = System.currentTimeMillis(),
+    saveError: String? = null
 ) {
     var name by remember { mutableStateOf(TextFieldValue(initialName)) }
     var montoTotal by remember { mutableStateOf(TextFieldValue(initialMontoTotal)) }
@@ -318,6 +325,7 @@ fun DeudaDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
+                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
         },
         confirmButton = {
@@ -349,7 +357,8 @@ fun MetaAhorroDialog(
     initialObjetivo: String = "",
     initialAhorrado: String = "",
     initialAporte: String = "",
-    isEditing: Boolean = false
+    isEditing: Boolean = false,
+    saveError: String? = null
 ) {
     var name by remember { mutableStateOf(TextFieldValue(initialName)) }
     var objetivo by remember { mutableStateOf(TextFieldValue(initialObjetivo)) }
@@ -406,6 +415,7 @@ fun MetaAhorroDialog(
                     errorText = if (aporteError) "El aporte debe ser finito y no negativo" else null,
                     modifier = Modifier.fillMaxWidth()
                 )
+                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
         },
         confirmButton = {

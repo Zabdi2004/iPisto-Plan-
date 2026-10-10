@@ -1,6 +1,8 @@
 ﻿package com.finanzaspersonales.gt.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -13,6 +15,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.finanzaspersonales.gt.navigation.Screen
+import com.finanzaspersonales.gt.ui.components.QuetzalMascot
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -29,35 +33,37 @@ fun MetasScreen(
     val uiState: androidx.compose.runtime.State<com.finanzaspersonales.gt.viewmodel.FinanzasUiState> = 
         finanzasViewModel.uiState.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+    Box(Modifier.fillMaxSize()) {
+      Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 96.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text("METAS DE AHORRO", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
-            Button(onClick = { navController.navigate("metas/nueva") }) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar meta")
-                Text("Nueva Meta")
-            }
-        }
+      ) {
+        Text("METAS DE AHORRO", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
 
         if (uiState.value.metas.isEmpty()) {
             Box(modifier = Modifier.fillMaxWidth().padding(vertical = 64.dp), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Icon(Icons.Default.Savings, contentDescription = "Metas", tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f), modifier = Modifier.size(64.dp))
+                    QuetzalMascot(size = 64.dp)
                     Text("No hay metas de ahorro registradas.", style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Button(onClick = { navController.navigate("metas/nueva") }) { Text("Crear Primera Meta") }
                 }
             }
         } else {
             Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 uiState.value.metas.forEach { meta: MetaAhorro ->
-                    MetaCard(meta = meta, formatter = finanzasViewModel::formatCurrency, onDelete = { finanzasViewModel.deleteMeta(meta) }, onEdit = { navController.navigate("metas/editar/${meta.id.toString()}") })
+                    MetaCard(meta = meta, formatter = finanzasViewModel::formatCurrency, onDelete = { finanzasViewModel.deleteMeta(meta) }, onEdit = { navController.navigate("${Screen.MetaEditar.substringBefore("{")}${meta.id}") })
                 }
             }
         }
+      }
+      FloatingActionButton(
+          onClick = { navController.navigate(Screen.MetaNueva) { launchSingleTop = true } },
+          modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 12.dp),
+          shape = androidx.compose.foundation.shape.CircleShape,
+          containerColor = Color(0xFF8FA8F5),
+          contentColor = Color(0xFF1B2133)
+      ) {
+          Icon(Icons.Default.Add, contentDescription = "Agregar meta de ahorro")
+      }
     }
 }
 
@@ -145,6 +151,7 @@ val fechaEstimada = if (mesesRestantes > 0) {
     } else "—"
 
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var isDeleting by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -207,11 +214,17 @@ val fechaEstimada = if (mesesRestantes > 0) {
         if (showDeleteDialog) {
             ConfirmDialog(
                 onDismiss = { showDeleteDialog = false },
-                onConfirm = { finanzasViewModel.deleteMeta(meta); navController.popBackStack(); showDeleteDialog = false },
+            onConfirm = { isDeleting = true; finanzasViewModel.deleteMeta(meta) { deleted ->
+                isDeleting = false
+                if (deleted) { showDeleteDialog = false; navController.popBackStack() }
+            } },
                 title = "Eliminar Meta",
-                message = "¿Estás seguro de eliminar \"${meta.nombre}\"? Esta acción no se puede deshacer.",
-                confirmText = "Eliminar",
-                confirmColor = MaterialTheme.colorScheme.error
+                message = "¿Estás seguro de eliminar \"${meta.nombre}\"? Esta acción no se puede deshacer." +
+                    (uiState.value.error?.let { "\n\nNo se pudo eliminar: $it" } ?: ""),
+                confirmText = if (isDeleting) "Eliminando…" else "Eliminar",
+                confirmColor = MaterialTheme.colorScheme.error,
+                dismissOnConfirm = false,
+                confirmEnabled = !isDeleting
             )
         }
 

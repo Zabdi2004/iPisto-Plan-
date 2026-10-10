@@ -15,7 +15,9 @@ fun ConfirmDialog(
     title: String,
     message: String,
     confirmText: String = "Confirmar",
-    confirmColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.error
+    confirmColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.error,
+    dismissOnConfirm: Boolean = true,
+    confirmEnabled: Boolean = true
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -23,9 +25,10 @@ fun ConfirmDialog(
         text = { Text(message, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(24.dp).width(320.dp)) },
         confirmButton = {
             TextButton(
+                enabled = confirmEnabled,
                 onClick = {
                     onConfirm()
-                    onDismiss()
+                    if (dismissOnConfirm) onDismiss()
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = confirmColor)
             ) { Text(confirmText) }

@@ -149,7 +149,8 @@ class FinanzasViewModel(
     fun updateMeta(meta: MetaAhorro, onComplete: (Boolean) -> Unit = {}) =
         mutate(onComplete) { metasRepository.updateMeta(meta.copy(userId = userId)) }
 
-    fun deleteMeta(meta: MetaAhorro) = mutate { metasRepository.deleteMeta(meta) }
+    fun deleteMeta(meta: MetaAhorro, onComplete: (Boolean) -> Unit = {}) =
+        mutate(onComplete) { metasRepository.deleteMeta(meta) }
 
     fun nuevaEvaluacion() {
         viewModelScope.launch {

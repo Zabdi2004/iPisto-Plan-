@@ -23,31 +23,44 @@ fun QuetzalMascot(modifier: Modifier = Modifier, size: Dp = 76.dp) {
     val navy = Color(0xFF202942)
     Canvas(modifier.size(size).semantics { contentDescription = "Quetzal verde de iPisto" }) {
         val w = this.size.width; val h = this.size.height
-        // Long tail plumes behind the body.
-        val tail = Path().apply {
-            moveTo(w * .54f, h * .67f); quadraticBezierTo(w * .82f, h * .73f, w * .94f, h * .98f)
-            quadraticBezierTo(w * .68f, h * .91f, w * .48f, h * .74f); close()
+        // Two elegant tail feathers rise behind the body and taper downward.
+        val leftTail = Path().apply {
+            moveTo(w*.43f,h*.66f); quadraticBezierTo(w*.17f,h*.77f,w*.27f,h*.99f)
+            quadraticBezierTo(w*.43f,h*.89f,w*.51f,h*.73f); close()
         }
-        drawPath(tail, teal); drawPath(tail, navy, style = Stroke(w * .025f))
-        val feather = Path().apply {
-            moveTo(w * .47f, h * .67f); quadraticBezierTo(w * .70f, h * .79f, w * .76f, h * .99f)
-            quadraticBezierTo(w * .54f, h * .89f, w * .39f, h * .75f); close()
+        val rightTail = Path().apply {
+            moveTo(w*.56f,h*.65f); quadraticBezierTo(w*.84f,h*.75f,w*.76f,h*.99f)
+            quadraticBezierTo(w*.58f,h*.88f,w*.49f,h*.73f); close()
         }
-        drawPath(feather, emerald); drawPath(feather, navy, style = Stroke(w * .02f))
-        // Head crest and rounded bird body.
-        val crest = Path().apply { moveTo(w*.25f,h*.27f); quadraticBezierTo(w*.16f,h*.04f,w*.38f,h*.20f); quadraticBezierTo(w*.43f,h*.05f,w*.52f,h*.22f); close() }
-        drawPath(crest, emerald); drawPath(crest, navy, style = Stroke(w * .025f))
-        drawOval(navy, topLeft = Offset(w*.17f,h*.22f), size = Size(w*.62f,h*.64f))
-        drawOval(emerald, topLeft = Offset(w*.19f,h*.24f), size = Size(w*.58f,h*.60f))
-        // Coral chest and turquoise wing.
-        val chest = Path().apply { moveTo(w*.44f,h*.50f); quadraticBezierTo(w*.67f,h*.53f,w*.66f,h*.80f); quadraticBezierTo(w*.50f,h*.86f,w*.37f,h*.75f); quadraticBezierTo(w*.45f,h*.67f,w*.44f,h*.50f); close() }
-        drawPath(chest, coral)
-        val wing = Path().apply { moveTo(w*.27f,h*.49f); quadraticBezierTo(w*.47f,h*.42f,w*.56f,h*.59f); quadraticBezierTo(w*.48f,h*.71f,w*.27f,h*.68f); close() }
-        drawPath(wing, teal); drawPath(wing, navy, style = Stroke(w*.02f))
-        // Beak, eye and friendly cheek.
-        val beak = Path().apply { moveTo(w*.76f,h*.40f); lineTo(w*.96f,h*.47f); lineTo(w*.75f,h*.54f); close() }
-        drawPath(beak, Color(0xFFFFC66D)); drawPath(beak, navy, style = Stroke(w*.02f))
-        drawCircle(navy, w*.035f, Offset(w*.66f,h*.38f)); drawCircle(Color.White, w*.012f, Offset(w*.67f,h*.37f))
-        drawCircle(Color(0xFFFFA5A1), w*.035f, Offset(w*.72f,h*.50f))
+        drawPath(leftTail, emerald); drawPath(leftTail, navy, style = Stroke(w*.018f))
+        drawPath(rightTail, teal); drawPath(rightTail, navy, style = Stroke(w*.018f))
+
+        // Symmetric rounded body and head make the bird read clearly from the front.
+        drawOval(navy, topLeft = Offset(w*.17f,h*.31f), size = Size(w*.66f,h*.58f))
+        drawOval(emerald, topLeft = Offset(w*.19f,h*.33f), size = Size(w*.62f,h*.54f))
+        drawCircle(navy, w*.285f, Offset(w*.50f,h*.34f))
+        drawCircle(emerald, w*.265f, Offset(w*.50f,h*.34f))
+        // Turquoise crown sheen and small crest.
+        drawArc(teal.copy(alpha=.9f), 205f, 130f, false, Offset(w*.27f,h*.08f), Size(w*.46f,h*.48f), style=Stroke(w*.035f))
+        val crest = Path().apply { moveTo(w*.39f,h*.13f); quadraticBezierTo(w*.40f,h*.02f,w*.49f,h*.13f); quadraticBezierTo(w*.57f,h*.02f,w*.62f,h*.15f); close() }
+        drawPath(crest, teal); drawPath(crest, navy, style=Stroke(w*.018f))
+
+        // Broad, mirrored turquoise wings stay legible at compact sizes.
+        val leftWing = Path().apply { moveTo(w*.24f,h*.52f); quadraticBezierTo(w*.08f,h*.55f,w*.23f,h*.77f); quadraticBezierTo(w*.38f,h*.74f,w*.43f,h*.60f); close() }
+        val rightWing = Path().apply { moveTo(w*.76f,h*.52f); quadraticBezierTo(w*.92f,h*.55f,w*.77f,h*.77f); quadraticBezierTo(w*.62f,h*.74f,w*.57f,h*.60f); close() }
+        drawPath(leftWing, teal); drawPath(leftWing, navy, style=Stroke(w*.018f))
+        drawPath(rightWing, teal); drawPath(rightWing, navy, style=Stroke(w*.018f))
+        // Coral breast centered beneath a small golden beak.
+        drawOval(coral, topLeft=Offset(w*.39f,h*.57f), size=Size(w*.22f,h*.27f))
+        val beak = Path().apply { moveTo(w*.46f,h*.40f); lineTo(w*.54f,h*.40f); lineTo(w*.50f,h*.49f); close() }
+        drawPath(beak, Color(0xFFFFC66D)); drawPath(beak, navy, style=Stroke(w*.015f))
+        // Large friendly eyes with highlights and gentle cheeks.
+        listOf(.405f, .595f).forEach { x ->
+            drawCircle(Color.White, w*.071f, Offset(w*x,h*.34f))
+            drawCircle(navy, w*.038f, Offset(w*x,h*.345f))
+            drawCircle(Color.White, w*.013f, Offset(w*(x-.012f),h*.33f))
+        }
+        drawCircle(Color(0xFFFFA5A1), w*.025f, Offset(w*.34f,h*.45f))
+        drawCircle(Color(0xFFFFA5A1), w*.025f, Offset(w*.66f,h*.45f))
     }
 }

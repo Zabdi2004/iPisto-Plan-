@@ -14,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -60,7 +59,7 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
     var occurrenceDate by remember { mutableStateOf(System.currentTimeMillis()) }
     var nameError by remember { mutableStateOf(false) }
     var amountError by remember { mutableStateOf(false) }
-    var saveSucceeded by remember { mutableStateOf(false) }
+    var isSaving by remember { mutableStateOf(false) }
 
     val savedExpenseCategories = (state.gastosFijos.map { it.categoria } + state.gastosVariables.map { it.categoria }).distinct()
     val expenseCategories = listOf("Comida", "Bebidas", "Transporte", "Hogar", "Social", "Teléfono", "Servicios", "Educación", "Salud", "Otros")
@@ -146,12 +145,17 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
         }
         Spacer(Modifier.height(4.dp))
         Button(
+            enabled = !isSaving,
             onClick = {
                 val parsed = MoneyInput.parseAmount(amount.text)
                 nameError = name.text.isBlank()
                 amountError = parsed == null || parsed <= 0.0
                 if (!nameError && !amountError && parsed != null) {
-                    val complete: (Boolean) -> Unit = { saved -> if (saved) saveSucceeded = true }
+                    isSaving = true
+                    val complete: (Boolean) -> Unit = { saved ->
+                        isSaving = false
+                        if (saved) navController.popBackStack()
+                    }
                     when (kind) {
                         EntryKind.INCOME -> viewModel.insertIngreso(Ingreso(userId = 0, nombre = name.text.trim(), cantidad = parsed, periodicidad = periodicity, fechaMillis = occurrenceDate), complete)
                         EntryKind.EXPENSE -> if (expenseKind == ExpenseKind.FIXED) {
@@ -167,17 +171,8 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
         ) {
             Icon(Icons.Default.Check, contentDescription = null)
             Spacer(Modifier.width(8.dp))
-            Text("Guardar registro")
+            Text(if (isSaving) "Guardando…" else "Guardar registro")
         }
-    }
-
-    if (saveSucceeded) {
-        AlertDialog(
-            onDismissRequest = { navController.popBackStack() },
-            title = { Text("Registro guardado") },
-            text = { Text("Se guardó y los totales se actualizarán con tus datos.") },
-            confirmButton = { TextButton(onClick = { navController.popBackStack() }) { Text("Listo") } }
-        )
     }
 }
 

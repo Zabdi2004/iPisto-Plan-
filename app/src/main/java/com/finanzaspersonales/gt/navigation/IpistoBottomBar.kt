@@ -11,9 +11,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Savings
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,9 +31,10 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun IpistoBottomBar(currentRoute: String?, navController: NavHostController) {
-    Box(Modifier.fillMaxWidth().height(82.dp)) {
+    val isOnGoals = currentRoute?.startsWith("metas") == true
+    Box(Modifier.fillMaxWidth()) {
         NavigationBar(
-            modifier = Modifier.align(Alignment.BottomCenter).height(68.dp),
+            modifier = Modifier.align(Alignment.BottomCenter),
             containerColor = MaterialTheme.colorScheme.surface,
             tonalElevation = 10.dp
         ) {
@@ -62,8 +65,15 @@ fun IpistoBottomBar(currentRoute: String?, navController: NavHostController) {
                 selected = false,
                 onClick = {},
                 enabled = false,
-                icon = { Spacer(Modifier.size(26.dp)) },
+                icon = { Spacer(Modifier.size(24.dp)) },
                 label = null,
+                colors = colors
+            )
+            NavigationBarItem(
+                selected = isOnGoals,
+                onClick = { navigateTopLevel(navController, Screen.Metas) },
+                icon = { Icon(if (isOnGoals) Icons.Filled.Savings else Icons.Outlined.Savings, contentDescription = "Metas de ahorro") },
+                label = { Text("Metas", maxLines = 1) },
                 colors = colors
             )
             NavigationBarItem(
@@ -76,7 +86,7 @@ fun IpistoBottomBar(currentRoute: String?, navController: NavHostController) {
         }
         FloatingActionButton(
             onClick = { navController.navigate(Screen.NuevoRegistro) { launchSingleTop = true } },
-            modifier = Modifier.align(Alignment.TopCenter).offset(y = 1.dp),
+            modifier = Modifier.align(Alignment.TopCenter).offset(y = (-22).dp),
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
@@ -87,7 +97,7 @@ fun IpistoBottomBar(currentRoute: String?, navController: NavHostController) {
 
 private fun navigateTopLevel(navController: NavHostController, route: String) {
     navController.navigate(route) {
-        popUpTo(Screen.Inicio) { saveState = true }
+        popUpTo(navController.graph.startDestinationId) { saveState = true }
         launchSingleTop = true
         restoreState = true
     }

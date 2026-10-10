@@ -2,6 +2,9 @@
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +37,7 @@ fun MetaEditarScreen(
     }
 
     var showDialog by remember { mutableStateOf(true) }
+    var showDiscardConfirmation by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
@@ -43,7 +47,7 @@ fun MetaEditarScreen(
         }
         if (showDialog) {
             MetaAhorroDialog(
-                onDismiss = { showDialog = false; navController.popBackStack() },
+                onDismiss = { showDiscardConfirmation = true },
                 onConfirm = { name, objetivo, ahorrado, aporte ->
                     val updatedMeta = meta.copy(
                         nombre = name,
@@ -59,8 +63,25 @@ fun MetaEditarScreen(
                 initialObjetivo = meta.cantidadObjetivo.toString(),
                 initialAhorrado = meta.cantidadAhorrada.toString(),
                 initialAporte = meta.aporteMensual.toString(),
-                isEditing = true
+                isEditing = true,
+                saveError = uiState.value.error
             )
         }
+    }
+
+    if (showDiscardConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDiscardConfirmation = false },
+            title = { Text("Descartar cambios") },
+            text = { Text("Hay una edición en curso. ¿Quieres salir sin guardar los cambios?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDiscardConfirmation = false
+                    showDialog = false
+                    navController.popBackStack()
+                }) { Text("Descartar") }
+            },
+            dismissButton = { TextButton(onClick = { showDiscardConfirmation = false }) { Text("Seguir editando") } }
+        )
     }
 }

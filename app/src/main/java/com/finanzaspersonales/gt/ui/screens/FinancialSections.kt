@@ -161,19 +161,19 @@ fun InicioScreen(
         FinancialSections(
             uiState = uiState.value,
             finanzasViewModel = finanzasViewModel,
-            onAddIngreso = { showIngresoDialog = true },
+            onAddIngreso = { editingIngreso = null; showIngresoDialog = true },
             onEditIngreso = { editingIngreso = it; showIngresoDialog = true },
             onDeleteIngreso = { finanzasViewModel.deleteIngreso(it) },
-            onAddGastoFijo = { showGastoFijoDialog = true },
+            onAddGastoFijo = { editingGastoFijo = null; showGastoFijoDialog = true },
             onEditGastoFijo = { editingGastoFijo = it; showGastoFijoDialog = true },
             onDeleteGastoFijo = { finanzasViewModel.deleteGastoFijo(it) },
-            onAddGastoVariable = { showGastoVariableDialog = true },
+            onAddGastoVariable = { editingGastoVariable = null; showGastoVariableDialog = true },
             onEditGastoVariable = { editingGastoVariable = it; showGastoVariableDialog = true },
             onDeleteGastoVariable = { finanzasViewModel.deleteGastoVariable(it) },
-            onAddDeuda = { showDeudaDialog = true },
+            onAddDeuda = { editingDeuda = null; showDeudaDialog = true },
             onEditDeuda = { editingDeuda = it; showDeudaDialog = true },
             onDeleteDeuda = { finanzasViewModel.deleteDeuda(it) },
-            onAddMeta = { showMetaDialog = true },
+            onAddMeta = { editingMeta = null; showMetaDialog = true },
             onEditMeta = { editingMeta = it; showMetaDialog = true },
             onDeleteMeta = { finanzasViewModel.deleteMeta(it) },
             onNuevaEvaluacion = { showNuevaEvaluacionDialog = true },
@@ -325,7 +325,8 @@ fun FinancialSections(
             initialAmount = editingIngreso?.cantidad?.toString() ?: "",
             initialPeriodicity = editingIngreso?.periodicidad ?: "Mensual",
             isEditing = editingIngreso != null,
-            initialDateMillis = editingIngreso?.fechaMillis ?: System.currentTimeMillis()
+            initialDateMillis = editingIngreso?.fechaMillis ?: System.currentTimeMillis(),
+            saveError = uiState.error
         )
     }
 
@@ -355,7 +356,8 @@ fun FinancialSections(
             initialAmount = editingGastoFijo?.cantidad?.toString() ?: "",
             initialPeriodicity = editingGastoFijo?.periodicidad ?: "Mensual",
             isEditing = editingGastoFijo != null,
-            initialDateMillis = editingGastoFijo?.fechaMillis ?: System.currentTimeMillis()
+            initialDateMillis = editingGastoFijo?.fechaMillis ?: System.currentTimeMillis(),
+            saveError = uiState.error
         )
     }
 
@@ -385,7 +387,8 @@ fun FinancialSections(
             initialAmount = editingGastoVariable?.cantidad?.toString() ?: "",
             initialPeriodicity = editingGastoVariable?.periodicidad ?: "Mensual",
             isEditing = editingGastoVariable != null,
-            initialDateMillis = editingGastoVariable?.fechaMillis ?: System.currentTimeMillis()
+            initialDateMillis = editingGastoVariable?.fechaMillis ?: System.currentTimeMillis(),
+            saveError = uiState.error
         )
     }
 
@@ -413,7 +416,8 @@ fun FinancialSections(
             initialPagoPeriodico = editingDeuda?.pagoPeriodico?.toString() ?: "",
             initialPeriodicity = editingDeuda?.periodicidad ?: "Mensual",
             isEditing = editingDeuda != null,
-            initialDateMillis = editingDeuda?.fechaMillis ?: System.currentTimeMillis()
+            initialDateMillis = editingDeuda?.fechaMillis ?: System.currentTimeMillis(),
+            saveError = uiState.error
         )
     }
 
@@ -439,7 +443,8 @@ fun FinancialSections(
             initialObjetivo = editingMeta?.cantidadObjetivo?.toString() ?: "",
             initialAhorrado = editingMeta?.cantidadAhorrada?.toString() ?: "",
             initialAporte = editingMeta?.aporteMensual?.toString() ?: "",
-            isEditing = editingMeta != null
+            isEditing = editingMeta != null,
+            saveError = uiState.error
         )
     }
 

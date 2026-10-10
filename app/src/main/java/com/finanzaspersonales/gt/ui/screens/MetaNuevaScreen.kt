@@ -17,12 +17,13 @@ fun MetaNuevaScreen(
     navController: NavHostController,
     finanzasViewModel: FinanzasViewModel = viewModel()
 ) {
+    val uiState by finanzasViewModel.uiState.collectAsState()
     var showDialog by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
-        finanzasViewModel.uiState.collectAsState().value.error?.let { error ->
+        uiState.error?.let { error ->
             Text("No se completó la operación: $error", color = MaterialTheme.colorScheme.error)
         }
         if (showDialog) {
@@ -41,7 +42,8 @@ fun MetaNuevaScreen(
                         if (saved) { showDialog = false; navController.popBackStack() }
                     }
                 },
-                isEditing = false
+                isEditing = false,
+                saveError = uiState.error
             )
         }
     }
