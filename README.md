@@ -1,12 +1,199 @@
-# iPisto
+# 💸 iPisto
 
-Aplicación Android local de finanzas personales para Guatemala, escrita en Kotlin con Jetpack Compose, Material 3, MVVM, Room, Flow y Navigation Compose. Los datos financieros se guardan localmente; el proyecto no requiere Firebase.
+### Tus finanzas, bajo control.
 
-## Requisitos y compilación
+**iPisto** es una aplicación Android de finanzas personales diseñada para organizar ingresos, controlar gastos, administrar deudas y dar seguimiento a metas de ahorro. Desarrollada con Kotlin y Jetpack Compose, prioriza una experiencia visual moderna y el almacenamiento local de la información.
 
-- Android Studio con Android SDK 34.
-- JDK 17 (el wrapper del proyecto usa Gradle 8.5).
-- En Windows, abre el proyecto en Android Studio o ejecuta desde PowerShell:
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android">
+  <img src="https://img.shields.io/badge/Language-Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin">
+  <img src="https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white" alt="Jetpack Compose">
+  <img src="https://img.shields.io/badge/Database-Room-527FFF?style=for-the-badge" alt="Room">
+</p>
+
+<p align="center">
+  <b>Gestión financiera local · Visualización de datos · Presupuestos personales</b>
+</p>
+
+---
+
+## 📑 Tabla de contenido
+
+- [✨ Funcionalidades](#-funcionalidades)
+- [🛠️ Tecnologías](#️-tecnologías)
+- [🏗️ Arquitectura](#️-arquitectura)
+- [🧮 Cálculo del balance financiero](#-cálculo-del-balance-financiero)
+- [🔐 Seguridad y almacenamiento](#-seguridad-y-almacenamiento)
+- [🚀 Instalación y ejecución](#-instalación-y-ejecución)
+- [🧪 Pruebas y verificación](#-pruebas-y-verificación)
+- [📌 Alcance y limitaciones](#-alcance-y-limitaciones)
+- [🗺️ Mejoras futuras](#️-mejoras-futuras)
+
+---
+
+## ✨ Funcionalidades
+
+iPisto reúne herramientas para comprender y administrar las finanzas personales desde una sola aplicación.
+
+| Módulo | Descripción |
+|---|---|
+| 🏠 **Inicio** | Consulta el balance financiero y los principales indicadores de tus finanzas. |
+| 💵 **Ingresos** | Registra y administra ingresos según su periodicidad. |
+| 📉 **Gastos fijos** | Organiza compromisos recurrentes y consulta sus equivalencias mensuales estimadas. |
+| 🛒 **Gastos variables** | Registra gastos que cambian según tus necesidades y hábitos de consumo. |
+| 📊 **Informes** | Visualiza comparativas de ingresos y gastos, gastos por categoría y otros indicadores disponibles. |
+| 🎯 **Metas de ahorro** | Define objetivos, registra avances y consulta el progreso de tus metas. |
+| 💳 **Deudas** | Administra información de deudas y consulta los saldos registrados. |
+| 👤 **Perfil** | Accede a la configuración personal y las opciones disponibles de la cuenta. |
+| 📚 **Educación financiera** | Consulta contenido educativo mediante una interfaz desplazable. |
+| 🔒 **Autenticación local** | Registra usuarios, inicia sesión, bloquea el acceso y permite recuperar contraseñas mediante preguntas de seguridad. |
+
+La aplicación utiliza una interfaz oscura con tonos azul noche, tarjetas redondeadas y una mascota original de quetzal integrada mediante Compose.
+
+## 🛠️ Tecnologías
+
+| Tecnología | Uso |
+|---|---|
+| **Kotlin** | Lenguaje principal. |
+| **Jetpack Compose** | Construcción declarativa de la interfaz. |
+| **Material 3** | Componentes y estilos visuales. |
+| **MVVM** | Separación entre interfaz, estado y lógica de presentación. |
+| **Room** | Persistencia local de usuarios y datos financieros. |
+| **Kotlin Coroutines** | Ejecución de operaciones asíncronas. |
+| **Flow** | Observación reactiva de los datos. |
+| **Navigation Compose** | Navegación entre pantallas y protección de destinos privados. |
+| **BigDecimal** | Análisis y normalización de importes monetarios. |
+| **PBKDF2** | Derivación de credenciales con sal para la autenticación y recuperación local. |
+
+**Enfoque offline:** la aplicación no requiere Firebase ni un backend remoto para las funcionalidades descritas. Los datos se almacenan en la base de datos local del dispositivo.
+
+## 🏗️ Arquitectura
+
+El proyecto organiza sus responsabilidades en módulos para facilitar el mantenimiento y la evolución del código.
+
+```text
+app/src/main/java/com/finanzaspersonales/gt/
+│
+├── data/
+│   ├── local/          # Room, entidades y DAOs
+│   └── repository/     # Acceso y persistencia de datos
+│
+├── domain/
+│   └── calculator/     # Cálculos y normalización financiera
+│
+├── viewmodel/          # Estado y lógica de presentación
+│
+├── ui/
+│   ├── components/     # Componentes reutilizables
+│   ├── screens/        # Pantallas de la aplicación
+│   └── theme/          # Colores, tipografía y tema visual
+│
+└── navigation/         # Destinos y navegación
+```
+
+### Flujo de datos
+
+La interfaz observa el estado expuesto por los ViewModels. Estos coordinan la lógica de presentación y acceden a los repositorios, que se encargan de interactuar con Room.
+
+```text
+┌─────────────────────┐
+│   Jetpack Compose   │
+│      UI / Screens   │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│      ViewModels     │
+│   Estado y lógica   │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│     Repositories    │
+│ Acceso a los datos  │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│      Room / SQLite  │
+│   Datos locales     │
+└─────────────────────┘
+```
+
+## 🧮 Cálculo del balance financiero
+
+iPisto utiliza equivalencias mensuales estimadas para comparar ingresos y gastos con distintas periodicidades.
+
+La lógica se centraliza en `BalanceCalculator.equivalenteMensualEstimado`, evitando que las pantallas apliquen fórmulas diferentes al mismo tipo de movimiento.
+
+### Fórmulas utilizadas
+
+| Periodicidad | Equivalente mensual estimado |
+|---|---|
+| Diario | Importe × 365 / 12 |
+| Semanal | Importe × 52 / 12 |
+| Quincenal | Importe × 365 / 15 / 12 |
+| Mensual | Importe × 1 |
+| Único | Importe real correspondiente al mes de su fecha registrada |
+
+**Importante:** en iPisto, *quincenal* significa exactamente cada 15 días, no dos veces por mes.
+
+### Ejemplos
+
+Suponiendo un importe de Q100:
+
+| Periodicidad | Equivalente mensual |
+|---|---:|
+| Diario | Q3,041.67 |
+| Semanal | Q433.33 |
+| Cada 15 días | Q202.78 |
+| Mensual | Q100.00 |
+
+Estos valores representan promedios estimados, no necesariamente el dinero recibido o pagado dentro de un mes calendario específico.
+
+Los movimientos únicos no se multiplican ni se anualizan. Se contabilizan por su importe real en el mes de su fecha registrada.
+
+### Precisión monetaria
+
+Los importes se procesan con `BigDecimal`, se limitan a dos decimales y se almacenan como `Double` en la persistencia actual.
+
+Los campos monetarios utilizan el componente compartido `MoneyInput`, que permite introducir decimales con punto o coma y conserva la selección del cursor durante la escritura.
+
+## 🔐 Seguridad y almacenamiento
+
+La aplicación contempla autenticación local y separación de los datos financieros por usuario.
+
+- Registro e inicio de sesión locales.
+- Hash de contraseñas mediante PBKDF2 con sal.
+- Recuperación local de contraseña mediante preguntas de seguridad.
+- Bloqueo de acceso a las pantallas privadas.
+- Persistencia mediante Room.
+- Migraciones explícitas para conservar los datos durante las actualizaciones de la base de datos.
+- Verificación de propiedad de los registros en las operaciones correspondientes.
+
+Al ser una aplicación local, no debe confundirse el aislamiento entre usuarios de la aplicación con una protección absoluta frente a alguien que tenga acceso privilegiado al dispositivo o a sus archivos.
+
+## 🚀 Instalación y ejecución
+
+### Requisitos
+
+- Android Studio compatible con el proyecto.
+- Android SDK 34.
+- JDK 17.
+- Gradle Wrapper 8.5, según la configuración documentada del proyecto.
+
+### Obtener el código
+
+```bash
+git clone https://github.com/Zabdi2004/iPisto-Plan-.git
+cd iPisto-Plan-
+```
+
+Abre el proyecto en Android Studio y espera a que termine la sincronización de Gradle.
+
+### Compilar en Windows
+
+Desde PowerShell, en la raíz del proyecto:
 
 ```powershell
 .\gradlew.bat testDebugUnitTest
@@ -14,46 +201,123 @@ Aplicación Android local de finanzas personales para Guatemala, escrita en Kotl
 .\gradlew.bat lintDebug
 ```
 
-El APK de depuración se genera en `app/build/outputs/apk/debug/app-debug.apk`.
+### Generar el APK
 
-## Estructura
+Si la compilación termina correctamente, el APK de depuración se encuentra en:
 
-- `data/local`: entidades, DAOs y base de datos Room.
-- `data/repository`: acceso a usuarios, finanzas y metas.
-- `viewmodel`: estado de autenticación y finanzas.
-- `domain/calculator`: normalización mensual y balance financiero.
-- `ui`: pantallas y componentes Compose.
-- `navigation`: destinos y protección de pantallas privadas.
+```text
+app/build/outputs/apk/debug/app-debug.apk
+```
 
-## Estado conocido
+Puedes instalarlo en un dispositivo Android compatible para probar la aplicación.
 
-- La identidad visual usa el tema oscuro azul noche de iPisto, tokens centralizados en `ui/theme/Theme.kt`, tarjetas redondeadas y una mascota original de quetzal dibujada en Compose.
-- La navegación inferior ofrece Inicio, Informes, Nuevo registro, Metas y Perfil. Nuevo registro guarda ingresos, gastos fijos o variables en sus tablas existentes; cuentas y transferencias siguen fuera del alcance actual.
-- Los registros tienen fecha nullable para movimientos únicos. Room v2 añade esa columna sin inventar fechas para filas antiguas. Las fechas de los registros recurrentes describen una periodicidad, no una lista de cobros o pagos ocurridos.
-- `BalanceCalculator.equivalenteMensualEstimado` es la fuente única de equivalencias: diario × 365/12, semanal × 52/12, quincenal (cada 15 días) × 365/15/12, mensual × 1 y único al importe real en el mes de su fecha. Los movimientos únicos no se anualizan.
-- Inicio, Balance e Informes usan las mismas equivalencias mensuales estimadas; así Q100 semanales son Q433.33 al mes en promedio anualizado, mientras Q100 mensuales son Q100. El importe diario equivale a ×365/12 (Q100 diarios = Q3,041.67 estimados al mes). No se presenta esa proyección como dinero real recibido o pagado en un mes concreto.
-- La aplicación no ofrece todavía un total real completo por mes. Aunque los movimientos únicos tienen fecha, las entradas recurrentes guardan una regla y no cada ocurrencia. Para sumar totales históricos reales se necesita una tabla de movimientos/ocurrencias con importe, fecha efectiva, tipo/categoría y vínculo opcional a la regla recurrente. Los datos legacy mantienen fecha desconocida.
-- Los importes se analizan con `BigDecimal`, se limitan a dos decimales y se guardan como `Double`.
-- Incluye registro e inicio de sesión local, almacenamiento de contraseñas y respuestas de seguridad con PBKDF2 con sal, recuperación de contraseña local con preguntas de seguridad, migración Room v2→v3, datos financieros por usuario, metas y cálculo reactivo del balance.
-- Los campos monetarios comparten `MoneyInput`; no agrupan cifras mientras se escribe y conservan la selección/cursor. Los decimales con punto o coma se convierten al guardar.
-- La distribución de idiomas no está completa: hay recursos en `values` únicamente. La opción K’iche’ selecciona locale `qu`, pero no existe un conjunto de traducciones K’iche’ revisadas.
-- `GraficasScreen` muestra comparativas de equivalentes mensuales estimados, gastos por categoría, saldos de deuda y progreso de metas con los datos actuales de Room. No representa totales reales por mes ni series históricas.
-- Educación Financiera usa una columna desplazable verticalmente; no incluye carruseles horizontales.
-- Las categorías personalizadas se pueden ingresar desde el selector de categorías. La pantalla de configuración declara las opciones que aún no están disponibles en vez de ofrecer controles sin acción.
-- Las pruebas instrumentadas en `app/src/androidTest` cubren CRUD/persistencia e aislamiento por usuario en Room, separación de gastos fijos y variables, recreación posterior a eliminar, hashing de contraseñas, sesión, flujos de autenticación, flujo completo de recuperación de contraseña con preguntas de seguridad y migraciones Room v1→v2 y v2→v3 sin pérdida de datos.
-- La aplicación todavía no incluye cuentas bancarias ni transferencias.
+## 🧪 Pruebas y verificación
 
-## Verificación reciente
+El proyecto incluye pruebas unitarias e instrumentadas para validar aspectos de la lógica financiera, la persistencia y la autenticación.
 
-En el entorno local con JDK Temurin 17 (10 de octubre de 2026):
+Entre las áreas cubiertas se encuentran:
 
-- `testDebugUnitTest`: correcto, 13 pruebas unitarias.
-- `assembleDebug`: correcto; genera `app/build/outputs/apk/debug/app-debug.apk`.
-- `lintDebug`: correcto, 0 errores y 102 advertencias.
-- `assembleDebugAndroidTest`: correcto; el APK instrumentado compila.
-- `connectedDebugAndroidTest`: correcto en NIC-LX3 / Android 15, 13 pruebas ejecutadas y 0 fallos. Incluye navegación principal, flujo completo de recuperación de contraseña, verificación con respuestas normalizadas/con sal, configuración desde el perfil y migración de base de datos Room v2→v3.
-# Cálculo del equivalente mensual estimado
+- Operaciones CRUD y persistencia con Room.
+- Aislamiento de datos por usuario.
+- Separación entre gastos fijos y variables.
+- Hashing de contraseñas y gestión de sesiones.
+- Flujos de autenticación y recuperación de contraseña.
+- Migraciones de base de datos sin pérdida de los datos existentes.
 
-Los importes recurrentes se estiman en un mes promedio: diario × 365/12, semanal × 52/12, cada 15 días × 365/15/12 y mensual × 1. «Quincenal» significa exactamente cada 15 días (no dos veces por mes). «Único» solo cuenta por su importe real en el mes de su fecha de registro, sin multiplicarlo. Las fechas se guardan en milisegundos Unix; en registros anteriores a la migración permanecen desconocidas y no se les atribuye una fecha histórica.
+### Comandos de prueba
 
-El equivalente mensual sirve para comparar presupuestos; no es el total de transacciones liquidadas dentro de un mes calendario. Para totales reales históricos, primero se deben almacenar las ocurrencias de ingresos y gastos con su fecha efectiva (también para las periodicidades recurrentes).
+Pruebas unitarias:
+
+```powershell
+.\gradlew.bat testDebugUnitTest
+```
+
+Compilación de la aplicación:
+
+```powershell
+.\gradlew.bat assembleDebug
+```
+
+Análisis estático:
+
+```powershell
+.\gradlew.bat lintDebug
+```
+
+Compilación de pruebas instrumentadas:
+
+```powershell
+.\gradlew.bat assembleDebugAndroidTest
+```
+
+Ejecución en un dispositivo o emulador conectado:
+
+```powershell
+.\gradlew.bat connectedDebugAndroidTest
+```
+
+### Última verificación documentada
+
+Según los resultados reportados en el entorno local el 10 de octubre de 2026:
+
+| Comprobación | Resultado reportado |
+|---|---|
+| `testDebugUnitTest` | 13 pruebas unitarias aprobadas |
+| `assembleDebug` | Compilación correcta |
+| `lintDebug` | 0 errores y 102 advertencias |
+| `assembleDebugAndroidTest` | Compilación correcta |
+| `connectedDebugAndroidTest` | 13 pruebas ejecutadas, 0 fallos |
+
+Los resultados anteriores corresponden a esa ejecución y no garantizan que futuras modificaciones sigan compilando correctamente.
+
+## 📌 Alcance y limitaciones
+
+La documentación también debe dejar claro qué representa la información financiera y qué funcionalidades todavía no están implementadas.
+
+### Totales estimados frente a totales reales
+
+Los módulos Inicio, Balance e Informes utilizan equivalencias mensuales estimadas para comparar movimientos recurrentes.
+
+Actualmente, la aplicación no dispone de un historial completo de ocurrencias de ingresos y gastos recurrentes. Por ello, los gráficos no representan necesariamente el total real de transacciones liquidadas durante cada mes ni series históricas de movimientos.
+
+Para implementar esos informes sería necesario registrar cada ocurrencia con información como:
+
+- Importe.
+- Fecha efectiva.
+- Tipo y categoría.
+- Referencia opcional a la regla recurrente de origen.
+
+### Fechas y registros anteriores
+
+Los movimientos únicos pueden incluir una fecha registrada. Las entradas recurrentes representan reglas de periodicidad, no una lista de cobros o pagos que ya hayan ocurrido.
+
+Las fechas se almacenan como milisegundos Unix. Los registros antiguos a los que no se les conocía una fecha conservan ese estado, sin atribuirles fechas históricas inventadas.
+
+### Funcionalidades fuera del alcance actual
+
+- Cuentas bancarias.
+- Transferencias entre cuentas.
+- Registro histórico completo de ocurrencias recurrentes.
+- Traducción completa y revisada al idioma K’iche’.
+
+La opción de idioma K’iche’ selecciona el locale `qu`, pero actualmente no cuenta con un conjunto completo de traducciones revisadas.
+
+La configuración presenta las opciones que todavía no están disponibles, en lugar de ofrecer controles que aparenten funcionar sin implementar su comportamiento.
+
+## 🗺️ Mejoras futuras
+
+Las siguientes mejoras representan posibles líneas de evolución del proyecto:
+
+- [ ] Historial de transacciones con fechas efectivas.
+- [ ] Informes mensuales basados en movimientos reales.
+- [ ] Cuentas bancarias y transferencias.
+- [ ] Internacionalización completa y traducciones revisadas.
+- [ ] Ampliación de las pruebas automatizadas de interfaz.
+- [ ] Exportación de informes financieros.
+
+---
+
+<p align="center">
+  <b>iPisto</b><br>
+  Finanzas personales, con claridad y control.
+</p>
