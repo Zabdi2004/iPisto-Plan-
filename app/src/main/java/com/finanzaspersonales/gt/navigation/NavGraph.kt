@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
@@ -40,6 +42,8 @@ object Screen {
 @Composable
 fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = rememberNavController()) {
     val user by authViewModel.currentUser.collectAsState()
+    val unlocked by authViewModel.isUnlocked.collectAsState()
+    val authState by authViewModel.authState.collectAsState()
     val context = LocalContext.current
     val app = context.applicationContext as FinanzasApp
     val financeViewModel = user?.id?.let { id ->
@@ -48,20 +52,39 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
         )
     }
 
-    LaunchedEffect(user?.id) {
-        if (user != null) {
+    LaunchedEffect(user?.id, unlocked) {
+        if (user != null && unlocked) {
             navController.navigate(Screen.Inicio) {
-                popUpTo(Screen.Welcome) { inclusive = true }
+                popUpTo(navController.graph.id) { inclusive = false }
                 launchSingleTop = true
             }
         }
+    }
+
+    if (user != null && !unlocked) {
+        BackHandler(enabled = true) { }
+        key(user!!.id) {
+            BloqueoScreen(
+                username = user!!.nombreUsuario,
+                loading = authState == com.finanzaspersonales.gt.viewmodel.AuthState.Loading,
+                error = (authState as? com.finanzaspersonales.gt.viewmodel.AuthState.Error)?.message,
+                onUnlock = authViewModel::unlock,
+                onLogout = {
+                    authViewModel.logout()
+                    navController.navigate(Screen.Welcome) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                }
+            )
+        }
+        return
     }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     Scaffold(
         containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
         bottomBar = {
-            if (user != null) IpistoBottomBar(backStackEntry?.destination?.route, navController)
+            if (user != null && unlocked) IpistoBottomBar(backStackEntry?.destination?.route, navController)
         }
     ) { paddingValues ->
     NavHost(navController = navController, startDestination = Screen.Welcome, modifier = Modifier.padding(paddingValues)) {

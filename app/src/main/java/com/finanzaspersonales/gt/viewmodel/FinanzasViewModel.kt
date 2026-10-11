@@ -77,20 +77,6 @@ class FinanzasViewModel(
         }
     }
 
-    fun calcularBalance() {
-        viewModelScope.launch {
-            runCatching {
-                BalanceCalculator.calcularBalance(
-                    finanzasRepository.getIngresosByUserOnce(),
-                    finanzasRepository.getGastosFijosByUserOnce(),
-                    finanzasRepository.getGastosVariablesByUserOnce(),
-                    finanzasRepository.getDeudasByUserOnce()
-                )
-            }.onSuccess { _uiState.value = _uiState.value.copy(balance = it, error = null) }
-                .onFailure { _uiState.value = _uiState.value.copy(error = it.localizedMessage ?: "No se pudo calcular el balance") }
-        }
-    }
-
     private fun mutate(onComplete: (Boolean) -> Unit = {}, action: suspend () -> Result<*>) {
         viewModelScope.launch {
             val result: Result<*> = try {

@@ -8,6 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilterChip
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -18,10 +24,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
+import com.finanzaspersonales.gt.domain.calculator.ChartType
+import com.finanzaspersonales.gt.domain.calculator.FinancialChartData
 import com.finanzaspersonales.gt.ui.components.QuetzalMascot
 import com.finanzaspersonales.gt.domain.calculator.BalanceCalculator
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
@@ -30,6 +49,7 @@ private data class ChartRow(val label: String, val amount: Double, val detail: S
 
 @Composable
 fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
+    var chartType by rememberSaveable { mutableStateOf(ChartType.LINES) }
     val state by finanzasViewModel.uiState.collectAsState()
     val balance = state.balance
     val gastosPorCategoria = buildMap<String, Double> {
@@ -60,14 +80,23 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
             EmptyChartMessage("Aún no hay datos financieros para resumir. Agrega ingresos, gastos, deudas o metas.")
         } else {
             ChartSection("Equivalente mensual estimado") {
-                val rows = listOf(
-                    ChartRow("Ingresos", balance.ingresosMensuales),
-                    ChartRow("Gastos fijos", balance.gastosFijosMensuales),
-                    ChartRow("Gastos variables", balance.gastosVariablesMensuales),
-                    ChartRow("Pagos de deuda", balance.pagosDeudaMensuales),
-                    ChartRow("Disponible", balance.dineroDisponible)
-                )
-                AmountBars(rows, finanzasViewModel, useAbsoluteScale = true)
+                val rows = FinancialChartData.fromBalance(balance)
+                Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf(
+                        ChartType.LINES to androidx.compose.ui.res.stringResource(com.finanzaspersonales.gt.R.string.chart_lines),
+                        ChartType.BARS to androidx.compose.ui.res.stringResource(com.finanzaspersonales.gt.R.string.chart_bars),
+                        ChartType.SCATTER to androidx.compose.ui.res.stringResource(com.finanzaspersonales.gt.R.string.chart_scatter)
+                    ).forEach { (type, label) ->
+                        FilterChip(selected = chartType == type, onClick = { chartType = type }, label = { Text(label) })
+                    }
+                }
+                FinancialChart(points = rows, chartType = chartType, formatAmount = finanzasViewModel::formatCurrency)
+                rows.forEach { point ->
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(point.label, style = MaterialTheme.typography.bodySmall)
+                        Text(finanzasViewModel.formatCurrency(point.amount), style = MaterialTheme.typography.bodySmall)
+                    }
+                }
                 Spacer(Modifier.height(8.dp))
                 Text(
                     "Proyección mensual promedio: semanal × 52/12, quincenal (cada 15 días) × 365/15/12, diario × 365/12. Los movimientos únicos solo cuentan en el mes de su fecha. El saldo conserva valores negativos.",
@@ -107,6 +136,53 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun FinancialChart(
+    points: List<com.finanzaspersonales.gt.domain.calculator.FinancialChartPoint>,
+    chartType: ChartType,
+    formatAmount: (Double) -> String
+) {
+    val lineColor = MaterialTheme.colorScheme.primary
+    val expenseColor = MaterialTheme.colorScheme.error
+    val incomeColor = MaterialTheme.colorScheme.tertiary
+    val gridColor = MaterialTheme.colorScheme.outlineVariant
+    Column {
+        androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(190.dp).semantics { contentDescription = "Gráfica $chartType: ${points.joinToString { "${it.label} ${formatAmount(it.amount)}" }}" }) {
+            val left = 18.dp.toPx(); val right = size.width - 18.dp.toPx()
+            val top = 12.dp.toPx(); val bottom = size.height - 18.dp.toPx()
+            val max = (points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0).coerceAtLeast(1.0)
+            val zeroY = top + ((max / (max * 2.0)) * (bottom - top)).toFloat()
+            drawLine(gridColor, Offset(left, zeroY), Offset(right, zeroY), strokeWidth = 1.dp.toPx())
+            if (points.isNotEmpty()) {
+                val dx = if (points.size == 1) 0f else (right - left) / (points.size - 1)
+                val coords = points.mapIndexed { index, point ->
+                    val x = if (points.size == 1) (left + right) / 2 else left + index * dx
+                    val y = zeroY - (point.amount / max).toFloat() * ((bottom - top) / 2f)
+                    Offset(x, y)
+                }
+                if (chartType == ChartType.LINES && coords.size > 1) {
+                    val path = Path().apply { moveTo(coords.first().x, coords.first().y); coords.drop(1).forEach { lineTo(it.x, it.y) } }
+                    drawPath(path, lineColor, style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round))
+                }
+                coords.forEachIndexed { index, point ->
+                    val amount = points[index].amount
+                    val color = if (index == 0) incomeColor else if (amount < 0 || index in 1..3) expenseColor else lineColor
+                    if (chartType == ChartType.BARS) {
+                        val barWidth = (right - left) / points.size * 0.48f
+                        drawLine(color, Offset(point.x, zeroY), point, strokeWidth = barWidth.coerceAtLeast(4.dp.toPx()), cap = StrokeCap.Round)
+                    }
+                    drawCircle(if (chartType == ChartType.SCATTER) lineColor else color, radius = 5.dp.toPx(), center = point)
+                }
+            }
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text("−${formatAmount(points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0)}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Q0.00", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("+${formatAmount(points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0)}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

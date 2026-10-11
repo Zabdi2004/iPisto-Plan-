@@ -54,8 +54,17 @@ class AuthViewModelInstrumentedTest {
         assertNull(session.getCurrentUserId())
 
         viewModel.checkExistingSession(userId)
-        assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
+        assertTrue(awaitState { it == AuthState.Idle } == AuthState.Idle)
         assertEquals("ipisto_test", viewModel.currentUser.value?.nombreUsuario)
+        assertFalse(viewModel.isUnlocked.value)
+        viewModel.unlock("incorrecta")
+        assertTrue(awaitState { it is AuthState.Error } is AuthState.Error)
+        assertFalse(viewModel.isUnlocked.value)
+        viewModel.unlock("secreto123")
+        assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
+        assertTrue(viewModel.isUnlocked.value)
+        viewModel.lock()
+        assertFalse(viewModel.isUnlocked.value)
 
         viewModel.logout()
         viewModel.login("ipisto_test", "incorrecta")
@@ -64,6 +73,7 @@ class AuthViewModelInstrumentedTest {
 
         viewModel.login("ipisto_test", "secreto123")
         assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
+        assertTrue(viewModel.isUnlocked.value)
         assertEquals(userId, session.getCurrentUserId())
 
         viewModel.logout()
