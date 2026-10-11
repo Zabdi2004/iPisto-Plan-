@@ -1,7 +1,7 @@
 ﻿package com.finanzaspersonales.gt.ui.components
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,7 +22,7 @@ fun ConfirmDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
-        text = { Text(message, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(24.dp).width(320.dp)) },
+        text = { Text(message, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)) },
         confirmButton = {
             TextButton(
                 enabled = confirmEnabled,

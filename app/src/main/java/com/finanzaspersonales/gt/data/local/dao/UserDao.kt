@@ -1,4 +1,4 @@
-﻿package com.finanzaspersonales.gt.data.local.dao
+package com.finanzaspersonales.gt.data.local.dao
 
 import androidx.room.*
 import com.finanzaspersonales.gt.data.local.entity.User
@@ -29,6 +29,12 @@ interface UserTypeDao {
 
     @Query("UPDATE User SET passwordHash = :passwordHash WHERE id = :id")
     suspend fun updatePassword(id: Long, passwordHash: String)
+
+    @Query("UPDATE User SET preguntaSeguridad = :pregunta, respuestaSeguridadHash = :respuestaHash WHERE id = :id")
+    suspend fun updateSecurityQuestion(id: Long, pregunta: String, respuestaHash: String)
+
+    @Query("SELECT preguntaSeguridad FROM User WHERE nombreUsuario = :username LIMIT 1")
+    suspend fun getSecurityQuestionByUsername(username: String): String?
 
     @Query("UPDATE User SET nombreUsuario = :username WHERE id = :id")
     suspend fun updateUsername(id: Long, username: String)

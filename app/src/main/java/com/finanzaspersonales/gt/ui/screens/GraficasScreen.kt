@@ -93,7 +93,7 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
                 FinancialChart(points = rows, chartType = chartType, formatAmount = finanzasViewModel::formatCurrency)
                 rows.forEach { point ->
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(point.label, style = MaterialTheme.typography.bodySmall)
+                        Text(point.label, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
                         Text(finanzasViewModel.formatCurrency(point.amount), style = MaterialTheme.typography.bodySmall)
                     }
                 }
@@ -180,9 +180,9 @@ private fun FinancialChart(
             }
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("−${formatAmount(points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0)}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text("Q0.00", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text("+${formatAmount(points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0)}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("−${formatAmount(points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0)}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+            Text("Q0.00", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+            Text("+${formatAmount(points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0)}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.End, modifier = Modifier.weight(1f))
         }
     }
 }
@@ -221,6 +221,6 @@ private fun AmountBars(rows: List<ChartRow>, viewModel: FinanzasViewModel, useAb
 private fun EmptyChartMessage(message: String) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         QuetzalMascot(size = 46.dp)
-        Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Start)
+        Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Start, modifier = Modifier.weight(1f))
     }
 }

@@ -33,7 +33,7 @@ fun IngresoDialog(
         title = { Text(if (isEditing) "Editar Ingreso" else "Agregar Ingreso", style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(
-                modifier = Modifier.padding(24.dp).width(320.dp),
+                modifier = Modifier.padding(24.dp).widthIn(max = 320.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CustomTextField(
@@ -113,7 +113,7 @@ fun GastoFijoDialog(
         title = { Text(if (isEditing) "Editar Gasto Fijo" else "Agregar Gasto Fijo", style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(
-                modifier = Modifier.padding(24.dp).width(320.dp)
+                modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
             ) {
                 CustomTextField(
                     value = name,
@@ -201,7 +201,7 @@ fun GastoVariableDialog(
         title = { Text(if (isEditing) "Editar Gasto Variable" else "Agregar Gasto Variable", style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(
-                modifier = Modifier.padding(24.dp).width(320.dp)
+                modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
             ) {
                 CustomTextField(
                     value = name,
@@ -286,7 +286,7 @@ fun DeudaDialog(
         title = { Text(if (isEditing) "Editar Deuda" else "Agregar Deuda", style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(
-                modifier = Modifier.padding(24.dp).width(320.dp)
+                modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
             ) {
                 CustomTextField(
                     value = name,
@@ -374,7 +374,7 @@ fun MetaAhorroDialog(
         title = { Text(if (isEditing) "Editar Meta" else "Agregar Meta de Ahorro", style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(
-                modifier = Modifier.padding(24.dp).width(320.dp)
+                modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
             ) {
                 CustomTextField(
                     value = name,

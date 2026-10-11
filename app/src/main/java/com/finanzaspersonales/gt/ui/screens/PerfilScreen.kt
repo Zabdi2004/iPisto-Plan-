@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +23,9 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel,
     val financeState = financeViewModel?.uiState?.collectAsState()?.value
     var showPasswordDialog by remember { mutableStateOf(false) }
     var showNameDialog by remember { mutableStateOf(false) }
+    var showSecurityQuestionDialog by remember { mutableStateOf(false) }
+    var questionInput by remember { mutableStateOf("") }
+    var answerInput by remember { mutableStateOf("") }
     var editableName by remember { mutableStateOf("") }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var deleteRequested by remember { mutableStateOf(false) }
@@ -29,7 +33,7 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel,
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    LaunchedEffect(authState, currentUser, showPasswordDialog, showNameDialog, deleteRequested) {
+    LaunchedEffect(authState, currentUser, showPasswordDialog, showNameDialog, showSecurityQuestionDialog, deleteRequested) {
         if (authState == AuthState.Success && showPasswordDialog) {
             showPasswordDialog = false
             oldPassword = ""
@@ -39,6 +43,12 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel,
         }
         if (authState == AuthState.Success && showNameDialog) {
             showNameDialog = false
+            authViewModel.resetAuthState()
+        }
+        if (authState == AuthState.Success && showSecurityQuestionDialog) {
+            showSecurityQuestionDialog = false
+            questionInput = ""
+            answerInput = ""
             authViewModel.resetAuthState()
         }
         if (deleteRequested && authState == AuthState.Idle && currentUser == null) {
@@ -81,6 +91,14 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel,
             OutlinedButton(onClick = { navController.navigate("graficas") }, modifier = Modifier.fillMaxWidth()) { Text("Informes") }
             Button(onClick = { showPasswordDialog = true; authViewModel.resetAuthState() }, modifier = Modifier.fillMaxWidth()) {
                 Text("Cambiar contraseña")
+            }
+            OutlinedButton(onClick = {
+                questionInput = user.preguntaSeguridad ?: ""
+                answerInput = ""
+                authViewModel.resetAuthState()
+                showSecurityQuestionDialog = true
+            }, modifier = Modifier.fillMaxWidth()) {
+                Text(if (user.preguntaSeguridad != null) "Pregunta de seguridad" else "Configurar pregunta de seguridad")
             }
             OutlinedButton(onClick = { navController.navigate("configuracion") }, modifier = Modifier.fillMaxWidth()) { Text("Idioma y configuración") }
             OutlinedButton(onClick = { navController.navigate("educacion_financiera") }, modifier = Modifier.fillMaxWidth()) { Text("Educación financiera") }
@@ -137,6 +155,42 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel,
         dismissButton = { TextButton(onClick = { showPasswordDialog = false }) { Text("Cancelar") } }
     )
 
+    if (showSecurityQuestionDialog) AlertDialog(
+        onDismissRequest = { if (authState != AuthState.Loading) { showSecurityQuestionDialog = false; authViewModel.resetAuthState() } },
+        title = { Text("Pregunta de seguridad") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = "Se utilizará para recuperar el acceso a tu cuenta si olvidas tu contraseña.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                OutlinedTextField(
+                    value = questionInput,
+                    onValueChange = { questionInput = it },
+                    label = { Text("Pregunta de seguridad") },
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = answerInput,
+                    onValueChange = { answerInput = it },
+                    label = { Text("Respuesta secreta") },
+                    singleLine = true
+                )
+                (authState as? AuthState.Error)?.let { Text(it.message, color = MaterialTheme.colorScheme.error) }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                enabled = authState != AuthState.Loading && questionInput.isNotBlank() && answerInput.isNotBlank(),
+                onClick = { authViewModel.setSecurityQuestion(questionInput, answerInput) }
+            ) {
+                Text(if (authState == AuthState.Loading) "Guardando…" else "Guardar")
+            }
+        },
+        dismissButton = { TextButton(onClick = { showSecurityQuestionDialog = false; authViewModel.resetAuthState() }) { Text("Cancelar") } }
+    )
+
     if (showDeleteDialog) AlertDialog(
         onDismissRequest = { showDeleteDialog = false },
         title = { Text("Eliminar cuenta") },
@@ -158,7 +212,7 @@ fun PerfilScreen(navController: NavHostController, authViewModel: AuthViewModel,
 @Composable
 private fun ProfileMetric(label: String, value: String) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-        Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
+        Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+        Text(value, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface, textAlign = TextAlign.End, modifier = Modifier.weight(1f))
     }
 }

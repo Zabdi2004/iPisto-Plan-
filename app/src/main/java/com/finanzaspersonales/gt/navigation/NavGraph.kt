@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.key
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
@@ -37,6 +39,7 @@ object Screen {
     const val Perfil = "perfil"
     const val Configuracion = "configuracion"
     const val EducacionFinanciera = "educacion_financiera"
+    const val RecuperarPassword = "recuperar_password"
 }
 
 @Composable
@@ -44,6 +47,7 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
     val user by authViewModel.currentUser.collectAsState()
     val unlocked by authViewModel.isUnlocked.collectAsState()
     val authState by authViewModel.authState.collectAsState()
+    var isRecoveringPassword by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     val app = context.applicationContext as FinanzasApp
     val financeViewModel = user?.id?.let { id ->
@@ -62,20 +66,39 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
     }
 
     if (user != null && !unlocked) {
-        BackHandler(enabled = true) { }
-        key(user!!.id) {
-            BloqueoScreen(
-                username = user!!.nombreUsuario,
-                loading = authState == com.finanzaspersonales.gt.viewmodel.AuthState.Loading,
-                error = (authState as? com.finanzaspersonales.gt.viewmodel.AuthState.Error)?.message,
-                onUnlock = authViewModel::unlock,
-                onLogout = {
-                    authViewModel.logout()
-                    navController.navigate(Screen.Welcome) {
-                        popUpTo(navController.graph.id) { inclusive = true }
-                    }
+        if (isRecoveringPassword) {
+            BackHandler(enabled = true) {
+                isRecoveringPassword = false
+                authViewModel.resetAuthState()
+            }
+            RecuperarPasswordScreen(
+                initialUsername = user!!.nombreUsuario,
+                authViewModel = authViewModel,
+                onBack = {
+                    isRecoveringPassword = false
+                    authViewModel.resetAuthState()
                 }
             )
+        } else {
+            BackHandler(enabled = true) { }
+            key(user!!.id) {
+                BloqueoScreen(
+                    username = user!!.nombreUsuario,
+                    loading = authState == com.finanzaspersonales.gt.viewmodel.AuthState.Loading,
+                    error = (authState as? com.finanzaspersonales.gt.viewmodel.AuthState.Error)?.message,
+                    onUnlock = authViewModel::unlock,
+                    onLogout = {
+                        authViewModel.logout()
+                        navController.navigate(Screen.Welcome) {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                        }
+                    },
+                    onForgotPassword = {
+                        authViewModel.resetAuthState()
+                        isRecoveringPassword = true
+                    }
+                )
+            }
         }
         return
     }
@@ -91,6 +114,16 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
         composable(Screen.Welcome) { WelcomeScreen(navController) }
         composable(Screen.Login) { LoginScreen(navController, authViewModel) }
         composable(Screen.Register) { RegisterScreen(navController, authViewModel) }
+        composable(Screen.RecuperarPassword) {
+            RecuperarPasswordScreen(
+                initialUsername = "",
+                authViewModel = authViewModel,
+                onBack = {
+                    authViewModel.resetAuthState()
+                    navController.popBackStack()
+                }
+            )
+        }
 
         composable(Screen.Inicio) {
             PrivateRoute(user != null && financeViewModel != null, navController) { InicioScreen(navController, financeViewModel!!) }

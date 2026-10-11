@@ -89,7 +89,7 @@ fun MetaCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(meta.nombre, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                Text(meta.nombre, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary, modifier = Modifier.weight(1f))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar", tint = MaterialTheme.colorScheme.primary) }
                     IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error) }
@@ -103,7 +103,7 @@ fun MetaCard(
             Spacer(modifier = Modifier.height(8.dp))
             LinearProgressIndicator(progress = progress.toFloat(), modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.secondary, trackColor = MaterialTheme.colorScheme.secondaryContainer)
             Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Ahorrado: ${formatter(ahorrada)}", style = MaterialTheme.typography.bodySmall); Text("Objetivo: ${formatter(objetivo)}", style = MaterialTheme.typography.bodySmall) }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Ahorrado: ${formatter(ahorrada)}", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f)); Text("Objetivo: ${formatter(objetivo)}", style = MaterialTheme.typography.bodySmall) }
             Spacer(modifier = Modifier.height(4.dp))
             if (mesesRestantes > 0) {
                 Text("Aportando ${formatter(aporte)}/mes → Llegarás en $mesesRestantes meses", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -156,7 +156,7 @@ val fechaEstimada = if (mesesRestantes > 0) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { navController.popBackStack() }) { Icon(Icons.Default.ArrowBack, contentDescription = "Volver") }
-            Text(meta.nombre, style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.primary)
+            Text(meta.nombre, style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.primary, modifier = Modifier.weight(1f))
             Spacer(modifier = Modifier.width(48.dp))
         }
 
@@ -234,8 +234,8 @@ val fechaEstimada = if (mesesRestantes > 0) {
                     Text("PROYECCIÓN", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onTertiaryContainer)
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Column { Text("Mes actual", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onTertiaryContainer); Text(formatter(ahorrada), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onTertiaryContainer) }
-                        Column(horizontalAlignment = Alignment.End) { Text("Mes $mesesRestantes ($fechaEstimada)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onTertiaryContainer); Text(formatter(objetivo), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onTertiaryContainer) }
+                        Column(Modifier.weight(1f)) { Text("Mes actual", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onTertiaryContainer); Text(formatter(ahorrada), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onTertiaryContainer) }
+                        Column(Modifier.weight(1f), horizontalAlignment = Alignment.End) { Text("Mes $mesesRestantes ($fechaEstimada)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onTertiaryContainer); Text(formatter(objetivo), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onTertiaryContainer) }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("Con un aporte constante de ${formatter(aporte)}/mes, alcanzarás tu meta en $mesesRestantes meses.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onTertiaryContainer)
@@ -256,7 +256,7 @@ fun DetailRow(
     val textColor = if (color != androidx.compose.ui.graphics.Color.Unspecified) color else MaterialTheme.colorScheme.onSurface
     val textStyle = if (isHighlight) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium
     Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, style = textStyle, color = textColor)
+        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+        Text(value, style = textStyle, color = textColor, textAlign = TextAlign.End, modifier = Modifier.weight(1f))
     }
 }

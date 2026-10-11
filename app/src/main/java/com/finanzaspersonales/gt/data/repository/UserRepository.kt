@@ -1,4 +1,4 @@
-﻿package com.finanzaspersonales.gt.data.repository
+package com.finanzaspersonales.gt.data.repository
 
 import com.finanzaspersonales.gt.data.local.AppDatabase
 import com.finanzaspersonales.gt.data.local.entity.User
@@ -87,6 +87,50 @@ class UserRepository(
                 database.metaAhorroDao().deleteAllByUser(id)
                 userTypeDao.deleteById(id)
             }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getSecurityQuestion(username: String): Result<String> = withContext(ioDispatcher) {
+        try {
+            val user = userTypeDao.findByUsername(username)
+                ?: return@withContext Result.failure(IllegalArgumentException("El usuario no existe"))
+            val question = user.preguntaSeguridad
+            if (question.isNullOrBlank()) {
+                Result.failure(IllegalStateException("El usuario no tiene una pregunta de seguridad configurada"))
+            } else {
+                Result.success(question)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun recoverPassword(username: String, answer: String, newPasswordHash: String): Result<User> = withContext(ioDispatcher) {
+        try {
+            val user = userTypeDao.findByUsername(username)
+                ?: return@withContext Result.failure(IllegalArgumentException("El usuario no existe"))
+            val storedHash = user.respuestaSeguridadHash
+            if (storedHash.isNullOrBlank()) {
+                return@withContext Result.failure(IllegalStateException("El usuario no tiene una pregunta de seguridad configurada"))
+            }
+            val normalizedAnswer = answer.trim().lowercase()
+            val valid = PasswordHasher.verifyPassword(normalizedAnswer, storedHash)
+            if (!valid) {
+                return@withContext Result.failure(IllegalArgumentException("La respuesta de seguridad es incorrecta"))
+            }
+            userTypeDao.updatePassword(user.id, newPasswordHash)
+            Result.success(user.copy(passwordHash = newPasswordHash))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updateSecurityQuestion(userId: Long, question: String, answerHash: String): Result<Unit> = withContext(ioDispatcher) {
+        try {
+            userTypeDao.updateSecurityQuestion(userId, question, answerHash)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

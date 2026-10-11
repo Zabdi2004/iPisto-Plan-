@@ -1,4 +1,4 @@
-﻿package com.finanzaspersonales.gt.data.local.entity
+package com.finanzaspersonales.gt.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,5 +9,7 @@ data class User(
     val id: Long = 0,
     val nombreUsuario: String,
     val passwordHash: String,
-    val fechaCreacion: Long
+    val fechaCreacion: Long,
+    val preguntaSeguridad: String? = null,
+    val respuestaSeguridadHash: String? = null
 )

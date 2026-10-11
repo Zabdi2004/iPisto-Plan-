@@ -1,4 +1,4 @@
-﻿package com.finanzaspersonales.gt.ui.screens
+package com.finanzaspersonales.gt.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -125,7 +125,22 @@ fun LoginScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextButton(
+            onClick = {
+                authViewModel.resetAuthState()
+                navController.navigate("recuperar_password")
+            },
+            enabled = !loading
+        ) {
+            Text(
+                text = "¿Olvidaste tu contraseña?",
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(
             onClick = { navController.navigate("register") },

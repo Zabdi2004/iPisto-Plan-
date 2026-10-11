@@ -92,7 +92,7 @@ fun IngresoItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(Modifier.weight(1f)) {
                 Text(ingreso.nombre, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -106,10 +106,10 @@ fun IngresoItem(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Filled.Edit, contentDescription = "Editar", tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.Filled.Edit, contentDescription = "Editar ingreso", tint = MaterialTheme.colorScheme.primary)
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Filled.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Filled.Delete, contentDescription = "Eliminar ingreso", tint = MaterialTheme.colorScheme.error)
                 }
             }
         }
@@ -184,7 +184,7 @@ fun GastoFijoItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(Modifier.weight(1f)) {
                 Text(gasto.nombre, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -199,10 +199,10 @@ fun GastoFijoItem(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Filled.Edit, contentDescription = "Editar", tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.Filled.Edit, contentDescription = "Editar gasto fijo", tint = MaterialTheme.colorScheme.primary)
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Filled.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Filled.Delete, contentDescription = "Eliminar gasto fijo", tint = MaterialTheme.colorScheme.error)
                 }
             }
         }
@@ -277,7 +277,7 @@ fun GastoVariableItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(Modifier.weight(1f)) {
                 Text(gasto.nombre, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -292,10 +292,10 @@ fun GastoVariableItem(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Filled.Edit, contentDescription = "Editar", tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.Filled.Edit, contentDescription = "Editar gasto variable", tint = MaterialTheme.colorScheme.primary)
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Filled.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Filled.Delete, contentDescription = "Eliminar gasto variable", tint = MaterialTheme.colorScheme.error)
                 }
             }
         }
@@ -384,7 +384,7 @@ fun DeudaItem(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
+                Column(Modifier.weight(1f)) {
                     Text("Monto total: ${formatter(deuda.montoTotal)}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text("Pago mensual estimado: ${formatter(monthlyPayment)}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
                 }
@@ -482,7 +482,7 @@ fun MetaAhorroItem(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("Ahorrado: ${formatter(meta.cantidadAhorrada)} / ${formatter(meta.cantidadObjetivo)}", style = MaterialTheme.typography.bodyMedium)
+                    Text("Ahorrado: ${formatter(meta.cantidadAhorrada)} / ${formatter(meta.cantidadObjetivo)}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
                     Text("${(progress * 100).toInt()}%", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.secondary)
                 }
                 Spacer(modifier = Modifier.height(4.dp))

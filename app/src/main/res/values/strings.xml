@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">iPisto</string>
     <string name="welcome_description">Administra tus finanzas de forma sencilla.</string>
@@ -32,6 +32,12 @@
     <string name="locked_session">Sesión bloqueada</string>
     <string name="unlocking">Verificando…</string>
     <string name="unlock_error">La contraseña es incorrecta</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="recover_password">Recuperar contraseña</string>
+    <string name="security_question">Pregunta de seguridad</string>
+    <string name="security_answer">Respuesta de seguridad</string>
+    <string name="restore_password">Restablecer contraseña</string>
+    <string name="configure_security_question">Pregunta de seguridad</string>
     <string name="chart_lines">Líneas</string>
     <string name="chart_bars">Barras</string>
     <string name="chart_scatter">Dispersión</string>

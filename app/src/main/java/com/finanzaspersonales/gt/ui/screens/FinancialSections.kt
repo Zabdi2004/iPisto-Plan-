@@ -45,6 +45,9 @@ fun InicioScreen(
     var showMetaDialog by remember { mutableStateOf(false) }
     var editingMeta by remember { mutableStateOf<com.finanzaspersonales.gt.data.local.entity.MetaAhorro?>(null) }
     var showNuevaEvaluacionDialog by remember { mutableStateOf(false) }
+    var ingresoAEliminar by remember { mutableStateOf<Ingreso?>(null) }
+    var gastoFijoAEliminar by remember { mutableStateOf<GastoFijo?>(null) }
+    var gastoVariableAEliminar by remember { mutableStateOf<GastoVariable?>(null) }
 
     Column(
         modifier = Modifier
@@ -158,13 +161,13 @@ fun InicioScreen(
             finanzasViewModel = finanzasViewModel,
             onAddIngreso = { editingIngreso = null; showIngresoDialog = true },
             onEditIngreso = { editingIngreso = it; showIngresoDialog = true },
-            onDeleteIngreso = { finanzasViewModel.deleteIngreso(it) },
+            onDeleteIngreso = { ingresoAEliminar = it },
             onAddGastoFijo = { editingGastoFijo = null; showGastoFijoDialog = true },
             onEditGastoFijo = { editingGastoFijo = it; showGastoFijoDialog = true },
-            onDeleteGastoFijo = { finanzasViewModel.deleteGastoFijo(it) },
+            onDeleteGastoFijo = { gastoFijoAEliminar = it },
             onAddGastoVariable = { editingGastoVariable = null; showGastoVariableDialog = true },
             onEditGastoVariable = { editingGastoVariable = it; showGastoVariableDialog = true },
-            onDeleteGastoVariable = { finanzasViewModel.deleteGastoVariable(it) },
+            onDeleteGastoVariable = { gastoVariableAEliminar = it },
             onAddDeuda = { editingDeuda = null; showDeudaDialog = true },
             onEditDeuda = { editingDeuda = it; showDeudaDialog = true },
             onDeleteDeuda = { finanzasViewModel.deleteDeuda(it) },
@@ -190,6 +193,39 @@ fun InicioScreen(
             showNuevaEvaluacionDialog = showNuevaEvaluacionDialog,
             onDismissNuevaEvaluacionDialog = { showNuevaEvaluacionDialog = false }
         )
+
+        ingresoAEliminar?.let { ingreso ->
+            ConfirmDialog(
+                onDismiss = { ingresoAEliminar = null },
+                onConfirm = { finanzasViewModel.deleteIngreso(ingreso) },
+                title = "Eliminar ingreso",
+                message = "¿Estás seguro de eliminar \"${ingreso.nombre}\"? Esta acción no se puede deshacer.",
+                confirmText = "Eliminar",
+                confirmColor = MaterialTheme.colorScheme.error
+            )
+        }
+
+        gastoFijoAEliminar?.let { gasto ->
+            ConfirmDialog(
+                onDismiss = { gastoFijoAEliminar = null },
+                onConfirm = { finanzasViewModel.deleteGastoFijo(gasto) },
+                title = "Eliminar gasto fijo",
+                message = "¿Estás seguro de eliminar \"${gasto.nombre}\"? Esta acción no se puede deshacer.",
+                confirmText = "Eliminar",
+                confirmColor = MaterialTheme.colorScheme.error
+            )
+        }
+
+        gastoVariableAEliminar?.let { gasto ->
+            ConfirmDialog(
+                onDismiss = { gastoVariableAEliminar = null },
+                onConfirm = { finanzasViewModel.deleteGastoVariable(gasto) },
+                title = "Eliminar gasto variable",
+                message = "¿Estás seguro de eliminar \"${gasto.nombre}\"? Esta acción no se puede deshacer.",
+                confirmText = "Eliminar",
+                confirmColor = MaterialTheme.colorScheme.error
+            )
+        }
     }
 }
 

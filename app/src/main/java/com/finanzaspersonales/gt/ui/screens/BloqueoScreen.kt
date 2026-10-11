@@ -32,7 +32,14 @@ import androidx.compose.ui.res.stringResource
 import com.finanzaspersonales.gt.R
 
 @Composable
-fun BloqueoScreen(username: String, loading: Boolean, error: String?, onUnlock: (String) -> Unit, onLogout: () -> Unit) {
+fun BloqueoScreen(
+    username: String,
+    loading: Boolean,
+    error: String?,
+    onUnlock: (String) -> Unit,
+    onLogout: () -> Unit,
+    onForgotPassword: () -> Unit = {}
+) {
     var password by remember { mutableStateOf("") }
     var visible by remember { mutableStateOf(false) }
     Column(
@@ -63,6 +70,7 @@ fun BloqueoScreen(username: String, loading: Boolean, error: String?, onUnlock: 
             enabled = !loading && password.isNotBlank(),
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
         ) { Text(if (loading) stringResource(R.string.unlocking) else stringResource(R.string.unlock_session)) }
+        TextButton(onClick = onForgotPassword, enabled = !loading, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.forgot_password)) }
         TextButton(onClick = onLogout, enabled = !loading, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.logout)) }
     }
 }
