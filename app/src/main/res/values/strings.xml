@@ -71,7 +71,7 @@
     <string name="save">GUARDAR</string>
     <string name="name">Nombre</string>
     <string name="category">Categoría</string>
-    <string name="amount">Quantity</string>
+    <string name="amount">Cantidad</string>
     <string name="periodicity">Periodicidad</string>
     <string name="weekly">Semanal</string>
     <string name="biweekly">Quincenal</string>
@@ -92,4 +92,332 @@
     <string name="education_risk">Riesgo</string>
     <string name="education_diversification">Diversificación</string>
     <string name="education_horizon">Horizonte de inversión</string>
+    <!-- Empty states for financial sections -->
+    <string name="no_income_registered">No hay ingresos registrados</string>
+    <string name="no_fixed_expenses_registered">No hay gastos fijos registrados</string>
+    <string name="no_variable_expenses_registered">No hay gastos variables registrados</string>
+    <string name="no_debts_registered">No hay deudas registradas</string>
+    <string name="no_goals_registered">No hay metas de ahorro registradas</string>
+
+    <!-- Authentication strings -->
+    <string name="auth_login">INICIAR SESIÓN</string>
+    <string name="auth_username">Nombre de usuario</string>
+    <string name="auth_password">Contraseña</string>
+    <string name="auth_hide_password">Ocultar contraseña</string>
+    <string name="auth_show_password">Mostrar contraseña</string>
+    <string name="auth_verifying">Verificando…</string>
+    <string name="auth_forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="auth_no_account_create">¿No tienes cuenta? CREAR CUENTA</string>
+    <string name="auth_register">CREAR CUENTA</string>
+    <string name="auth_confirm_password">Confirmar contraseña</string>
+    <string name="auth_new_password">Nueva contraseña</string>
+    <string name="auth_confirm_new_password">Confirmar nueva contraseña</string>
+    <string name="auth_logout">CERRAR SESIÓN</string>
+    <string name="auth_has_account_login">¿Ya tienes cuenta? INICIAR SESIÓN</string>
+
+    <!-- Password recovery strings -->
+    <string name="recovery_title">Recuperar contraseña</string>
+    <string name="action_back">VOLVER</string>
+    <string name="recovery_restore_access">Restablecer acceso</string>
+    <string name="recovery_search_question">Buscar pregunta</string>
+    <string name="recovery_verify_user">Verificando usuario…</string>
+    <string name="recovery_security_question">Pregunta de seguridad</string>
+    <string name="recovery_your_answer">Tu respuesta</string>
+    <string name="recovery_secret_answer">Respuesta secreta</string>
+    <string name="recovery_reset_password">Restablecer contraseña</string>
+    <string name="recovery_configure_question">Configurar pregunta de seguridad</string>
+    <string name="recovery_write_question">Escribe tu pregunta</string>
+    <string name="recovery_question_pet">¿Cuál es el nombre de tu mascota?</string>
+    <string name="recovery_question_city">¿En qué ciudad naciste?</string>
+    <string name="recovery_question_food">¿Cuál es tu comida favorita?</string>
+    <string name="recovery_question_school">¿Cuál fue el nombre de tu primera escuela?</string>
+    <string name="recovery_question_custom">Otra pregunta</string>
+
+    <!-- Validation messages -->
+    <string name="msg_username_format">Solo letras, números y guiones bajos</string>
+    <string name="msg_password_min_length">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="msg_security_question_usage">Se usará para recuperar tu contraseña si la olvidas</string>
+
+    <!-- Configuration screen -->
+    <string name="current_preferences">Preferencias actuales</string>
+    <string name="currency">Moneda</string>
+    <string name="currency_gtq">Quetzal guatemalteco (Q / GTQ)</string>
+    <string name="security">Seguridad</string>
+    <string name="security_managed_in_profile">Contraseña y eliminación de cuenta se administran desde tu perfil</string>
+    <string name="select_app_language">Selecciona el idioma de la aplicación</string>
+    <string name="open_profile_security">Abrir perfil y seguridad</string>
+    <string name="local_data_notice">Los registros se guardan localmente en este dispositivo. Respaldos, exportación, biometría, notificaciones y cambio de tema no están disponibles en esta versión.</string>
+
+    <!-- Welcome screen -->
+    <string name="welcome_title">Bienvenido a iPisto</string>
+
+    <!-- Login/Register -->
+    <string name="auth_verify_user">Verificar usuario</string>
+
+    <!-- Inicio screen -->
+    <string name="home_title">INICIO</string>
+    <string name="daily_tip_title">Un consejo para hoy</string>
+    <string name="daily_tip_content">Anota tus gastos pequeños: juntos también cuentan.</string>
+    <string name="available_money_label">DINERO DISPONIBLE</string>
+    <string name="estimated_monthly_income">INGRESO MENSUAL ESTIMADO</string>
+    <string name="total_debt_label">DEUDA TOTAL</string>
+    <string name="no_data_start">No hay datos suficientes. Comienza agregando ingresos y gastos.</string>
+
+    <!-- Financial sections -->
+    <string name="monthly_equivalent">Equivalente mensual estimado</string>
+    <string name="periodicity_format">%1$s: %2$s</string>
+    <string name="total_amount">Monto total: %1$s</string>
+    <string name="monthly_payment_estimated">Pago mensual estimado: %1$s</string>
+    <string name="saved_progress">Ahorrado: %1$s / %2$s</string>
+    <string name="progress_percent">%1$d%%</string>
+    <string name="monthly_contribution_label">Aporte mensual: %1$s</string>
+
+    <!-- Delete dialogs -->
+    <string name="delete_income_title">Eliminar ingreso</string>
+    <string name="delete_income_message">¿Estás seguro de eliminar \"%1$s\"? Esta acción no se puede deshacer.</string>
+    <string name="delete_fixed_expense_title">Eliminar gasto fijo</string>
+    <string name="delete_fixed_expense_message">¿Estás seguro de eliminar \"%1$s\"? Esta acción no se puede deshacer.</string>
+    <string name="delete_variable_expense_title">Eliminar gasto variable</string>
+    <string name="delete_variable_expense_message">¿Estás seguro de eliminar \"%1$s\"? Esta acción no se puede deshacer.</string>
+    <string name="delete_confirm">Eliminar</string>
+
+    <!-- Metas screens -->
+    <string name="goals_title">METAS DE AHORRO</string>
+    <string name="no_goals_registered_msg">No hay metas de ahorro registradas.</string>
+    <string name="add_savings_goal">Agregar meta de ahorro</string>
+    <string name="progress_label">Progreso</string>
+    <string name="months_remaining_label">Meses restantes</string>
+    <string name="saved_amount">Ahorrado: %1$s</string>
+    <string name="objective_amount">Objetivo: %1$s</string>
+    <string name="contributing_message">Aportando %1$s/mes → Llegarás en %2$d meses</string>
+    <string name="goal_achieved">¡Meta alcanzada! 🎉</string>
+    <string name="set_monthly_contribution">Define un aporte mensual para ver la proyección</string>
+    <string name="goal_not_found">Meta no encontrada</string>
+    <string name="projection_title">PROYECCIÓN</string>
+    <string name="current_month">Mes actual</string>
+    <string name="month_format">Mes %1$d (%2$s)</string>
+    <string name="projection_message">Con un aporte constante de %1$s/mes, alcanzarás tu meta en %2$d meses.</string>
+    <string name="projection_disclaimer_short">Nota: Esta es una proyección estimada. Los resultados reales pueden variar.</string>
+    <string name="add_contribution_title">AGREGAR APORTE</string>
+    <string name="goal_label">Meta: %1$s</string>
+    <string name="saved_objective">Ahorrado: %1$s / %2$s</string>
+    <string name="contribution_amount_label">Cantidad a aportar (Q)</string>
+    <string name="add_contribution_button">AGREGAR APORTE</string>
+    <string name="confirm_contribution_title">Confirmar aporte</string>
+    <string name="confirm_contribution_message">¿Agregar %1$s a \"%2$s\"?</string>
+    <string name="saving">Guardando…</string>
+    <string name="confirm_button">Confirmar</string>
+    <string name="edit_goal_title">Editar Meta</string>
+    <string name="new_goal_title">Agregar Meta de Ahorro</string>
+    <string name="discard_changes_title">Descartar cambios</string>
+    <string name="discard_changes_message">Hay una edición en curso. ¿Quieres salir sin guardar los cambios?</string>
+    <string name="discard_button">Descartar</string>
+    <string name="continue_editing_button">Seguir editando</string>
+
+    <!-- Metas detail -->
+    <string name="back_button">Volver</string>
+    <string name="progress_title">PROGRESO</string>
+    <string name="completed_label">Completado</string>
+    <string name="financial_detail_title">DETALLE FINANCIERO</string>
+    <string name="objective_label">Objetivo</string>
+    <string name="saved_label">Ahorrado</string>
+    <string name="missing_label">Faltante</string>
+    <string name="monthly_contribution_detail">Aporte mensual</string>
+    <string name="months_remaining_detail">Meses restantes</string>
+    <string name="estimated_date">Fecha estimada</string>
+    <string name="status_label">Estado</string>
+    <string name="completed_status">¡COMPLETADA! 🎉</string>
+    <string name="no_monthly_contribution">Sin aporte mensual</string>
+    <string name="actions_title">ACCIONES</string>
+    <string name="add_contribution_action">AGREGAR APORTE</string>
+    <string name="edit_goal_action">EDITAR META</string>
+    <string name="delete_goal_action">ELIMINAR META</string>
+    <string name="delete_goal_title">Eliminar Meta</string>
+    <string name="delete_goal_message">¿Estás seguro de eliminar \"%1$s\"? Esta acción no se puede deshacer.</string>
+    <string name="deleting">Eliminando…</string>
+
+    <!-- Perfil screen -->
+    <string name="profile_title">Tu perfil</string>
+    <string name="account_created_date">Cuenta local · %1$s</string>
+    <string name="edit_username">Editar nombre</string>
+    <string name="saved_summary">Resumen guardado</string>
+    <string name="monthly_income_equiv">Ingresos equivalentes al mes</string>
+    <string name="monthly_expenses_estimated">Gastos y pagos mensuales estimados</string>
+    <string name="records_count">Registros</string>
+    <string name="tools_title">Herramientas</string>
+    <string name="savings_plan">Plan de ahorros</string>
+    <string name="reports">Informes</string>
+    <string name="change_password_button">Cambiar contraseña</string>
+    <string name="configure_security_question_button">Configurar pregunta de seguridad</string>
+    <string name="security_question_button">Pregunta de seguridad</string>
+    <string name="language_settings_button">Idioma y configuración</string>
+    <string name="education_financiera_button">Educación financiera</string>
+    <string name="logout_button">Cerrar sesión</string>
+    <string name="delete_account_button">Eliminar cuenta y datos</string>
+
+    <!-- Profile dialogs -->
+    <string name="edit_username_dialog_title">Editar nombre de usuario</string>
+    <string name="username_label">Nombre de usuario</string>
+    <string name="change_password_dialog_title">Cambiar contraseña</string>
+    <string name="current_password_label">Contraseña actual</string>
+    <string name="new_password_label">Nueva contraseña</string>
+    <string name="confirm_password_label">Confirmar contraseña</string>
+    <string name="security_question_dialog_title">Pregunta de seguridad</string>
+    <string name="security_question_usage">Se utilizará para recuperar el acceso a tu cuenta si olvidas tu contraseña.</string>
+    <string name="security_question_label">Pregunta de seguridad</string>
+    <string name="secret_answer_label">Respuesta secreta</string>
+    <string name="delete_account_dialog_title">Eliminar cuenta</string>
+    <string name="delete_account_dialog_message">Se eliminarán tu cuenta y todos sus registros financieros. Esta acción no se puede deshacer.</string>
+
+    <!-- Nuevo registro screen -->
+    <string name="new_record_title">Nuevo registro</string>
+    <string name="close_new_record">Cerrar nuevo registro</string>
+    <string name="expense_chip">Gasto</string>
+    <string name="income_chip">Ingreso</string>
+    <string name="transfer_chip">Transferencia</string>
+    <string name="fixed_expense_chip">Gasto fijo</string>
+    <string name="variable_expense_chip">Gasto variable</string>
+    <string name="income_section">Ingreso</string>
+    <string name="fixed_expense_section">Gasto fijo</string>
+    <string name="variable_expense_section">Gasto variable</string>
+    <string name="description_label">Descripción</string>
+    <string name="salary_placeholder">Ej. Salario</string>
+    <string name="weekly_purchase_placeholder">Ej. Compra semanal</string>
+    <string name="amount_label">Cantidad en quetzales (Q)</string>
+    <string name="save_error">No se pudo guardar: %1$s</string>
+    <string name="unique_movements_note">Los movimientos únicos se asignan a la fecha de hoy; los registros anteriores conservan su fecha desconocida.</string>
+    <string name="saving_ellipsis">Guardando…</string>
+    <string name="save_record">Guardar registro</string>
+
+    <!-- Graficas screen -->
+    <string name="charts_summary_title">Gráficas y resúmenes</string>
+    <string name="charts_disclaimer">Equivalentes mensuales estimados a partir de tus registros; no son totales recibidos o pagados en un mes específico.</string>
+    <string name="loading_data">Cargando tus datos…</string>
+    <string name="error_loading_data">No se pudieron cargar los datos.</string>
+    <string name="no_financial_data">Aún no hay datos financieros para resumir. Agrega ingresos, gastos, deudas o metas.</string>
+    <string name="estimated_monthly_equivalent">Equivalente mensual estimado</string>
+    <string name="chart_projection_note">Proyección mensual promedio: semanal × 52/12, quincenal (cada 15 días) × 365/15/12, diario × 365/12. Los movimientos únicos solo cuentan en el mes de su fecha. El saldo conserva valores negativos.</string>
+    <string name="expense_distribution_title">Distribución de gastos por categoría</string>
+    <string name="no_expenses_registered">Todavía no hay gastos registrados.</string>
+    <string name="debts_registered_title">Deudas registradas</string>
+    <string name="no_debts_chart">No tienes deudas registradas.</string>
+    <string name="goals_progress_title">Progreso de metas de ahorro</string>
+    <string name="no_goals_chart">Todavía no hay metas de ahorro.</string>
+    <string name="chart_axis_negative">−%1$s</string>
+    <string name="chart_axis_zero">Q0.00</string>
+    <string name="chart_axis_positive">+%1$s</string>
+
+    <!-- Dialogs - generic -->
+    <string name="cancel_button">Cancelar</string>
+    <string name="save_button">Guardar</string>
+    <string name="edit_button">Editar</string>
+    <string name="delete_button">Eliminar</string>
+
+    <!-- Dialogs - Ingreso -->
+    <string name="add_income_dialog_title">Agregar Ingreso</string>
+    <string name="edit_income_dialog_title">Editar Ingreso</string>
+    <string name="income_name_label">Nombre</string>
+    <string name="income_name_placeholder">Ej: Salario</string>
+    <string name="income_name_required">El nombre es obligatorio</string>
+    <string name="income_amount_label">Cantidad (Q)</string>
+    <string name="income_amount_invalid">Ingrese una cantidad válida mayor a 0</string>
+
+    <!-- Dialogs - Gasto Fijo -->
+    <string name="add_fixed_expense_dialog_title">Agregar Gasto Fijo</string>
+    <string name="edit_fixed_expense_dialog_title">Editar Gasto Fijo</string>
+    <string name="fixed_expense_name_label">Nombre</string>
+    <string name="fixed_expense_name_placeholder">Ej: Alquiler apartamento</string>
+    <string name="fixed_expense_name_required">El nombre es obligatorio</string>
+    <string name="fixed_expense_amount_label">Cantidad (Q)</string>
+    <string name="fixed_expense_amount_invalid">Ingrese una cantidad válida mayor a 0</string>
+
+    <!-- Dialogs - Gasto Variable -->
+    <string name="add_variable_expense_dialog_title">Agregar Gasto Variable</string>
+    <string name="edit_variable_expense_dialog_title">Editar Gasto Variable</string>
+    <string name="variable_expense_name_label">Nombre</string>
+    <string name="variable_expense_name_placeholder">Ej: Cine</string>
+    <string name="variable_expense_name_required">El nombre es obligatorio</string>
+    <string name="variable_expense_amount_label">Cantidad (Q)</string>
+    <string name="variable_expense_amount_invalid">Ingrese una cantidad válida mayor a 0</string>
+
+    <!-- Dialogs - Deuda -->
+    <string name="add_debt_dialog_title">Agregar Deuda</string>
+    <string name="edit_debt_dialog_title">Editar Deuda</string>
+    <string name="debt_name_label">Nombre</string>
+    <string name="debt_name_placeholder">Ej: Tarjeta de crédito</string>
+    <string name="debt_name_required">El nombre es obligatorio</string>
+    <string name="debt_total_amount_label">Monto total (Q)</string>
+    <string name="debt_total_amount_invalid">Ingrese un monto válido mayor a 0</string>
+    <string name="debt_periodic_payment_label">Pago periódico (Q)</string>
+    <string name="debt_periodic_payment_invalid">Ingrese un pago válido mayor a 0</string>
+
+    <!-- Dialogs - Meta -->
+    <string name="add_goal_dialog_title">Agregar Meta de Ahorro</string>
+    <string name="edit_goal_dialog_title">Editar Meta</string>
+    <string name="goal_name_label">Nombre de la meta</string>
+    <string name="goal_name_placeholder">Ej: Comprar computadora</string>
+    <string name="goal_name_required">El nombre es obligatorio</string>
+    <string name="goal_objective_label">Cantidad objetivo (Q)</string>
+    <string name="goal_objective_invalid">Ingrese una cantidad mayor a 0</string>
+    <string name="goal_saved_label">Ya ahorrado (Q)</string>
+    <string name="goal_saved_invalid">No puede ser negativo</string>
+    <string name="goal_contribution_label">Aporte mensual (Q)</string>
+    <string name="goal_contribution_invalid">El aporte debe ser finito y no negativo</string>
+
+    <!-- Category dropdown -->
+    <string name="select_category">Seleccionar</string>
+    <string name="new_category_dialog_title">Nueva categoría</string>
+    <string name="category_name_label">Nombre de categoría</string>
+    <string name="category_name_empty">Escribe un nombre para continuar.</string>
+    <string name="category_name_duplicate">Esa categoría ya existe.</string>
+    <string name="add_category_button">Agregar</string>
+    <string name="expand_button">Expandir</string>
+    <string name="collapse_button">Contraer</string>
+
+    <!-- Periodicity dropdown -->
+    <string name="periodicity_unique">Único</string>
+    <string name="periodicity_daily">Diario</string>
+    <string name="periodicity_weekly">Semanal</string>
+    <string name="periodicity_biweekly">Quincenal</string>
+    <string name="periodicity_monthly">Mensual</string>
+    <string name="date_field_label">Fecha del movimiento: %1$s</string>
+    <string name="choose_date_button">Elegir fecha</string>
+
+    <!-- Educacion Financiera -->
+    <string name="education_title">EDUCACIÓN FINANCIERA</string>
+    <string name="education_subtitle">Consejos prácticos para tu salud financiera en Guatemala</string>
+    <string name="education_disclaimer_full">Las proyecciones y consejos son únicamente educativos y no representan una garantía de rendimiento financiero.</string>
+    <string name="education_consult_advisor">Consulta a un asesor financiero certificado para decisiones importantes.</string>
+
+    <!-- Education tips - titles and categories (need K'iche' translations) -->
+    <string name="tip_50_30_20_title">Regla del 50/30/20</string>
+    <string name="tip_50_30_20_category">Presupuesto</string>
+    <string name="tip_50_30_20_content">Divide tus ingresos: 50% necesidades (vivienda, comida, transporte), 30% deseos (entretenimiento, compras), 20% ahorro e inversiones. Ajusta según tu realidad guatemalteca.</string>
+    <string name="tip_emergency_fund_title">Fondo de Emergencia</string>
+    <string name="tip_emergency_fund_category">Seguridad</string>
+    <string name="tip_emergency_fund_content">Mantén 3-6 meses de gastos básicos en una cuenta separada y accesible. En Guatemala, considera Q15,000-Q30,000 como base para imprevistos médicos, reparaciones o pérdida de empleo.</string>
+    <string name="tip_compound_interest_title">Interés Compuesto</string>
+    <string name="tip_compound_interest_category">Inversión</string>
+    <string name="tip_compound_interest_content">El interés compuesto hace que tus ganancias generen más ganancias. Empezar temprano es clave: Q500/mes al 8% anual = Q294,000 en 20 años vs Q73,000 en 10 años. El tiempo es tu mejor aliado.</string>
+    <string name="tip_diversification_title">Diversificación</string>
+    <string name="tip_diversification_category">Riesgo</string>
+    <string name="tip_diversification_content">No pongas todos los huevos en la misma canasta. Diversifica: efectivo, certificados de depósito, bonos, acciones, bienes raíces. En Guatemala: bancas, cooperativas, fondos de inversión, propiedades.</string>
+    <string name="tip_investment_horizon_title">Horizonte de Inversión</string>
+    <string name="tip_investment_horizon_category">Planificación</string>
+    <string name="tip_investment_horizon_content">Tu horizonte temporal determina el riesgo: Corto plazo (0-3 años) = conservador (depósitos, bonos). Mediano (3-7 años) = mixto. Largo plazo (7+ años) = puede asumir más riesgo (acciones, fondos).</string>
+    <string name="tip_smart_debt_title">Deuda Inteligente</string>
+    <string name="tip_smart_debt_category">Deuda</string>
+    <string name="tip_smart_debt_content">Diferencia deuda buena (genera valor: educación, vivienda, negocio) de deuda mala (consumo: tarjetas, préstamos personales). Prioriza pagar deudas con interés alto (>20%) antes de invertir.</string>
+    <string name="tip_inflation_title">Inflación en Guatemala</string>
+    <string name="tip_inflation_category">Economía</string>
+    <string name="tip_inflation_content">La inflación erosiona el poder adquisitivo (~4-6% anual en GT). Tu dinero debe crecer por encima de la inflación. Mantener efectivo bajo el colchón pierde valor. Invierte para preservar y crecer.</string>
+    <string name="tip_automation_title">Automatización</string>
+    <string name="tip_automation_category">Hábitos</string>
+    <string name="tip_automation_content">Automatiza tu ahorro: configura transferencias automáticas al recibir tu salario. \"Págate a ti primero\". Usa débitos automáticos para metas, inversiones y pagos de deuda. Elimina la decisión emocional.</string>
+    <string name="tip_zero_budget_title">Presupuesto Base Cero</string>
+    <string name="tip_zero_budget_category">Presupuesto</string>
+    <string name="tip_zero_budget_content">Asigna cada quetzal a una categoría antes de que empiece el mes: Ingresos - Gastos - Ahorro = 0. Si sobra, destina a metas. Si falta, ajusta gastos. Revisa semanalmente y corrige desviaciones.</string>
+    <string name="tip_asset_protection_title">Protección Patrimonial</string>
+    <string name="tip_asset_protection_category">Seguros</string>
+    <string name="tip_asset_protection_content">Protege lo construido: seguro médico (gastos catastróficos), seguro de vida (si tienes dependientes), seguro de vivienda/auto. En Guatemala, evalúa seguros de cooperativas y bancas vs aseguradoras tradicionales.</string>
 </resources>

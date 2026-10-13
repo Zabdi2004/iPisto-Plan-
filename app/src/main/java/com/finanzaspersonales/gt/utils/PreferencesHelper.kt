@@ -1,5 +1,6 @@
 ﻿package com.finanzaspersonales.gt.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
@@ -25,7 +26,7 @@ object PreferencesHelper {
     fun applyLanguage(context: Context, languageCode: String) {
         val locale = when (languageCode) {
             "en" -> Locale.ENGLISH
-            "qu" -> Locale("qu")
+            "quc" -> Locale("quc")
             else -> Locale("es")
         }
         Locale.setDefault(locale)
@@ -37,5 +38,10 @@ object PreferencesHelper {
             config.locale = locale
         }
         context.resources.updateConfiguration(config, context.resources.displayMetrics)
+    }
+
+    fun applyLanguageAndRecreate(activity: Activity, languageCode: String) {
+        applyLanguage(activity, languageCode)
+        activity.recreate()
     }
 }

@@ -12,9 +12,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.ui.components.ProgressBar
 import com.finanzaspersonales.gt.ui.components.QuetzalMascot
 import com.finanzaspersonales.gt.viewmodel.AuthState
@@ -48,12 +51,12 @@ fun RecuperarPasswordScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Recuperar contraseña") },
+                title = { Text(stringResource(R.string.recovery_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack, enabled = !loading) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Volver"
+                            contentDescription = stringResource(R.string.action_back)
                         )
                     }
                 },
@@ -74,10 +77,13 @@ fun RecuperarPasswordScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            QuetzalMascot(size = 72.dp)
+            QuetzalMascot(
+                modifier = Modifier.size(72.dp),
+                size = 72.dp
+            )
 
             Text(
-                text = "Restablece tu acceso local",
+                text = stringResource(R.string.recovery_restore_access),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -91,7 +97,7 @@ fun RecuperarPasswordScreen(
                         authViewModel.clearRecoveryQuestion()
                     }
                 },
-                label = { Text("Nombre de usuario") },
+                label = { Text(stringResource(R.string.auth_username)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !loading && initialUsername.isBlank(),
@@ -107,7 +113,7 @@ fun RecuperarPasswordScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Search,
-                                contentDescription = "Buscar pregunta"
+                                contentDescription = stringResource(R.string.recovery_search_question)
                             )
                         }
                     }
@@ -123,9 +129,9 @@ fun RecuperarPasswordScreen(
                     if (loading) {
                         ProgressBar()
                         Spacer(Modifier.width(8.dp))
-                        Text("Buscando…")
+                        Text(stringResource(R.string.auth_verifying))
                     } else {
-                        Text("Verificar usuario")
+                        Text(stringResource(R.string.recovery_verify_user))
                     }
                 }
             }
@@ -142,7 +148,7 @@ fun RecuperarPasswordScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = "Pregunta de seguridad:",
+                            text = stringResource(R.string.recovery_security_question),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -157,7 +163,7 @@ fun RecuperarPasswordScreen(
                 OutlinedTextField(
                     value = securityAnswer,
                     onValueChange = { securityAnswer = it },
-                    label = { Text("Tu respuesta") },
+                    label = { Text(stringResource(R.string.recovery_your_answer)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !loading,
@@ -170,17 +176,17 @@ fun RecuperarPasswordScreen(
                 OutlinedTextField(
                     value = newPassword,
                     onValueChange = { newPassword = it },
-                    label = { Text("Nueva contraseña") },
+                    label = { Text(stringResource(R.string.auth_new_password)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !loading,
                     visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    supportingText = { Text("Mínimo 6 caracteres") },
+                    supportingText = { Text(stringResource(R.string.msg_password_min_length)) },
                     trailingIcon = {
                         IconButton(onClick = { newPasswordVisible = !newPasswordVisible }, enabled = !loading) {
                             Icon(
                                 imageVector = if (newPasswordVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                                contentDescription = if (newPasswordVisible) "Ocultar" else "Mostrar"
+                                contentDescription = if (newPasswordVisible) stringResource(R.string.auth_hide_password) else stringResource(R.string.auth_show_password)
                             )
                         }
                     },
@@ -193,7 +199,7 @@ fun RecuperarPasswordScreen(
                 OutlinedTextField(
                     value = confirmPassword,
                     onValueChange = { confirmPassword = it },
-                    label = { Text("Confirmar nueva contraseña") },
+                    label = { Text(stringResource(R.string.auth_confirm_new_password)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !loading,
@@ -202,7 +208,7 @@ fun RecuperarPasswordScreen(
                         IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }, enabled = !loading) {
                             Icon(
                                 imageVector = if (confirmPasswordVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                                contentDescription = if (confirmPasswordVisible) "Ocultar" else "Mostrar"
+                                contentDescription = if (confirmPasswordVisible) stringResource(R.string.auth_hide_password) else stringResource(R.string.auth_show_password)
                             )
                         }
                     },
@@ -230,9 +236,9 @@ fun RecuperarPasswordScreen(
                     if (loading) {
                         ProgressBar()
                         Spacer(Modifier.width(12.dp))
-                        Text("Restableciendo…")
+                        Text(stringResource(R.string.recovery_reset_password))
                     } else {
-                        Text("Restablecer contraseña")
+                        Text(stringResource(R.string.recovery_reset_password))
                     }
                 }
             }

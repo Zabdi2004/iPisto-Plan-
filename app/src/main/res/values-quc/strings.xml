@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- [1. NAVEGACIÓN Y MENÚ PRINCIPAL] -->
+    <string name="nav_home">majb\'al</string>
+    <string name="nav_reports">b\'ixkil</string>
+    <string name="nav_new_record">K\'ak\'tz\'ib\'anem</string>
+    <string name="nav_goals">Opanem</string>
+    <string name="nav_profile">Winaq</string>
+    <string name="nav_settings">Suk\'manem</string>
+    <string name="nav_education">Tijonem rech Pwäq</string>
+    <string name="action_back">Tzalijik</string>
+    <string name="action_exit">Elem</string>
+
+    <!-- [2. ACCIONES Y BOTONES COMUNES] -->
+    <string name="action_save">K\'olik</string>
+    <string name="action_cancel">Uq\'atexik</string>
+    <string name="action_confirm">S\'uk\'ub\'ik</string>
+    <string name="action_edit">Ukolomaxik</string>
+    <string name="action_delete">Elesanem</string>
+    <string name="action_continue">Tajinik</string>
+    <string name="action_accept">Nimaxik</string>
+    <string name="action_close">Tz\'apinik</string>
+    <string name="action_search">Tzukuxïk</string>
+    <string name="action_verify">Rilik</string>
+    <string name="action_unlock">utzoqopixik</string>
+    <string name="action_view_charts">il wachib\'al</string>
+    <string name="action_new_evaluation">k\'ak\' Pajb\'al eta\'mab\'al</string>
+    <string name="action_add_contribution">uya\'ik tob\'anik</string>
+    <string name="action_savings_plan">no\'jib\'al K\'olom pwaq</string>
+
+    <!-- [3. AUTENTICACIÓN, SEGURIDAD Y SESIÓN] -->
+    <string name="auth_login">majb\'al ch\'ob\'oj</string>
+    <string name="auth_register">winaqirisanik Etal pwaquib\'äl</string>
+    <string name="auth_logout">Utz\'apixik Kemchak</string>
+    <string name="auth_delete_account">Elesanem Etal pwaquib\'äl</string>
+    <string name="auth_session_locked">Ch\'oboj tzapim</string>
+    <string name="auth_verifying">Tajinkinwelo</string>
+    <string name="auth_unlock_session">Tzoqopij richioboj</string>
+    <string name="auth_username">Ubi Winaq</string>
+    <string name="auth_password">retokib\'al</string>
+    <string name="auth_confirm_password">Usuk\'ub\'axik retokib\'al</string>
+    <string name="auth_current_password">retokib\'al Kamik</string>
+    <string name="auth_new_password">K\'ak\' retokib\'al</string>
+    <string name="auth_confirm_new_password">usuk\'ub\'axik k\'ak\' retokib\'al</string>
+    <string name="auth_change_password">jalik retokib\'al</string>
+    <string name="auth_show_password">k\'utik retokib\'al</string>
+    <string name="auth_hide_password">ch\'uqik retokib\'al</string>
+    <string name="auth_forgot_password">xasachik ri a retokib\'al</string>
+    <string name="auth_no_account_create">maj awajilab\'a,chab\'ana waral"</string>
+    <string name="auth_has_account_login">¿La k\'o chi jun awujil? chatokb\'ik</string>
+
+    <!-- [4. RECUPERACIÓN DE CONTRASEÑA LOCAL] -->
+    <string name="recovery_title">kutzir(ik) retokib\'al</string>
+    <string name="recovery_reset_password">utzalijisaxik retokib\'al</string>
+    <string name="recovery_security_question">Jas jikomal</string>
+    <string name="recovery_security_answer">tzalijib\'al jikomal</string>
+    <string name="recovery_secret_answer">tzalijib\'al chinajimaal</string>
+    <string name="recovery_your_answer">ri a tzalijib\'al</string>
+    <string name="recovery_search_question">tzukuj k\'otoj chi\'aj</string>
+    <string name="recovery_verify_user">tajin kiwil ri winaq</string>
+    <string name="recovery_restore_access">utzalijisaxik okib\'al waralik</string>
+    <string name="recovery_configure_question">usuk\'maxik k\'otajchi\'aj jikomal</string>
+    <string name="recovery_update_question">k\'ak\'arisaj kotojchi\'aj jikomal</string>
+    <string name="recovery_question_pet">jas ri ubi ri nab\'e awaj</string>
+    <string name="recovery_question_city">jastinamitxat\' alax wi</string>
+    <string name="recovery_question_food">jasriarikil q\'as utz kana\'o</string>
+    <string name="recovery_question_school">jas ri ubi ritijab\'al nab\'etijonem</string>
+    <string name="recovery_question_custom">junchik rechb\'exik</string>
+    <string name="recovery_write_question">tzib\'ajri kotojchi\'aj</string>
+
+    <!-- [5. CONCEPTOS FINANCIEROS BÁSICOS] -->
+    <string name="finance_money">pwaq</string>
+    <string name="finance_pisto">pwaq</string>
+    <string name="finance_income">okik</string>
+    <string name="finance_incomes">nuch\'akaj</string>
+    <string name="finance_fixed_expense">zachikjequelik</string>
+    <string name="finance_fixed_expenses">zachik ejequelit</string>
+    <string name="finance_variable_expense">zachik kaxtal uwach</string>
+    <string name="finance_variable_expenses">zachik kaxtal uwach</string>
+    <string name="finance_debt">k\'as</string>
+    <string name="finance_debts">k\'asj</string>
+    <string name="finance_savings">K\'olik</string>
+    <string name="finance_savings_plural">k\'olom pwaq</string>
+    <string name="finance_goal">opanem</string>
+    <string name="finance_goals">opanem</string>
+    <string name="finance_budget">urajilal</string>
+    <string name="finance_balance">k\'atb\'äl</string>
+    <string name="finance_financial_balance">k\'utbäl pwaq</string>
+    <string name="finance_available_money">pwaq ya\'talik</string>
+    <string name="finance_total_debt">k\'as ronojel</string>
+    <string name="finance_periodic_payment">tojic b\'inel wuj</string>
+    <string name="finance_monthly_payment">tajic ik\'</string>
+    <string name="finance_monthly_debt_payment">tojic ik\' ri k\'asaj</string>
+    <string name="finance_percentage_used">jok\'al kojom</string>
+    <string name="finance_amount">kialil</string>
+    <string name="finance_total_amount">tz\'akat chajil ronojel</string>
+    <string name="finance_total_debt_amount">tzakat chajil ronojel ri k\'as</string>
+    <string name="finance_goal_amount">ajilab\'al rayib\'al</string>
+    <string name="finance_saved_amount">ajilab\'al kolik</string>
+    <string name="finance_monthly_contribution">tob\'anik ik\'</string>
+    <string name="finance_estimated_total">ronojel moloȯj looq\'</string>
+    <string name="finance_saved_summary">chutinsanem k\'olom</string>
+    <string name="finance_currency_symbol">Q</string>
+
+    <!-- [6. PERIODICIDAD Y TIEMPOS] -->
+    <string name="finance_periodicity">cholajil</string>
+    <string name="finance_frequency">kyalmul</string>
+    <string name="finance_daily">ronojel q\'ij</string>
+    <string name="finance_weekly">wuqub q\'ij</string>
+    <string name="finance_biweekly">jo\'lajuj q\'ij</string>
+    <string name="finance_monthly">ik\'</string>
+    <string name="finance_unique">xajun</string>
+    <string name="finance_today">kamik</string>
+    <string name="finance_date">rajilab\'al q\'ij</string>
+    <string name="finance_month">ik</string>
+    <string name="finance_year">junab</string>
+
+    <!-- [7. ESTADOS FINANCIEROS Y DIAGNÓSTICO] -->
+    <string name="finance_financial_status">uwujil rajilal pwaq</string>
+    <string name="finance_healthy">utz uwch</string>
+    <string name="finance_caution">no\'jum</string>
+    <string name="finance_critical">k\'ak</string>
+    <string name="finance_no_income">majun okem</string>
+    <string name="finance_surplus">pwaq utz\'aqatil</string>
+    <string name="finance_deficit">pwaq kuraj\'na</string>
+
+    <!-- [8. CATEGORÍAS COMUNES] -->
+    <string name="finance_category">b\'anikil</string>
+    <string name="finance_select_category">ucha\'ik b\'anikil</string>
+    <string name="finance_new_category">k\'ak b\'anikil</string>
+    <string name="finance_category_food">tzuuquik</string>
+    <string name="finance_category_housing">ja</string>
+    <string name="finance_category_transport">ch\'ich erebal winaq</string>
+    <string name="finance_category_services">ja\'saqil q\'axba\'altzij</string>
+    <string name="finance_category_health">r-utzil-wach</string>
+    <string name="finance_category_education">tijonik</string>
+    <string name="finance_category_clothing">atz\'yaq</string>
+    <string name="finance_category_entertainment">etz\'aneem</string>
+    <string name="finance_category_work">chak utojib\'al</string>
+    <string name="finance_category_business">nuk\'aay</string>
+    <string name="finance_category_loan">nuqajom</string>
+    <string name="finance_category_other">jun chik</string>
+
+    <!-- [9. METAS DE AHORRO] -->
+    <string name="goals_savings_plan">cholchak ri K\'olik</string>
+    <string name="goals_new_goal">k\'ak upanem</string>
+    <string name="goals_edit_goal">ukolomaxin upanem</string>
+    <string name="goals_goal_detail">k\'iyirik</string>
+    <string name="goals_progress_completed">tz\'aqat</string>
+    <string name="goals_progress_in_progress">Tajan k\'iyirik</string>
+    <string name="goals_estimated_date">ajilab\'aj q\'ij</string>
+    <string name="goals_add_money">uya\'ik pwaq chupam ri ipanem</string>
+    <string name="goals_congrats">kikoto\'q upanem riqik</string>
+
+    <!-- [10. INFORMES Y GRÁFICAS] -->
+    <string name="charts_title">wachib\'al</string>
+    <string name="charts_lines">juch</string>
+    <string name="charts_bars">rab\'arik</string>
+    <string name="charts_scatter">tukinem</string>
+    <string name="charts_income_vs_expense">nuch\'akoj i sachik</string>
+    <string name="charts_expense_distribution">jachik ri sachik pwaq</string>
+    <string name="charts_debt_evolution">ki\'yik ri k\'asaj</string>
+    <string name="charts_monthly_comparison">ujunamaxik ik\'</string>
+    <string name="charts_no_data">maja\'ntzat katzijolrech katzibax wz wachib\'al ri</string>
+    <string name="charts_add_data">chatz\'ibaj jastaqrech kawil le ub\'ixikil</string>
+
+    <!-- [11. EDUCACIÓN FINANCIERA] -->
+    <string name="education_title">tijonik chirij ukojik ri pwaq</string>
+    <string name="education_emergency_fund">chajil pwaq aninaqil</string>
+    <string name="education_investment">ukajik pwaq</string>
+    <string name="education_risk">xib\'ib\'äl</string>
+    <string name="education_diversification">chijilljalajoj</string>
+    <string name="education_horizon">uq\'ijol uyaik pwaq rech uk\'iyisaxik</string>
+    <string name="education_inflation">kariyik ukojik puwok</string>
+    <string name="education_protection">uchajunuk rech echab\'al</string>
+    <string name="education_insurance">qastzij</string>
+    <string name="education_interest">ra\'l pwaq</string>
+    <string name="education_good_vs_bad_debt">utz k\'as qȧk\'as</string>
+    <string name="education_disclaimer">ri b\'anikil ri kiltaj chik, xarech eta\'mab\'al xuquje man kuya taj uq\'alajusaxik rech ri pwaq kuya\'o</string>
+
+    <!-- [12. MENSAJES Y ALERTAS DEL SISTEMA] -->
+    <string name="msg_account_created">utz\'ib\'asik ri b\'iaj xb\'antaj pa usuk</string>
+    <string name="msg_invalid_credentials">ubi rajaw o rectokibal ma are taj</string>
+    <string name="msg_incorrect_password">le rotokib\'al ma are taj</string>
+    <string name="msg_passwords_dont_match">le rotokib\'al ma kajumtajtaj</string>
+    <string name="msg_user_exists">ri ub\'i winaq tz\'ibam chik</string>
+    <string name="msg_username_empty">ri ub\'i ri wokonel makuwin taj kkanaj Kanj</string>
+    <string name="msg_password_min_length">ri retokib\'al waqib ri u mo\'il</string>
+    <string name="msg_username_format">xa xu tzibab\'äl, ruk\'l kimtäq juch</string>
+    <string name="msg_security_question_usage">Ki Kojik rech kateirik ri retokib\'al sasacho</string>
+    <string name="msg_no_security_question">Rirajaw maj jun kaibal chiaj rech</string>
+    <string name="msg_incorrect_security_answer">man üts täj eitealübaltzü</string>
+    <string name="msg_must_answer_security_question">Rajawaxik katzalij uwachrikatow chiaj rech chajinem</string>
+    <string name="msg_confirm_delete_account">Qas Tzij wi chawaj kasach uwachri aja tal</string>
+    <string name="msg_delete_account_warning">Le b\'anob\'al ri\' kuqasaj na jumulri a k\'aslemal xuquj e\'konujel ri a pwaqil eta\'mab\'al kolo\'m pawe ch\'ich ri\'</string>
+    <string name="msg_confirm_new_evaluation">Kawaj kachaplej jun k\'ak\' pajb\'al eta mab\'al</string>
+    <string name="msg_new_evaluation_warning">Kachupisaj ronojel re arajilal chiwe kamik</string>
+    <string name="msg_data_saved_locally">Ri e tz\'ib\'al kaq\'alox napawe kematz\'in ri\'</string>
+
+    <!-- Additional strings from existing strings.xml -->
+    <string name="app_name">iPisto</string>
+    <string name="welcome_description">Administra tus finanzas de forma sencilla.</string>
+    <string name="login">majb\'al ch\'ob\'oj</string>
+    <string name="create_account">winaqirisanik Etal pwaquib\'äl</string>
+    <string name="username">Ubi Winaq</string>
+    <string name="password">retokib\'al</string>
+    <string name="confirm_password">Usuk\'ub\'axik retokib\'al</string>
+    <string name="error_user_exists">ri ub\'i winaq tz\'ibam chik</string>
+    <string name="error_passwords_dont_match">le rotokib\'al ma kajumtajtaj</string>
+    <string name="account_created">utz\'ib\'asik ri b\'iaj xb\'antaj pa usuk</string>
+    <string name="error_invalid_credentials">ubi rajaw o rectokibal ma are taj</string>
+    <string name="show_password">k\'utik retokib\'al</string>
+    <string name="hide_password">ch\'uqik retokib\'al</string>
+    <string name="logout">Utz\'apixik Kemchak</string>
+    <string name="delete_account">Elesanem Etal pwaquib\'äl</string>
+    <string name="confirm_delete_account">Qas Tzij wi chawaj kasach uwachri aja tal</string>
+    <string name="delete_account_warning">Le b\'anob\'al ri\' kuqasaj na jumulri a k\'aslemal xuquj e\'konujel ri a pwaqil eta\'mab\'al kolo\'m pawe ch\'ich ri\'</string>
+    <string name="cancel">Uq\'atexik</string>
+    <string name="confirm">S\'uk\'ub\'ik</string>
+    <string name="home">majb\'al</string>
+    <string name="charts">b\'ixkil</string>
+    <string name="goals">Opanem</string>
+    <string name="profile">Winaq</string>
+    <string name="settings">Suk\'manem</string>
+    <string name="language">K\'iche\'</string>
+    <string name="change_password">jalik retokib\'al</string>
+    <string name="education">Tijonem rech Pwäq</string>
+    <string name="new_evaluation">k\'ak\' Pajb\'al eta\'mab\'al</string>
+    <string name="unlock_session">utzoqopixik</string>
+    <string name="locked_session">Ch\'oboj tzapim</string>
+    <string name="unlocking">Tajinkinwelo</string>
+    <string name="unlock_error">le rotokib\'al ma are taj</string>
+    <string name="forgot_password">xasachik ri a retokib\'al</string>
+    <string name="recover_password">kutzir(ik) retokib\'al</string>
+    <string name="security_question">Jas jikomal</string>
+    <string name="security_answer">tzalijib\'al jikomal</string>
+    <string name="restore_password">utzalijisaxik retokib\'al</string>
+    <string name="configure_security_question">usuk\'maxik k\'otajchi\'aj jikomal</string>
+    <string name="chart_lines">juch</string>
+    <string name="chart_bars">rab\'arik</string>
+    <string name="chart_scatter">tukinem</string>
+    <string name="view_charts">il wachib\'al</string>
+    <string name="navigation_home">majb\'al</string>
+    <string name="navigation_reports">b\'ixkil</string>
+    <string name="navigation_goals">Opanem</string>
+    <string name="navigation_profile">Winaq</string>
+    <string name="navigation_add_record">K\'ak\'tz\'ib\'anem</string>
+    <string name="confirm_new_evaluation">Kawaj kachaplej jun k\'ak\' pajb\'al eta mab\'al</string>
+    <string name="new_evaluation_warning">Kachupisaj ronojel re arajilal chiwe kamik</string>
+    <string name="income">nuch\'akaj</string>
+    <string name="fixed_expenses">zachik ejequelit</string>
+    <string name="variable_expenses">zachik kaxtal uwach</string>
+    <string name="debts">k\'asj</string>
+    <string name="available_money">pwaq ya\'talik</string>
+    <string name="total_debt">k\'as ronojel</string>
+    <string name="monthly_debt_payment">tojic ik\' ri k\'asaj</string>
+    <string name="percentage_used">jok\'al kojom</string>
+    <string name="financial_status">uwujil rajilal pwaq</string>
+    <string name="healthy">utz uwch</string>
+    <string name="caution">no\'jum</string>
+    <string name="critical">k\'ak</string>
+    <string name="add_income">K\'ak\' okik</string>
+    <string name="add_fixed_expense">K\'ak\' zachikjequelik</string>
+    <string name="add_variable_expense">K\'ak\' zachik kaxtal uwach</string>
+    <string name="add_debt">K\'ak\' k\'as</string>
+    <string name="add_goal">K\'ak\' opanem</string>
+    <string name="edit">Ukolomaxik</string>
+    <string name="remove">Elesanem</string>
+    <string name="save">K\'olik</string>
+    <string name="name">Ubi</string>
+    <string name="category">b\'anikil</string>
+    <string name="amount">kialil</string>
+    <string name="periodicity">cholajil</string>
+    <string name="weekly">wuqub q\'ij</string>
+    <string name="biweekly">jo\'lajuj q\'ij</string>
+    <string name="monthly">ik\'</string>
+    <string name="total_debt_amount">tzakat chajil ronojel ri k\'as</string>
+    <string name="periodic_payment">tojic b\'inel wuj</string>
+    <string name="goal_objective">ajilab\'al rayib\'al</string>
+    <string name="current_savings">ajilab\'al kolik</string>
+    <string name="monthly_contribution">tob\'anik ik\'</string>
+    <string name="currency_symbol">Q</string>
+    <string name="no_data_message">maja\'ntzat katzijolrech katzibax wz wachib\'al ri</string>
+    <string name="add_data_message">chatz\'ibaj jastaqrech kawil le ub\'ixikil</string>
+    <string name="simulation_result">ronojel moloȯj looq\'</string>
+    <string name="projection_disclaimer">ri b\'anikil ri kiltaj chik, xarech eta\'mab\'al xuquje man kuya taj uq\'alajusaxik rech ri pwaq kuya\'o</string>
+    <string name="education_savings">K\'olik</string>
+    <!-- Empty states for financial sections -->
+    <string name="no_income_registered">majun okik tz\'ibam</string>
+    <string name="no_fixed_expenses_registered">majun zachik ejequelit tz\'ibam</string>
+    <string name="no_variable_expenses_registered">majun zachik kaxtal uwach tz\'ibam</string>
+    <string name="no_debts_registered">majun k\'asaj tz\'ibam</string>
+    <string name="no_goals_registered">majun opanem tz\'ibam</string>
+</resources>
