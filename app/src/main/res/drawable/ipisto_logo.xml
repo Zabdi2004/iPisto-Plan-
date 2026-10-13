@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- White background circle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,2C6.477,2 2,6.477 2,12C2,17.523 6.477,22 12,22C17.523,22 22,17.523 22,12C22,6.477 17.523,2 12,2Z" />
+
+    <!-- Blue vertical bar of P -->
+    <path
+        android:fillColor="#1E88E5"
+        android:pathData="M8,6L8,18C8,19.105 8.895,20 10,20L10,14C10,12.895 10.895,12 12,12L12,10C10.895,10 10,9.105 10,8L10,6C8.895,6 8,6.895 8,8L8,6Z" />
+
+    <!-- Green upper outline and curve of P (including lower right loop) -->
+    <path
+        android:fillColor="#76FF03"
+        android:pathData="M10,6C10,5.448 10.448,5 11,5L15,5C16.105,5 17,5.895 17,7L17,9C17,10.105 16.105,11 15,11L13,11L13,14C13,15.105 13.895,16 15,16L17,16C18.105,16 19,15.105 19,14L19,7C19,5.895 18.105,5 17,5L12,5C11.448,5 11,5.448 11,6L11,8C11,8.552 11.448,9 12,9L12,11L10,11L10,6Z" />
+
+    <!-- Blue circle inside P (the hole) -->
+    <path
+        android:fillColor="#1E88E5"
+        android:pathData="M13,9C13,7.895 13.895,7 15,7C16.105,7 17,7.895 17,9C17,10.105 16.105,11 15,11C13.895,11 13,10.105 13,9Z" />
+
+    <!-- Blue arrow from circle pointing up-right -->
+    <path
+        android:fillColor="#1E88E5"
+        android:pathData="M15,9L18,6L16.5,6L16.5,8.5L13.5,8.5L13.5,6L12,6L15,9Z" />
+
+</vector>

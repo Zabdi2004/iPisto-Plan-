@@ -11,9 +11,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.data.local.entity.Ingreso
 import com.finanzaspersonales.gt.data.local.entity.GastoFijo
 import com.finanzaspersonales.gt.data.local.entity.GastoVariable
@@ -40,16 +42,16 @@ fun IngresoSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("INGRESOS", style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Income)
+                Text(stringResource(R.string.income), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Income)
                 IconButton(onClick = onAdd) {
-                    Icon(Icons.Filled.Add, contentDescription = "Agregar ingreso", tint = IpistoPalette.Income)
+                    Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_income), tint = IpistoPalette.Income)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
 
             if (ingresos.isEmpty()) {
                 Text(
-                    "No hay ingresos registrados",
+                    stringResource(R.string.no_income_registered),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
@@ -106,10 +108,10 @@ fun IngresoItem(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Filled.Edit, contentDescription = "Editar ingreso", tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.edit), tint = MaterialTheme.colorScheme.primary)
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Filled.Delete, contentDescription = "Eliminar ingreso", tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.remove), tint = MaterialTheme.colorScheme.error)
                 }
             }
         }
@@ -132,16 +134,16 @@ fun GastoFijoSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("GASTOS FIJOS", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.fixed_expenses), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
                 IconButton(onClick = onAdd) {
-                    Icon(Icons.Filled.Add, contentDescription = "Agregar gasto fijo", tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_fixed_expense), tint = MaterialTheme.colorScheme.error)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
 
             if (gastos.isEmpty()) {
                 Text(
-                    "No hay gastos fijos registrados",
+                    stringResource(R.string.no_fixed_expenses_registered),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
@@ -199,10 +201,10 @@ fun GastoFijoItem(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Filled.Edit, contentDescription = "Editar gasto fijo", tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.edit), tint = MaterialTheme.colorScheme.primary)
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Filled.Delete, contentDescription = "Eliminar gasto fijo", tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.remove), tint = MaterialTheme.colorScheme.error)
                 }
             }
         }
@@ -225,16 +227,16 @@ fun GastoVariableSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("GASTOS VARIABLES", style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Expense)
+                Text(stringResource(R.string.variable_expenses), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Expense)
                 IconButton(onClick = onAdd) {
-                    Icon(Icons.Filled.Add, contentDescription = "Agregar gasto variable", tint = IpistoPalette.Expense)
+                    Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_variable_expense), tint = IpistoPalette.Expense)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
 
             if (gastos.isEmpty()) {
                 Text(
-                    "No hay gastos variables registrados",
+                    stringResource(R.string.no_variable_expenses_registered),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
@@ -292,10 +294,10 @@ fun GastoVariableItem(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Filled.Edit, contentDescription = "Editar gasto variable", tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.edit), tint = MaterialTheme.colorScheme.primary)
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Filled.Delete, contentDescription = "Eliminar gasto variable", tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.remove), tint = MaterialTheme.colorScheme.error)
                 }
             }
         }
@@ -318,16 +320,16 @@ fun DeudaSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("DEUDAS", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.debts), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
                 IconButton(onClick = onAdd) {
-                    Icon(Icons.Filled.Add, contentDescription = "Agregar deuda", tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_debt), tint = MaterialTheme.colorScheme.error)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
 
             if (deudas.isEmpty()) {
                 Text(
-                    "No hay deudas registradas",
+                    stringResource(R.string.no_debts_registered),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
@@ -372,10 +374,10 @@ fun DeudaItem(
                 Text(deuda.nombre, style = MaterialTheme.typography.titleMedium)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onEdit) {
-                        Icon(Icons.Filled.Edit, contentDescription = "Editar", tint = MaterialTheme.colorScheme.primary)
+                        Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.edit), tint = MaterialTheme.colorScheme.primary)
                     }
                     IconButton(onClick = onDelete) {
-                        Icon(Icons.Filled.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
+                        Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.remove), tint = MaterialTheme.colorScheme.error)
                     }
                 }
             }
@@ -414,16 +416,16 @@ fun MetaAhorroSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("METAS DE AHORRO", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.secondary)
+                Text(stringResource(R.string.goals), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.secondary)
                 IconButton(onClick = onAdd) {
-                    Icon(Icons.Filled.Add, contentDescription = "Agregar meta", tint = MaterialTheme.colorScheme.secondary)
+                    Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_goal), tint = MaterialTheme.colorScheme.secondary)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
 
             if (metas.isEmpty()) {
                 Text(
-                    "No hay metas de ahorro registradas",
+                    stringResource(R.string.no_goals_registered),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
@@ -469,10 +471,10 @@ fun MetaAhorroItem(
                 Text(meta.nombre, style = MaterialTheme.typography.titleMedium)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onEdit) {
-                        Icon(Icons.Filled.Edit, contentDescription = "Editar", tint = MaterialTheme.colorScheme.primary)
+                        Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.edit), tint = MaterialTheme.colorScheme.primary)
                     }
                     IconButton(onClick = onDelete) {
-                        Icon(Icons.Filled.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
+                        Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.remove), tint = MaterialTheme.colorScheme.error)
                     }
                 }
             }
