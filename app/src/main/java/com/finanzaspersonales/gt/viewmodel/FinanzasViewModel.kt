@@ -7,10 +7,18 @@ import com.finanzaspersonales.gt.data.local.entity.GastoFijo
 import com.finanzaspersonales.gt.data.local.entity.GastoVariable
 import com.finanzaspersonales.gt.data.local.entity.Deuda
 import com.finanzaspersonales.gt.data.local.entity.MetaAhorro
+import com.finanzaspersonales.gt.data.local.entity.PresupuestoOcio
+import com.finanzaspersonales.gt.data.local.entity.PeriodicidadPresupuesto
 import com.finanzaspersonales.gt.data.repository.FinanzasRepository
 import com.finanzaspersonales.gt.data.repository.MetasRepository
+import com.finanzaspersonales.gt.data.repository.PresupuestoOcioRepository
 import com.finanzaspersonales.gt.domain.calculator.BalanceCalculator
 import com.finanzaspersonales.gt.domain.calculator.BalanceFinanciero
+import com.finanzaspersonales.gt.domain.calculator.DineroDisponibleOcioResult
+import com.finanzaspersonales.gt.domain.calculator.EstadoPresupuesto
+import com.finanzaspersonales.gt.domain.calculator.OcioCalculator
+import com.finanzaspersonales.gt.domain.calculator.OcioPresupuestoResult
+import com.finanzaspersonales.gt.domain.calculator.SimulacionCompraResult
 import com.finanzaspersonales.gt.utils.CurrencyFormatter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.CancellationException
+import java.math.BigDecimal
 
 data class FinanzasUiState(
     val ingresos: List<Ingreso> = emptyList(),
@@ -28,14 +37,26 @@ data class FinanzasUiState(
     val gastosVariables: List<GastoVariable> = emptyList(),
     val deudas: List<Deuda> = emptyList(),
     val metas: List<MetaAhorro> = emptyList(),
+    val presupuestoOcio: PresupuestoOcio? = null,
     val balance: BalanceFinanciero? = null,
+    val dineroDisponibleOcio: DineroDisponibleOcioResult? = null,
+    val presupuestoResult: OcioPresupuestoResult? = null,
     val isLoading: Boolean = false,
     val error: String? = null
+)
+
+data class DatosFinancieros(
+    val ingresos: List<Ingreso>,
+    val gastosFijos: List<GastoFijo>,
+    val gastosVariables: List<GastoVariable>,
+    val deudas: List<Deuda>,
+    val metas: List<MetaAhorro>
 )
 
 class FinanzasViewModel(
     private val finanzasRepository: FinanzasRepository,
     private val metasRepository: MetasRepository,
+    private val presupuestoOcioRepository: PresupuestoOcioRepository,
     private val userId: Long
 ) : ViewModel() {
 
@@ -49,21 +70,37 @@ class FinanzasViewModel(
     private fun loadData() {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
-            combine(
+            val datosFinancieros = combine(
                 finanzasRepository.getIngresosByUser(),
                 finanzasRepository.getGastosFijosByUser(),
                 finanzasRepository.getGastosVariablesByUser(),
                 finanzasRepository.getDeudasByUser(),
                 metasRepository.getMetasByUser()
             ) { ingresos, gastosFijos, gastosVariables, deudas, metas ->
+                DatosFinancieros(ingresos, gastosFijos, gastosVariables, deudas, metas)
+            }
+            combine(datosFinancieros, presupuestoOcioRepository.getByUser()) { df, presupuestoList ->
+                val ingresos = df.ingresos
+                val gastosFijos = df.gastosFijos
+                val gastosVariables = df.gastosVariables
+                val deudas = df.deudas
+                val metas = df.metas
+                val presupuesto = presupuestoList.firstOrNull()
                 val calculation = runCatching { BalanceCalculator.calcularBalance(ingresos, gastosFijos, gastosVariables, deudas) }
+                val dineroOcio = runCatching { OcioCalculator.calcularDineroDisponibleOcio(ingresos, gastosFijos, gastosVariables, deudas, metas) }
+                val presupuestoResult = runCatching {
+                    OcioCalculator.calcularPresupuestoOcio(presupuesto, gastosVariables, gastosFijos, System.currentTimeMillis())
+                }
                 FinanzasUiState(
                     ingresos = ingresos,
                     gastosFijos = gastosFijos,
                     gastosVariables = gastosVariables,
                     deudas = deudas,
                     metas = metas,
+                    presupuestoOcio = presupuesto,
                     balance = calculation.getOrNull(),
+                    dineroDisponibleOcio = dineroOcio.getOrNull(),
+                    presupuestoResult = presupuestoResult.getOrNull(),
                     isLoading = false,
                     error = calculation.exceptionOrNull()?.localizedMessage
                 )
@@ -94,13 +131,13 @@ class FinanzasViewModel(
     }
 
     fun insertIngreso(ingreso: Ingreso, onComplete: (Boolean) -> Unit = {}) {
-            val ingresoWithUser = ingreso.copy(userId = userId)
-            mutate(onComplete) { finanzasRepository.insertIngreso(ingresoWithUser) }
+        val ingresoWithUser = ingreso.copy(userId = userId)
+        mutate(onComplete) { finanzasRepository.insertIngreso(ingresoWithUser) }
     }
 
     fun updateIngreso(ingreso: Ingreso, onComplete: (Boolean) -> Unit = {}) {
-            val ingresoWithUser = ingreso.copy(userId = userId)
-            mutate(onComplete) { finanzasRepository.updateIngreso(ingresoWithUser) }
+        val ingresoWithUser = ingreso.copy(userId = userId)
+        mutate(onComplete) { finanzasRepository.updateIngreso(ingresoWithUser) }
     }
 
     fun deleteIngreso(ingreso: Ingreso) = mutate { finanzasRepository.deleteIngreso(ingreso) }
@@ -142,8 +179,54 @@ class FinanzasViewModel(
         viewModelScope.launch {
             finanzasRepository.deleteAllFinancialData()
             metasRepository.deleteAllMetasByUser()
+            presupuestoOcioRepository.deleteByUser()
+        }
+    }
+
+    fun savePresupuestoOcio(presupuesto: PresupuestoOcio, onComplete: (Boolean) -> Unit = {}) {
+        mutate(onComplete) {
+            presupuestoOcioRepository.saveOrUpdate(presupuesto.copy(userId = userId))
+        }
+    }
+
+    fun deletePresupuestoOcio(onComplete: (Boolean) -> Unit = {}) {
+        mutate(onComplete) {
+            presupuestoOcioRepository.deleteByUser()
+        }
+    }
+
+    fun simularCompra(montoStr: String): SimulacionCompraResult? {
+        val monto = runCatching {
+            val bd = BigDecimal(montoStr.replace(",", "."))
+            if (!montoStr.contains("-")) bd.setScale(2, java.math.RoundingMode.HALF_UP) else null
+        }.getOrNull() ?: return null
+
+        val presupuestoResult = _uiState.value.presupuestoResult ?: return null
+        return OcioCalculator.simularCompra(monto, presupuestoResult)
+    }
+
+    fun marcarGastoVariableComoOcio(id: Long, esOcio: Boolean) {
+        viewModelScope.launch {
+            val gasto = finanzasRepository.getGastosVariablesByUserOnce().find { it.id == id }
+            if (gasto != null) {
+                finanzasRepository.updateGastoVariable(gasto.copy(esOcio = esOcio))
+            }
+        }
+    }
+
+    fun marcarGastoFijoComoOcio(id: Long, esOcio: Boolean) {
+        viewModelScope.launch {
+            val gasto = finanzasRepository.getGastosFijosByUserOnce().find { it.id == id }
+            if (gasto != null) {
+                finanzasRepository.updateGastoFijo(gasto.copy(esOcio = esOcio))
+            }
         }
     }
 
     fun formatCurrency(amount: Double): String = CurrencyFormatter.format(amount)
+
+    fun formatCurrencyBd(amount: BigDecimal): String {
+        val scaled = amount.setScale(2, java.math.RoundingMode.HALF_UP)
+        return CurrencyFormatter.format(scaled.toDouble())
+    }
 }

@@ -16,5 +16,6 @@ data class GastoFijo(
     val categoria: String,
     val cantidad: Double,
     val periodicidad: String,
-    val fechaMillis: Long? = null
+    val fechaMillis: Long? = null,
+    val esOcio: Boolean = false
 )

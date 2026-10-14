@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Savings
@@ -61,6 +63,13 @@ fun IpistoBottomBar(currentRoute: String?, navController: NavHostController) {
                 onClick = { navigateTopLevel(navController, Screen.Graficas) },
                 icon = { Icon(if (currentRoute == Screen.Graficas) Icons.Filled.BarChart else Icons.Outlined.BarChart, contentDescription = stringResource(R.string.navigation_reports)) },
                 label = { Text(stringResource(R.string.navigation_reports)) },
+                colors = colors
+            )
+            NavigationBarItem(
+                selected = currentRoute == Screen.Ocio,
+                onClick = { navigateTopLevel(navController, Screen.Ocio) },
+                icon = { Icon(if (currentRoute == Screen.Ocio) Icons.Filled.Favorite else Icons.Outlined.Favorite, contentDescription = stringResource(R.string.navigation_ocio)) },
+                label = { Text(stringResource(R.string.navigation_ocio)) },
                 colors = colors
             )
             NavigationBarItem(

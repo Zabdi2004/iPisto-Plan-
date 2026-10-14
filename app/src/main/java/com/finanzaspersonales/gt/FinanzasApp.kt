@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.finanzaspersonales.gt.data.local.AppDatabase
 import com.finanzaspersonales.gt.data.repository.FinanzasRepository
 import com.finanzaspersonales.gt.data.repository.MetasRepository
+import com.finanzaspersonales.gt.data.repository.PresupuestoOcioRepository
 import com.finanzaspersonales.gt.data.repository.UserRepository
 import com.finanzaspersonales.gt.utils.SessionManager
 import com.finanzaspersonales.gt.viewmodel.AuthViewModel
@@ -19,13 +20,14 @@ class FinanzasApp : Application() {
         database.ingresoDao(), database.gastoFijoDao(), database.gastoVariableDao(), database.deudaDao(), ownerId
     )
     fun metasRepository(ownerId: Long) = MetasRepository(database.metaAhorroDao(), ownerId)
+    fun presupuestoOcioRepository(ownerId: Long) = PresupuestoOcioRepository(database.presupuestoOcioDao(), ownerId)
 
     val authViewModelFactory: ViewModelProvider.Factory by lazy {
         factory { AuthViewModel(userRepository, sessionManager) }
     }
 
     fun finanzasViewModelFactory(userId: Long): ViewModelProvider.Factory =
-        factory { FinanzasViewModel(finanzasRepository(userId), metasRepository(userId), userId) }
+        factory { FinanzasViewModel(finanzasRepository(userId), metasRepository(userId), presupuestoOcioRepository(userId), userId) }
 
     private fun <T : ViewModel> factory(create: () -> T) = object : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")

@@ -40,6 +40,7 @@ object Screen {
     const val Configuracion = "configuracion"
     const val EducacionFinanciera = "educacion_financiera"
     const val RecuperarPassword = "recuperar_password"
+    const val Ocio = "ocio"
 }
 
 @Composable
@@ -158,6 +159,9 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
         composable(Screen.Perfil) { PrivateRoute(user != null && financeViewModel != null, navController) { PerfilScreen(navController, authViewModel, financeViewModel!!) } }
         composable(Screen.Configuracion) { PrivateRoute(user != null, navController) { ConfiguracionScreen(navController) } }
         composable(Screen.EducacionFinanciera) { PrivateRoute(user != null, navController) { EducacionFinancieraScreen() } }
+        composable(Screen.Ocio) {
+            PrivateRoute(user != null && financeViewModel != null, navController) { OcioScreen(navController, financeViewModel!!) }
+        }
     }
     }
 }
