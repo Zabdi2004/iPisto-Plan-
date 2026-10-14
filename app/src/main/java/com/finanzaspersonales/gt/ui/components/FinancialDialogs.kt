@@ -1,0 +1,445 @@
+﻿package com.finanzaspersonales.gt.ui.components
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.finanzaspersonales.gt.utils.MoneyInput
+
+@Composable
+fun IngresoDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String, Double, String, Long) -> Unit,
+    initialName: String = "",
+    initialAmount: String = "",
+    initialPeriodicity: String = "Mensual",
+    isEditing: Boolean = false,
+    initialDateMillis: Long = System.currentTimeMillis(),
+    saveError: String? = null
+) {
+    var name by remember { mutableStateOf(TextFieldValue(initialName)) }
+    var amount by remember { mutableStateOf(TextFieldValue(initialAmount)) }
+    var periodicity by remember { mutableStateOf(initialPeriodicity) }
+    var dateMillis by remember(initialDateMillis) { mutableStateOf(initialDateMillis) }
+    var nameError by remember { mutableStateOf(false) }
+    var amountError by remember { mutableStateOf(false) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(if (isEditing) "Editar Ingreso" else "Agregar Ingreso", style = MaterialTheme.typography.headlineSmall) },
+        text = {
+            Column(
+                modifier = Modifier.padding(24.dp).widthIn(max = 320.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CustomTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = "Nombre",
+                    placeholder = "Ej: Salario",
+                    isError = nameError,
+                    errorText = if (nameError) "El nombre es obligatorio" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                AmountTextField(
+                    value = amount,
+                    onValueChange = { amount = it },
+                    label = "Cantidad (Q)",
+                    isError = amountError,
+                    errorText = if (amountError) "Ingrese una cantidad válida mayor a 0" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PeriodicityDropdown(
+                    selectedPeriodicity = periodicity,
+                    onPeriodicityChange = { periodicity = it },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
+                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val parsedAmount = MoneyInput.parseAmount(amount.text)
+                    val amountValue = parsedAmount ?: 0.0
+                    val valid = name.text.isNotBlank() && parsedAmount != null && amountValue > 0
+                    nameError = name.text.isBlank()
+                    amountError = parsedAmount == null || amountValue <= 0
+                    if (valid) {
+                        onConfirm(name.text, amountValue, periodicity, dateMillis)
+                    }
+                }
+            ) { Text("Guardar") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
+}
+
+@Composable
+fun GastoFijoDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String, String, Double, String, Long) -> Unit,
+    initialName: String = "",
+    initialCategory: String = "Alimentación",
+    existingCategories: List<String> = emptyList(),
+    initialAmount: String = "",
+    initialPeriodicity: String = "Mensual",
+    isEditing: Boolean = false,
+    initialDateMillis: Long = System.currentTimeMillis(),
+    saveError: String? = null
+) {
+    var name by remember { mutableStateOf(TextFieldValue(initialName)) }
+    var category by remember { mutableStateOf(initialCategory) }
+    var amount by remember { mutableStateOf(TextFieldValue(initialAmount)) }
+    var periodicity by remember { mutableStateOf(initialPeriodicity) }
+    var dateMillis by remember(initialDateMillis) { mutableStateOf(initialDateMillis) }
+    var nameError by remember { mutableStateOf(false) }
+    var amountError by remember { mutableStateOf(false) }
+
+    val categories = (listOf("Electricidad", "Agua", "Alquiler", "Alimentación", "Transporte", "Internet", "Teléfono", "Seguros", "Otro") + existingCategories)
+        .distinctBy { it.trim().lowercase() }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(if (isEditing) "Editar Gasto Fijo" else "Agregar Gasto Fijo", style = MaterialTheme.typography.headlineSmall) },
+        text = {
+            Column(
+                modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
+            ) {
+                CustomTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = "Nombre",
+                    placeholder = "Ej: Alquiler apartamento",
+                    isError = nameError,
+                    errorText = if (nameError) "El nombre es obligatorio" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                CategoryDropdown(
+                    selectedCategory = category,
+                    categories = categories,
+                    onCategoryChange = { category = it },
+                    existingCategories = existingCategories,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                AmountTextField(
+                    value = amount,
+                    onValueChange = { amount = it },
+                    label = "Cantidad (Q)",
+                    isError = amountError,
+                    errorText = if (amountError) "Ingrese una cantidad válida mayor a 0" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PeriodicityDropdown(
+                    selectedPeriodicity = periodicity,
+                    onPeriodicityChange = { periodicity = it },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
+                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val parsedAmount = MoneyInput.parseAmount(amount.text)
+                    val amountValue = parsedAmount ?: 0.0
+                    val valid = name.text.isNotBlank() && parsedAmount != null && amountValue > 0
+                    nameError = name.text.isBlank()
+                    amountError = parsedAmount == null || amountValue <= 0
+                    if (valid) {
+                        onConfirm(name.text, category, amountValue, periodicity, dateMillis)
+                    }
+                }
+            ) { Text("Guardar") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
+}
+
+@Composable
+fun GastoVariableDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String, String, Double, String, Long) -> Unit,
+    initialName: String = "",
+    initialCategory: String = "Entretenimiento",
+    existingCategories: List<String> = emptyList(),
+    initialAmount: String = "",
+    initialPeriodicity: String = "Mensual",
+    isEditing: Boolean = false,
+    initialDateMillis: Long = System.currentTimeMillis(),
+    saveError: String? = null
+) {
+    var name by remember { mutableStateOf(TextFieldValue(initialName)) }
+    var category by remember { mutableStateOf(initialCategory) }
+    var amount by remember { mutableStateOf(TextFieldValue(initialAmount)) }
+    var periodicity by remember { mutableStateOf(initialPeriodicity) }
+    var dateMillis by remember(initialDateMillis) { mutableStateOf(initialDateMillis) }
+    var nameError by remember { mutableStateOf(false) }
+    var amountError by remember { mutableStateOf(false) }
+
+    val categories = (listOf("Entretenimiento", "Transporte", "Higiene", "Salud", "Ropa", "Educación", "Regalos", "Otro") + existingCategories)
+        .distinctBy { it.trim().lowercase() }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(if (isEditing) "Editar Gasto Variable" else "Agregar Gasto Variable", style = MaterialTheme.typography.headlineSmall) },
+        text = {
+            Column(
+                modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
+            ) {
+                CustomTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = "Nombre",
+                    placeholder = "Ej: Cine",
+                    isError = nameError,
+                    errorText = if (nameError) "El nombre es obligatorio" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                CategoryDropdown(
+                    selectedCategory = category,
+                    categories = categories,
+                    onCategoryChange = { category = it },
+                    existingCategories = existingCategories,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                AmountTextField(
+                    value = amount,
+                    onValueChange = { amount = it },
+                    label = "Cantidad (Q)",
+                    isError = amountError,
+                    errorText = if (amountError) "Ingrese una cantidad válida mayor a 0" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PeriodicityDropdown(
+                    selectedPeriodicity = periodicity,
+                    onPeriodicityChange = { periodicity = it },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
+                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val parsedAmount = MoneyInput.parseAmount(amount.text)
+                    val amountValue = parsedAmount ?: 0.0
+                    val valid = name.text.isNotBlank() && parsedAmount != null && amountValue > 0
+                    nameError = name.text.isBlank()
+                    amountError = parsedAmount == null || amountValue <= 0
+                    if (valid) {
+                        onConfirm(name.text, category, amountValue, periodicity, dateMillis)
+                    }
+                }
+            ) { Text("Guardar") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
+}
+
+@Composable
+fun DeudaDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String, Double, Double, String, Long) -> Unit,
+    initialName: String = "",
+    initialMontoTotal: String = "",
+    initialPagoPeriodico: String = "",
+    initialPeriodicity: String = "Mensual",
+    isEditing: Boolean = false,
+    initialDateMillis: Long = System.currentTimeMillis(),
+    saveError: String? = null
+) {
+    var name by remember { mutableStateOf(TextFieldValue(initialName)) }
+    var montoTotal by remember { mutableStateOf(TextFieldValue(initialMontoTotal)) }
+    var pagoPeriodico by remember { mutableStateOf(TextFieldValue(initialPagoPeriodico)) }
+    var periodicity by remember { mutableStateOf(initialPeriodicity) }
+    var dateMillis by remember(initialDateMillis) { mutableStateOf(initialDateMillis) }
+    var nameError by remember { mutableStateOf(false) }
+    var montoError by remember { mutableStateOf(false) }
+    var pagoError by remember { mutableStateOf(false) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(if (isEditing) "Editar Deuda" else "Agregar Deuda", style = MaterialTheme.typography.headlineSmall) },
+        text = {
+            Column(
+                modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
+            ) {
+                CustomTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = "Nombre",
+                    placeholder = "Ej: Tarjeta de crédito",
+                    isError = nameError,
+                    errorText = if (nameError) "El nombre es obligatorio" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                AmountTextField(
+                    value = montoTotal,
+                    onValueChange = { montoTotal = it },
+                    label = "Monto total (Q)",
+                    isError = montoError,
+                    errorText = if (montoError) "Ingrese un monto válido mayor a 0" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                AmountTextField(
+                    value = pagoPeriodico,
+                    onValueChange = { pagoPeriodico = it },
+                    label = "Pago periódico (Q)",
+                    isError = pagoError,
+                    errorText = if (pagoError) "Ingrese un pago válido mayor a 0" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PeriodicityDropdown(
+                    selectedPeriodicity = periodicity,
+                    onPeriodicityChange = { periodicity = it },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
+                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val parsedMonto = MoneyInput.parseAmount(montoTotal.text)
+                    val parsedPago = MoneyInput.parseAmount(pagoPeriodico.text)
+                    val monto = parsedMonto ?: 0.0
+                    val pago = parsedPago ?: 0.0
+                    val valid = name.text.isNotBlank() && parsedMonto != null && monto > 0 && parsedPago != null && pago > 0
+                    nameError = name.text.isBlank()
+                    montoError = parsedMonto == null || monto <= 0
+                    pagoError = parsedPago == null || pago <= 0
+                    if (valid) {
+                        onConfirm(name.text, monto, pago, periodicity, dateMillis)
+                    }
+                }
+            ) { Text("Guardar") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
+}
+
+@Composable
+fun MetaAhorroDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String, Double, Double, Double) -> Unit,
+    initialName: String = "",
+    initialObjetivo: String = "",
+    initialAhorrado: String = "",
+    initialAporte: String = "",
+    isEditing: Boolean = false,
+    saveError: String? = null
+) {
+    var name by remember { mutableStateOf(TextFieldValue(initialName)) }
+    var objetivo by remember { mutableStateOf(TextFieldValue(initialObjetivo)) }
+    var ahorrado by remember { mutableStateOf(TextFieldValue(initialAhorrado)) }
+    var aporte by remember { mutableStateOf(TextFieldValue(initialAporte)) }
+    var nameError by remember { mutableStateOf(false) }
+    var objetivoError by remember { mutableStateOf(false) }
+    var ahorradoError by remember { mutableStateOf(false) }
+    var aporteError by remember { mutableStateOf(false) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(if (isEditing) "Editar Meta" else "Agregar Meta de Ahorro", style = MaterialTheme.typography.headlineSmall) },
+        text = {
+            Column(
+                modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
+            ) {
+                CustomTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = "Nombre de la meta",
+                    placeholder = "Ej: Comprar computadora",
+                    isError = nameError,
+                    errorText = if (nameError) "El nombre es obligatorio" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                AmountTextField(
+                    value = objetivo,
+                    onValueChange = { objetivo = it },
+                    label = "Cantidad objetivo (Q)",
+                    isError = objetivoError,
+                    errorText = if (objetivoError) "Ingrese una cantidad mayor a 0" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                AmountTextField(
+                    value = ahorrado,
+                    onValueChange = { ahorrado = it },
+                    label = "Ya ahorrado (Q)",
+                    isError = ahorradoError,
+                    errorText = if (ahorradoError) "No puede ser negativo" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                AmountTextField(
+                    value = aporte,
+                    onValueChange = { aporte = it },
+                    label = "Aporte mensual (Q)",
+                    isError = aporteError,
+                    errorText = if (aporteError) "El aporte debe ser finito y no negativo" else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val parsedObj = MoneyInput.parseAmount(objetivo.text)
+                    val parsedAhr = MoneyInput.parseAmount(ahorrado.text)
+                    val parsedApr = MoneyInput.parseAmount(aporte.text)
+                    val obj = parsedObj ?: 0.0
+                    val ahr = parsedAhr ?: 0.0
+                    val apr = parsedApr ?: 0.0
+                    val valid = name.text.isNotBlank() && parsedObj != null && obj > 0 && parsedAhr != null && ahr >= 0 && parsedApr != null && apr >= 0
+                    nameError = name.text.isBlank()
+                    objetivoError = parsedObj == null || obj <= 0
+                    ahorradoError = parsedAhr == null || ahr < 0
+                    aporteError = parsedApr == null || apr < 0
+                    if (valid) {
+                        onConfirm(name.text, obj, ahr, apr)
+                    }
+                }
+            ) { Text("Guardar") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
+}
+
+
