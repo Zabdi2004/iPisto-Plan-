@@ -141,6 +141,14 @@ fun OcioScreen(
             ) {
                 Text(stringResource(R.string.ocio_simulation_title))
             }
+            state.error?.let { errorMsg ->
+                Text(
+                    text = errorMsg,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
         }
     }
 
@@ -432,17 +440,24 @@ fun PresupuestoOcioDialog(
                 val parsed = MoneyInput.parseAmount(amount)
                 if (parsed == null || parsed <= 0) {
                     amountError = true
+                    errorMessage = "Ingresa un monto válido mayor a 0"
                 } else {
+                    amountError = false
+                    errorMessage = null
                     val presupuesto = PresupuestoOcio(
                         id = initialPresupuesto?.id ?: 0,
                         userId = 0,
                         montoPresupuestado = parsed,
                         periodicidad = periodicity,
                         rolloverEnabled = rollover,
-                        fechaInicio = System.currentTimeMillis(),
+                        fechaInicio = initialPresupuesto?.fechaInicio ?: System.currentTimeMillis(),
                         remanenteAcumulado = if (initialPresupuesto != null) initialPresupuesto.remanenteAcumulado else 0.0
                     )
-                    onConfirm(presupuesto) { /* result handled by caller */ }
+                    onConfirm(presupuesto) { success ->
+                        if (!success) {
+                            errorMessage = "No se pudo guardar el presupuesto de ocio"
+                        }
+                    }
                 }
             }) { Text(stringResource(R.string.ocio_save_budget)) }
         },

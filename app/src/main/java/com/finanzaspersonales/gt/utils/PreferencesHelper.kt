@@ -44,4 +44,11 @@ object PreferencesHelper {
         applyLanguage(activity, languageCode)
         activity.recreate()
     }
+
+    fun saveTheme(context: Context, themeMode: String) {
+        getPreferences(context).edit().putString(KEY_THEME, themeMode).apply()
+    }
+
+    fun getTheme(context: Context): String =
+        getPreferences(context).getString(KEY_THEME, "system") ?: "system"
 }

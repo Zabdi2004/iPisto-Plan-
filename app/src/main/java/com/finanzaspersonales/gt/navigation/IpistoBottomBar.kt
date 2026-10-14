@@ -73,14 +73,6 @@ fun IpistoBottomBar(currentRoute: String?, navController: NavHostController) {
                 colors = colors
             )
             NavigationBarItem(
-                selected = false,
-                onClick = {},
-                enabled = false,
-                icon = { Spacer(Modifier.size(24.dp)) },
-                label = null,
-                colors = colors
-            )
-            NavigationBarItem(
                 selected = isOnGoals,
                 onClick = { navigateTopLevel(navController, Screen.Metas) },
                 icon = { Icon(if (isOnGoals) Icons.Filled.Savings else Icons.Outlined.Savings, contentDescription = stringResource(R.string.navigation_goals)) },
@@ -97,7 +89,7 @@ fun IpistoBottomBar(currentRoute: String?, navController: NavHostController) {
         }
         FloatingActionButton(
             onClick = { navController.navigate(Screen.NuevoRegistro) { launchSingleTop = true } },
-            modifier = Modifier.align(Alignment.TopCenter).offset(y = (-22).dp),
+            modifier = Modifier.align(Alignment.BottomEnd).offset(x = (-16).dp, y = (-80).dp),
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
         ) {

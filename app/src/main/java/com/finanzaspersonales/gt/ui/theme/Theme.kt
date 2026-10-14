@@ -1,9 +1,11 @@
 package com.finanzaspersonales.gt.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -29,6 +31,18 @@ object IpistoPalette {
     val Text = Color(0xFFEEF1FA)
     val TextSecondary = Color(0xFFA9B3CC)
     val Disabled = Color(0xFF6F7A99)
+
+    // Light theme colors - professional, clean
+    val BackgroundLight = Color(0xFFF5F7FA)
+    val SurfaceLight = Color(0xFFFFFFFF)
+    val ElevatedLight = Color(0xFFFAFBFF)
+    val OutlineLight = Color(0xFFE1E5EF)
+    val AccentLight = Color(0xFF2E5AAC)
+    val AccentPressedLight = Color(0xFF3F73D1)
+    val AccentContentLight = Color(0xFFFFFFFF)
+    val TextLight = Color(0xFF1A2233)
+    val TextSecondaryLight = Color(0xFF5B6788)
+    val DisabledLight = Color(0xFFA9B3CC)
 }
 
 private val IpistoDarkColors = darkColorScheme(
@@ -62,6 +76,37 @@ private val IpistoDarkColors = darkColorScheme(
     inversePrimary = Color(0xFF526BB7)
 )
 
+private val IpistoLightColors = lightColorScheme(
+    primary = IpistoPalette.AccentLight,
+    onPrimary = IpistoPalette.AccentContentLight,
+    primaryContainer = Color(0xFFDEE7FF),
+    onPrimaryContainer = IpistoPalette.TextLight,
+    secondary = Color(0xFF6B5CB8),
+    onSecondary = IpistoPalette.AccentContentLight,
+    secondaryContainer = Color(0xFFE6DEFF),
+    onSecondaryContainer = IpistoPalette.TextLight,
+    tertiary = Color(0xFF2C7BBF),
+    onTertiary = IpistoPalette.AccentContentLight,
+    tertiaryContainer = Color(0xFFD6E6FF),
+    onTertiaryContainer = IpistoPalette.TextLight,
+    error = Color(0xFFD73C50),
+    onError = IpistoPalette.AccentContentLight,
+    errorContainer = Color(0xFFFFD9DD),
+    onErrorContainer = IpistoPalette.TextLight,
+    background = IpistoPalette.BackgroundLight,
+    onBackground = IpistoPalette.TextLight,
+    surface = IpistoPalette.SurfaceLight,
+    onSurface = IpistoPalette.TextLight,
+    surfaceVariant = IpistoPalette.ElevatedLight,
+    onSurfaceVariant = IpistoPalette.TextSecondaryLight,
+    outline = IpistoPalette.OutlineLight,
+    outlineVariant = IpistoPalette.OutlineLight,
+    scrim = Color(0x33000000),
+    inverseSurface = IpistoPalette.TextLight,
+    inverseOnSurface = IpistoPalette.BackgroundLight,
+    inversePrimary = Color(0xFF8FA8F5)
+)
+
 val FinanzasShapes = Shapes(
     extraSmall = RoundedCornerShape(8.dp),
     small = RoundedCornerShape(12.dp),
@@ -71,10 +116,19 @@ val FinanzasShapes = Shapes(
 )
 
 @Composable
-fun FinanzasPersonalesGTTheme(content: @Composable () -> Unit) {
+fun FinanzasPersonalesGTTheme(
+    themeMode: String = "system",
+    content: @Composable () -> Unit
+) {
+    val isDark = when (themeMode) {
+        "dark" -> true
+        "light" -> false
+        else -> isSystemInDarkTheme()
+    }
     MaterialTheme(
-        colorScheme = IpistoDarkColors,
+        colorScheme = if (isDark) IpistoDarkColors else IpistoLightColors,
         shapes = FinanzasShapes,
         content = content
     )
 }
+

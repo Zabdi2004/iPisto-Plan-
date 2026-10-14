@@ -42,7 +42,8 @@ class MainActivity : ComponentActivity() {
         })
         (application as FinanzasApp).sessionManager.getCurrentUserId()?.let(authViewModel::checkExistingSession)
         setContent {
-            FinanzasPersonalesGTTheme {
+            val savedTheme = PreferencesHelper.getTheme(this)
+            FinanzasPersonalesGTTheme(themeMode = savedTheme) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
