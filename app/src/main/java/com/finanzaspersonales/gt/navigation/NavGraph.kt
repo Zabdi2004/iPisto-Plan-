@@ -30,6 +30,9 @@ object Screen {
     const val Register = "register"
     const val Inicio = "inicio"
     const val Graficas = "graficas"
+    const val Ingresos = "ingresos"
+    const val Gastos = "gastos"
+    const val Deudas = "deudas"
     const val NuevoRegistro = "registro/nuevo"
     const val Metas = "metas"
     const val MetaDetail = "metas/detalle/{metaId}"
@@ -38,6 +41,7 @@ object Screen {
     const val MetaAporte = "metas/agregar-aporte/{metaId}"
     const val Perfil = "perfil"
     const val Configuracion = "configuracion"
+    const val Seguridad = "seguridad"
     const val EducacionFinanciera = "educacion_financiera"
     const val RecuperarPassword = "recuperar_password"
     const val Ocio = "ocio"
@@ -105,10 +109,24 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
     }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
     Scaffold(
         containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
+        topBar = {
+            // La puerta de cerrar sesión vive en el lado superior derecho de todas las pantallas.
+            // En Perfil no se muestra aquí porque esa pantalla incluye su propia barra (tuerca + puerta).
+            if (user != null && unlocked && currentRoute != Screen.Perfil) {
+                AppTopBar(onLogout = {
+                    authViewModel.logout()
+                    navController.navigate(Screen.Welcome) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                })
+            }
+        },
         bottomBar = {
-            if (user != null && unlocked) IpistoBottomBar(backStackEntry?.destination?.route, navController)
+            if (user != null && unlocked) IpistoBottomBar(currentRoute, navController)
         }
     ) { paddingValues ->
     NavHost(navController = navController, startDestination = Screen.Welcome, modifier = Modifier.padding(paddingValues)) {
@@ -131,6 +149,15 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
         }
         composable(Screen.Graficas) {
             PrivateRoute(user != null && financeViewModel != null, navController) { GraficasScreen(financeViewModel!!) }
+        }
+        composable(Screen.Ingresos) {
+            PrivateRoute(user != null && financeViewModel != null, navController) { IngresosScreen(navController, financeViewModel!!) }
+        }
+        composable(Screen.Gastos) {
+            PrivateRoute(user != null && financeViewModel != null, navController) { GastosScreen(navController, financeViewModel!!) }
+        }
+        composable(Screen.Deudas) {
+            PrivateRoute(user != null && financeViewModel != null, navController) { DeudasScreen(navController, financeViewModel!!) }
         }
         composable(Screen.NuevoRegistro) {
             PrivateRoute(user != null && financeViewModel != null, navController) { NuevoRegistroScreen(navController, financeViewModel!!) }
@@ -158,6 +185,7 @@ fun AppNavHost(authViewModel: AuthViewModel, navController: NavHostController = 
         }
         composable(Screen.Perfil) { PrivateRoute(user != null && financeViewModel != null, navController) { PerfilScreen(navController, authViewModel, financeViewModel!!) } }
         composable(Screen.Configuracion) { PrivateRoute(user != null, navController) { ConfiguracionScreen(navController) } }
+        composable(Screen.Seguridad) { PrivateRoute(user != null && financeViewModel != null, navController) { SeguridadScreen(navController, authViewModel, financeViewModel!!) } }
         composable(Screen.EducacionFinanciera) { PrivateRoute(user != null, navController) { EducacionFinancieraScreen() } }
         composable(Screen.Ocio) {
             PrivateRoute(user != null && financeViewModel != null, navController) { OcioScreen(navController, financeViewModel!!) }

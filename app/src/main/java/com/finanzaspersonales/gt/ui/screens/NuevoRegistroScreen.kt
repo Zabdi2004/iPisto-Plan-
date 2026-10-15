@@ -24,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.finanzaspersonales.gt.data.local.entity.Deuda
 import com.finanzaspersonales.gt.data.local.entity.GastoFijo
 import com.finanzaspersonales.gt.data.local.entity.GastoVariable
 import com.finanzaspersonales.gt.data.local.entity.Ingreso
@@ -55,11 +55,13 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
     var expenseKind by remember { mutableStateOf(ExpenseKind.VARIABLE) }
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var amount by remember { mutableStateOf(TextFieldValue("")) }
+    var debtPayment by remember { mutableStateOf(TextFieldValue("")) }
     var category by remember { mutableStateOf("Comida") }
     var periodicity by remember { mutableStateOf("Mensual") }
     var occurrenceDate by remember { mutableStateOf(System.currentTimeMillis()) }
     var nameError by remember { mutableStateOf(false) }
     var amountError by remember { mutableStateOf(false) }
+    var debtPaymentError by remember { mutableStateOf(false) }
     var isSaving by remember { mutableStateOf(false) }
 
     val savedExpenseCategories = (state.gastosFijos.map { it.categoria } + state.gastosVariables.map { it.categoria }).distinct()
@@ -77,10 +79,11 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
             QuetzalMascot(size = 48.dp)
         }
 
+        // Tipo de registro: Gasto, Ingreso o Deuda.
         Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(selected = kind == EntryKind.EXPENSE, onClick = { kind = EntryKind.EXPENSE }, label = { Text("Gasto") })
             FilterChip(selected = kind == EntryKind.INCOME, onClick = { kind = EntryKind.INCOME }, label = { Text("Ingreso") })
-            FilterChip(selected = false, onClick = {}, enabled = false, label = { Text("Transferencia") })
+            FilterChip(selected = kind == EntryKind.DEBT, onClick = { kind = EntryKind.DEBT }, label = { Text("Deuda") })
         }
 
         if (kind == EntryKind.EXPENSE) {
@@ -101,15 +104,23 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
         Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
             Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 Text(
-                    if (kind == EntryKind.INCOME) "Ingreso" else if (expenseKind == ExpenseKind.FIXED) "Gasto fijo" else "Gasto variable",
+                    when (kind) {
+                        EntryKind.INCOME -> "Ingreso"
+                        EntryKind.DEBT -> "Deuda"
+                        EntryKind.EXPENSE -> if (expenseKind == ExpenseKind.FIXED) "Gasto fijo" else "Gasto variable"
+                    },
                     style = MaterialTheme.typography.titleMedium,
                     color = if (kind == EntryKind.INCOME) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error
                 )
                 CustomTextField(
                     value = name,
                     onValueChange = { name = it; nameError = false },
-                    label = "Descripción",
-                    placeholder = if (kind == EntryKind.INCOME) "Ej. Salario" else "Ej. Compra semanal",
+                    label = if (kind == EntryKind.DEBT) "Nombre de la deuda" else "Descripción",
+                    placeholder = when (kind) {
+                        EntryKind.INCOME -> "Ej. Salario"
+                        EntryKind.DEBT -> "Ej. Tarjeta de crédito"
+                        EntryKind.EXPENSE -> "Ej. Compra semanal"
+                    },
                     isError = nameError,
                     errorText = if (nameError) "Escribe una descripción." else null
                 )
@@ -124,10 +135,19 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
                 AmountTextField(
                     value = amount,
                     onValueChange = { amount = it; amountError = false },
-                    label = "Cantidad en quetzales (Q)",
+                    label = if (kind == EntryKind.DEBT) "Monto total en quetzales (Q)" else "Cantidad en quetzales (Q)",
                     isError = amountError,
                     errorText = if (amountError) "Ingresa un monto positivo hasta Q1,000,000,000,000." else null
                 )
+                if (kind == EntryKind.DEBT) {
+                    AmountTextField(
+                        value = debtPayment,
+                        onValueChange = { debtPayment = it; debtPaymentError = false },
+                        label = "Pago periódico en quetzales (Q)",
+                        isError = debtPaymentError,
+                        errorText = if (debtPaymentError) "Ingresa un pago positivo hasta Q1,000,000,000,000." else null
+                    )
+                }
                 PeriodicityDropdown(selectedPeriodicity = periodicity, onPeriodicityChange = { periodicity = it })
                 if (periodicity == "Único") TransactionDateField(occurrenceDate, { occurrenceDate = it })
             }
@@ -149,9 +169,11 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
             enabled = !isSaving,
             onClick = {
                 val parsed = MoneyInput.parseAmount(amount.text)
+                val parsedPayment = if (kind == EntryKind.DEBT) MoneyInput.parseAmount(debtPayment.text) else null
                 nameError = name.text.isBlank()
                 amountError = parsed == null || parsed <= 0.0
-                if (!nameError && !amountError && parsed != null) {
+                debtPaymentError = kind == EntryKind.DEBT && (parsedPayment == null || parsedPayment <= 0.0)
+                if (!nameError && !amountError && !debtPaymentError && parsed != null) {
                     isSaving = true
                     val complete: (Boolean) -> Unit = { saved ->
                         isSaving = false
@@ -159,6 +181,17 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
                     }
                     when (kind) {
                         EntryKind.INCOME -> viewModel.insertIngreso(Ingreso(userId = 0, nombre = name.text.trim(), cantidad = parsed, periodicidad = periodicity, fechaMillis = occurrenceDate), complete)
+                        EntryKind.DEBT -> viewModel.insertDeuda(
+                            Deuda(
+                                userId = 0,
+                                nombre = name.text.trim(),
+                                montoTotal = parsed,
+                                pagoPeriodico = parsedPayment ?: 0.0,
+                                periodicidad = periodicity,
+                                fechaMillis = if (periodicity == "Único") occurrenceDate else null
+                            ),
+                            complete
+                        )
                         EntryKind.EXPENSE -> if (expenseKind == ExpenseKind.FIXED) {
                             viewModel.insertGastoFijo(GastoFijo(userId = 0, nombre = name.text.trim(), categoria = category, cantidad = parsed, periodicidad = periodicity, fechaMillis = occurrenceDate), complete)
                         } else {
@@ -177,5 +210,5 @@ fun NuevoRegistroScreen(navController: NavHostController, viewModel: FinanzasVie
     }
 }
 
-private enum class EntryKind { EXPENSE, INCOME }
+private enum class EntryKind { EXPENSE, INCOME, DEBT }
 private enum class ExpenseKind { FIXED, VARIABLE }

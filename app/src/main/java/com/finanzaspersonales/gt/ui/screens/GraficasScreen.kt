@@ -49,6 +49,21 @@ private data class ChartRow(val label: String, val amount: Double, val detail: S
 
 @Composable
 fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text("Gráficas y resúmenes", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+        InformesContent(finanzasViewModel)
+    }
+}
+
+/**
+ * Contenido completo de informes (gráfica, distribución de gastos, deudas y metas) SIN scroll propio,
+ * para poder incrustarlo dentro de la tarjeta de Perfil además de usarlo en su pantalla completa.
+ */
+@Composable
+fun InformesContent(finanzasViewModel: FinanzasViewModel, modifier: Modifier = Modifier) {
     var chartType by rememberSaveable { mutableStateOf(ChartType.LINES) }
     val state by finanzasViewModel.uiState.collectAsState()
     val balance = state.balance
@@ -62,10 +77,9 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
     }.filterValues { it > 0.0 }.toList().sortedByDescending { it.second }
 
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("Gráficas y resúmenes", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
         Text(
             "Equivalentes mensuales estimados a partir de tus registros; no son totales recibidos o pagados en un mes específico.",
             style = MaterialTheme.typography.bodyMedium,

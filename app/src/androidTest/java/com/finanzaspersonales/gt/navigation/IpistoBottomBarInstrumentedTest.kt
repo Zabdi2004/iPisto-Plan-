@@ -37,10 +37,10 @@ class IpistoBottomBarInstrumentedTest {
             navController.navigatorProvider.addNavigator(ComposeNavigator())
             navController.graph = navController.createGraph(startDestination = Screen.Inicio) {
                 composable(Screen.Inicio) { }
-                composable(Screen.Graficas) { }
                 composable(Screen.Metas) { }
                 composable(Screen.Perfil) { }
                 composable(Screen.NuevoRegistro) { }
+                composable(Screen.EducacionFinanciera) { }
             }
         }
         composeRule.setContent {
@@ -48,25 +48,22 @@ class IpistoBottomBarInstrumentedTest {
             IpistoBottomBar(entry?.destination?.route, navController)
         }
 
-        composeRule.onNodeWithText("Informes").performClick()
-        composeRule.waitForIdle()
-        assertEquals(Screen.Graficas, navController.currentDestination?.route)
-        composeRule.onNodeWithText("Metas").performClick()
+        composeRule.onNodeWithContentDescription("Metas").performClick()
         composeRule.waitForIdle()
         assertEquals(Screen.Metas, navController.currentDestination?.route)
-        composeRule.onNodeWithText("Perfil").performClick()
+        composeRule.onNodeWithContentDescription("Perfil").performClick()
         composeRule.waitForIdle()
         assertEquals(Screen.Perfil, navController.currentDestination?.route)
-        composeRule.onNodeWithText("Inicio").performClick()
+        composeRule.onNodeWithContentDescription("Inicio").performClick()
         composeRule.waitForIdle()
         assertEquals(Screen.Inicio, navController.currentDestination?.route)
         composeRule.onNodeWithContentDescription("Nuevo registro").performClick()
         composeRule.waitForIdle()
         assertEquals(Screen.NuevoRegistro, navController.currentDestination?.route)
         // The bar stays available on the form route, so the user can recover without restarting.
-        composeRule.onNodeWithText("Informes").performClick()
+        composeRule.onNodeWithContentDescription("Educación").performClick()
         composeRule.waitForIdle()
-        assertEquals(Screen.Graficas, navController.currentDestination?.route)
+        assertEquals(Screen.EducacionFinanciera, navController.currentDestination?.route)
     }
 
     @Test fun quetzalSemanticsRenderAtCompactAndLargeSizes() {
