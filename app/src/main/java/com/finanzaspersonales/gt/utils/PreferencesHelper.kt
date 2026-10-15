@@ -11,6 +11,10 @@ object PreferencesHelper {
     private const val PREFS_NAME = "ipisto_prefs"
     private const val KEY_LANGUAGE = "language"
     private const val KEY_THEME = "theme"
+    private const val KEY_CURRENCY = "currency"
+
+    // Keeps the unlocked session alive across a language change that recreates the Activity.
+    var isLanguageChanging: Boolean = false
 
     fun getPreferences(context: Context) =
         context.applicationContext
@@ -42,6 +46,9 @@ object PreferencesHelper {
 
     fun applyLanguageAndRecreate(activity: Activity, languageCode: String) {
         applyLanguage(activity, languageCode)
+        // Mark the recreation as a language change so the Activity can restore the
+        // unlocked session and show a loading screen instead of locking the user out.
+        isLanguageChanging = true
         activity.recreate()
     }
 
@@ -51,4 +58,15 @@ object PreferencesHelper {
 
     fun getTheme(context: Context): String =
         getPreferences(context).getString(KEY_THEME, "system") ?: "system"
+
+    fun saveCurrency(context: Context, currencyCode: String) {
+        getPreferences(context).edit().putString(KEY_CURRENCY, currencyCode).apply()
+    }
+
+    fun getCurrency(context: Context): String =
+        getPreferences(context).getString(KEY_CURRENCY, "gtq") ?: "gtq"
+
+    fun applyCurrency(context: Context, currencyCode: String) {
+        CurrencyFormatter.setCurrency(currencyCode)
+    }
 }

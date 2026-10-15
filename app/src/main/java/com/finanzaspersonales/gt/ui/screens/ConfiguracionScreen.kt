@@ -46,7 +46,13 @@ fun ConfiguracionScreen(navController: NavHostController) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val activity = context as? android.app.Activity
     var selectedLanguage by remember { mutableStateOf(PreferencesHelper.getLanguage(context)) }
+    var selectedCurrency by remember { mutableStateOf(PreferencesHelper.getCurrency(context)) }
     val languageOptions = listOf("es" to "Español", "quc" to "K'iche'")
+    val currencyOptions = listOf(
+        "gtq" to stringResource(R.string.currency_gtq),
+        "usd" to stringResource(R.string.currency_usd),
+        "eur" to stringResource(R.string.currency_eur)
+    )
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
@@ -58,7 +64,7 @@ fun ConfiguracionScreen(navController: NavHostController) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(stringResource(R.string.current_preferences), style = MaterialTheme.typography.titleMedium)
                 PreferenceInfo(Icons.Default.Language, stringResource(R.string.language), languageOptions.find { it.first == selectedLanguage }?.second ?: "Español")
-                PreferenceInfo(Icons.Default.Storage, stringResource(R.string.currency), stringResource(R.string.currency_gtq))
+                PreferenceInfo(Icons.Default.Storage, stringResource(R.string.currency), currencyOptions.find { it.first == selectedCurrency }?.second ?: stringResource(R.string.currency_gtq))
                 PreferenceInfo(Icons.Default.Lock, stringResource(R.string.security), stringResource(R.string.security_managed_in_profile))
             }
         }
@@ -94,6 +100,44 @@ fun ConfiguracionScreen(navController: NavHostController) {
                         }
                     }
                     if (code != languageOptions.last().first) {
+                        Divider()
+                    }
+                }
+            }
+        }
+
+        Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Text(stringResource(R.string.currency), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.select_app_language), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(modifier = Modifier.height(8.dp))
+                currencyOptions.forEach { (code, name) ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp)
+                            .selectable(
+                                selected = selectedCurrency == code,
+                                onClick = {
+                                    selectedCurrency = code
+                                    PreferencesHelper.saveCurrency(context, code)
+                                    PreferencesHelper.applyCurrency(context, code)
+                                    activity?.let { PreferencesHelper.applyLanguageAndRecreate(it, PreferencesHelper.getLanguage(context)) }
+                                }
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(name, style = MaterialTheme.typography.bodyLarge)
+                        if (selectedCurrency == code) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                    if (code != currencyOptions.last().first) {
                         Divider()
                     }
                 }

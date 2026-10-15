@@ -13,11 +13,13 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Savings
+import androidx.compose.material.icons.outlined.School
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -77,6 +79,13 @@ fun IpistoBottomBar(currentRoute: String?, navController: NavHostController) {
                 onClick = { navigateTopLevel(navController, Screen.Metas) },
                 icon = { Icon(if (isOnGoals) Icons.Filled.Savings else Icons.Outlined.Savings, contentDescription = stringResource(R.string.navigation_goals)) },
                 label = { Text(stringResource(R.string.navigation_goals), maxLines = 1) },
+                colors = colors
+            )
+            NavigationBarItem(
+                selected = currentRoute == Screen.EducacionFinanciera,
+                onClick = { navController.navigate(Screen.EducacionFinanciera) { launchSingleTop = true } },
+                icon = { Icon(if (currentRoute == Screen.EducacionFinanciera) Icons.Filled.School else Icons.Outlined.School, contentDescription = "Educación financiera") },
+                label = { Text("Educación", maxLines = 1) },
                 colors = colors
             )
             NavigationBarItem(

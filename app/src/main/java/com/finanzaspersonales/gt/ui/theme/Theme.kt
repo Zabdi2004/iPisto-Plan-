@@ -10,101 +10,113 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-/** Shared iPisto palette. Screen code should use MaterialTheme.colorScheme or these semantic accents. */
+/** iPisto brand palette. */
 object IpistoPalette {
-    val Background = Color(0xFF1F2638)
-    val Surface = Color(0xFF2A3350)
-    val Elevated = Color(0xFF343E5E)
-    val Outline = Color(0xFF3F4A6B)
-    val Accent = Color(0xFF8FA8F5)
-    val AccentPressed = Color(0xFFB3C4FA)
-    val AccentContent = Color(0xFF1B2133)
-    val Expense = Color(0xFFF2909B)
-    val Income = Color(0xFF85D9B5)
-    val Balance = Color(0xFF8CC8F2)
-    val Lavender = Color(0xFFB7A6F0)
-    val Peach = Color(0xFFF5C28A)
-    val Rose = Color(0xFFF2A9C9)
-    val Turquoise = Color(0xFF7FD3D6)
-    val Butter = Color(0xFFF3DF93)
-    val Sage = Color(0xFFA8D5A2)
-    val Text = Color(0xFFEEF1FA)
-    val TextSecondary = Color(0xFFA9B3CC)
-    val Disabled = Color(0xFF6F7A99)
+    val Blue = Color(0xFF1B96E8)
+    val Lime = Color(0xFF4AE61A)
+    val DarkBlue = Color(0xFF172B3A)
+    val IceGray = Color(0xFFF4F7FA)
+    val White = Color(0xFFFFFFFF)
+    val Orange = Color(0xFFFFB547)
+    val Red = Color(0xFFE53935)
+    val RedDark = Color(0xFFB91C1C)
+    val RedSoft = Color(0xFFFEE2E2)
+    val Slate = Color(0xFF64748B)
 
-    // Light theme colors - professional, clean
-    val BackgroundLight = Color(0xFFF5F7FA)
-    val SurfaceLight = Color(0xFFFFFFFF)
-    val ElevatedLight = Color(0xFFFAFBFF)
-    val OutlineLight = Color(0xFFE1E5EF)
-    val AccentLight = Color(0xFF2E5AAC)
-    val AccentPressedLight = Color(0xFF3F73D1)
-    val AccentContentLight = Color(0xFFFFFFFF)
-    val TextLight = Color(0xFF1A2233)
-    val TextSecondaryLight = Color(0xFF5B6788)
-    val DisabledLight = Color(0xFFA9B3CC)
+    // Backward-compatible aliases for older screen code.
+    val Peach = Orange
+    val Lavender = Blue
+    val Turquoise = Blue
+    val Rose = Orange
+    val Butter = Orange
+    val Sage = Lime
+
+    val Background = DarkBlue
+    val Surface = Color(0xFF1F3344)
+    val Elevated = Color(0xFF263B4E)
+    val Outline = Slate
+    val Accent = Blue
+    val AccentPressed = Color(0xFF1782C8)
+    val AccentContent = White
+    val Expense = Red
+    val Income = Lime
+    val Balance = Blue
+    val Text = White
+    val TextSecondary = Color(0xFFB0BEC5)
+    val Disabled = Slate
+
+    val BackgroundLight = IceGray
+    val SurfaceLight = White
+    val ElevatedLight = IceGray
+    val OutlineLight = Slate
+    val AccentLight = Blue
+    val AccentPressedLight = Color(0xFF1782C8)
+    val AccentContentLight = White
+    val TextLight = DarkBlue
+    val TextSecondaryLight = Slate
+    val DisabledLight = Slate
 }
 
 private val IpistoDarkColors = darkColorScheme(
-    primary = IpistoPalette.Accent,
-    onPrimary = IpistoPalette.AccentContent,
-    primaryContainer = Color(0xFF3A4770),
-    onPrimaryContainer = IpistoPalette.Text,
-    secondary = IpistoPalette.Lavender,
-    onSecondary = IpistoPalette.AccentContent,
-    secondaryContainer = Color(0xFF46405F),
-    onSecondaryContainer = IpistoPalette.Text,
-    tertiary = IpistoPalette.Balance,
-    onTertiary = IpistoPalette.AccentContent,
-    tertiaryContainer = Color(0xFF30475F),
-    onTertiaryContainer = IpistoPalette.Text,
-    error = IpistoPalette.Expense,
-    onError = IpistoPalette.AccentContent,
+    primary = IpistoPalette.Blue,
+    onPrimary = IpistoPalette.White,
+    primaryContainer = IpistoPalette.Surface,
+    onPrimaryContainer = IpistoPalette.White,
+    secondary = IpistoPalette.Lime,
+    onSecondary = IpistoPalette.DarkBlue,
+    secondaryContainer = IpistoPalette.Elevated,
+    onSecondaryContainer = IpistoPalette.White,
+    tertiary = IpistoPalette.Orange,
+    onTertiary = IpistoPalette.DarkBlue,
+    tertiaryContainer = IpistoPalette.Elevated,
+    onTertiaryContainer = IpistoPalette.White,
+    error = IpistoPalette.Red,
+    onError = IpistoPalette.White,
     errorContainer = Color(0xFF5A3542),
-    onErrorContainer = IpistoPalette.Text,
-    background = IpistoPalette.Background,
-    onBackground = IpistoPalette.Text,
+    onErrorContainer = IpistoPalette.White,
+    background = IpistoPalette.DarkBlue,
+    onBackground = IpistoPalette.White,
     surface = IpistoPalette.Surface,
-    onSurface = IpistoPalette.Text,
+    onSurface = IpistoPalette.White,
     surfaceVariant = IpistoPalette.Elevated,
     onSurfaceVariant = IpistoPalette.TextSecondary,
-    outline = IpistoPalette.Outline,
-    outlineVariant = IpistoPalette.Outline,
+    outline = IpistoPalette.Slate,
+    outlineVariant = IpistoPalette.Slate,
     scrim = Color(0x990B1020),
-    inverseSurface = IpistoPalette.Text,
-    inverseOnSurface = IpistoPalette.Background,
-    inversePrimary = Color(0xFF526BB7)
+    inverseSurface = IpistoPalette.White,
+    inverseOnSurface = IpistoPalette.DarkBlue,
+    inversePrimary = IpistoPalette.Blue
 )
 
 private val IpistoLightColors = lightColorScheme(
-    primary = IpistoPalette.AccentLight,
-    onPrimary = IpistoPalette.AccentContentLight,
-    primaryContainer = Color(0xFFDEE7FF),
-    onPrimaryContainer = IpistoPalette.TextLight,
-    secondary = Color(0xFF6B5CB8),
-    onSecondary = IpistoPalette.AccentContentLight,
-    secondaryContainer = Color(0xFFE6DEFF),
-    onSecondaryContainer = IpistoPalette.TextLight,
-    tertiary = Color(0xFF2C7BBF),
-    onTertiary = IpistoPalette.AccentContentLight,
-    tertiaryContainer = Color(0xFFD6E6FF),
-    onTertiaryContainer = IpistoPalette.TextLight,
-    error = Color(0xFFD73C50),
-    onError = IpistoPalette.AccentContentLight,
+    primary = IpistoPalette.Blue,
+    onPrimary = IpistoPalette.White,
+    primaryContainer = Color(0xFFDCEFFF),
+    onPrimaryContainer = IpistoPalette.DarkBlue,
+    secondary = IpistoPalette.Lime,
+    onSecondary = IpistoPalette.DarkBlue,
+    secondaryContainer = Color(0xFFE8FAD9),
+    onSecondaryContainer = IpistoPalette.DarkBlue,
+    tertiary = IpistoPalette.Orange,
+    onTertiary = IpistoPalette.DarkBlue,
+    tertiaryContainer = Color(0xFFFFE8C7),
+    onTertiaryContainer = IpistoPalette.DarkBlue,
+    error = IpistoPalette.Red,
+    onError = IpistoPalette.White,
     errorContainer = Color(0xFFFFD9DD),
-    onErrorContainer = IpistoPalette.TextLight,
-    background = IpistoPalette.BackgroundLight,
-    onBackground = IpistoPalette.TextLight,
-    surface = IpistoPalette.SurfaceLight,
-    onSurface = IpistoPalette.TextLight,
-    surfaceVariant = IpistoPalette.ElevatedLight,
-    onSurfaceVariant = IpistoPalette.TextSecondaryLight,
-    outline = IpistoPalette.OutlineLight,
-    outlineVariant = IpistoPalette.OutlineLight,
+    onErrorContainer = IpistoPalette.DarkBlue,
+    background = IpistoPalette.IceGray,
+    onBackground = IpistoPalette.DarkBlue,
+    surface = IpistoPalette.White,
+    onSurface = IpistoPalette.DarkBlue,
+    surfaceVariant = IpistoPalette.IceGray,
+    onSurfaceVariant = IpistoPalette.Slate,
+    outline = IpistoPalette.Slate,
+    outlineVariant = IpistoPalette.Slate,
     scrim = Color(0x33000000),
-    inverseSurface = IpistoPalette.TextLight,
-    inverseOnSurface = IpistoPalette.BackgroundLight,
-    inversePrimary = Color(0xFF8FA8F5)
+    inverseSurface = IpistoPalette.DarkBlue,
+    inverseOnSurface = IpistoPalette.White,
+    inversePrimary = IpistoPalette.Blue
 )
 
 val FinanzasShapes = Shapes(
@@ -131,4 +143,3 @@ fun FinanzasPersonalesGTTheme(
         content = content
     )
 }
-

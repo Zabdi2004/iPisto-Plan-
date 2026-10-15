@@ -143,6 +143,8 @@
     <string name="current_preferences">Preferencias actuales</string>
     <string name="currency">Moneda</string>
     <string name="currency_gtq">Quetzal guatemalteco (Q / GTQ)</string>
+    <string name="currency_usd">Dólar estadounidense ($ / USD)</string>
+    <string name="currency_eur">Euro (€ / EUR)</string>
     <string name="security">Seguridad</string>
     <string name="security_managed_in_profile">Contraseña y eliminación de cuenta se administran desde tu perfil</string>
     <string name="select_app_language">Selecciona el idioma de la aplicación</string>

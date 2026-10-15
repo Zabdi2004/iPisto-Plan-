@@ -148,6 +148,26 @@ class AuthViewModel(
         }
     }
 
+    fun restoreUnlockedSession(userId: Long) {
+        // Restores a session without requiring the user to unlock again after an
+        // in-app operation such as changing the language.
+        _authState.value = AuthState.Loading
+        viewModelScope.launch {
+            val user = runCatching { userRepository.getUserById(userId) }.getOrNull()
+            if (user != null) {
+                _currentUser.value = user
+                sessionManager.saveSession(user.id, user.nombreUsuario)
+                _isUnlocked.value = true
+                _authState.value = AuthState.Idle
+            } else {
+                sessionManager.logout()
+                _currentUser.value = null
+                _isUnlocked.value = false
+                _authState.value = AuthState.Idle
+            }
+        }
+    }
+
     fun unlock(password: String) {
         val user = _currentUser.value
         if (user == null || !sessionManager.isLoggedIn() || sessionManager.getCurrentUserId() != user.id) {
