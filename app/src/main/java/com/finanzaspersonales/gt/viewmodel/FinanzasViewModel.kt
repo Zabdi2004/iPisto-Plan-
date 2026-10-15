@@ -85,11 +85,15 @@ class FinanzasViewModel(
                 val gastosVariables = df.gastosVariables
                 val deudas = df.deudas
                 val metas = df.metas
-                val presupuesto = presupuestoList.firstOrNull()
+                val ahoraMillis = System.currentTimeMillis()
+                val presupuestoGuardado = presupuestoList.firstOrNull()
+                val presupuesto = runCatching {
+                    OcioCalculator.normalizarPeriodoActual(presupuestoGuardado, gastosVariables, gastosFijos, ahoraMillis)
+                }.getOrNull() ?: presupuestoGuardado
                 val calculation = runCatching { BalanceCalculator.calcularBalance(ingresos, gastosFijos, gastosVariables, deudas) }
                 val dineroOcio = runCatching { OcioCalculator.calcularDineroDisponibleOcio(ingresos, gastosFijos, gastosVariables, deudas, metas) }
                 val presupuestoResult = runCatching {
-                    OcioCalculator.calcularPresupuestoOcio(presupuesto, gastosVariables, gastosFijos, System.currentTimeMillis())
+                    OcioCalculator.calcularPresupuestoOcio(presupuesto, gastosVariables, gastosFijos, ahoraMillis)
                 }
                 FinanzasUiState(
                     ingresos = ingresos,

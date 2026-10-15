@@ -9,10 +9,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.finanzaspersonales.gt.R
 
 /** Original, proportion-preserving quetzal illustration drawn locally for offline use. */
 @Composable
@@ -24,7 +26,8 @@ fun QuetzalMascot(modifier: Modifier = Modifier, size: Dp = 76.dp) {
     val deepCoral = Color(0xFFD96370)
     val navy = Color(0xFF202942)
 
-    Canvas(modifier.size(size).semantics { contentDescription = "Quetzal verde de iPisto" }) {
+    val mascotDescription = stringResource(R.string.mascot_description)
+    Canvas(modifier.size(size).semantics { contentDescription = mascotDescription }) {
         val w = this.size.width
         val h = this.size.height
         val outline = w * .012f

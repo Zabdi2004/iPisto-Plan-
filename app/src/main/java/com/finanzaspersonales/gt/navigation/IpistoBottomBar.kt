@@ -92,7 +92,7 @@ fun IpistoBottomBar(currentRoute: String?, navController: NavHostController) {
                     BarIconItem(
                         selected = currentRoute == Screen.EducacionFinanciera,
                         icon = if (currentRoute == Screen.EducacionFinanciera) Icons.Filled.School else Icons.Outlined.School,
-                        contentDescription = "Educación",
+                        contentDescription = stringResource(R.string.navigation_education),
                         onClick = { navController.navigate(Screen.EducacionFinanciera) { launchSingleTop = true } },
                         modifier = Modifier.weight(1f)
                     )

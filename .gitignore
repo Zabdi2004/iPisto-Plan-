@@ -31,6 +31,8 @@ output.json
 *.userosscache
 *.sln.docstates
 
+test/
+
 # OS
 .DS_Store
 Thumbs.db

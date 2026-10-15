@@ -45,6 +45,9 @@ object OcioCalculator {
     private val UNO = BigDecimal.ONE
     private val DOS_DECIMALES = 2
 
+    /** Límite de períodos que se pueden cerrar de golpe al normalizar un presupuesto antiguo. */
+    private const val MAX_PERIODOS_ROLLOVER = 1200
+
     private fun Double.toBd() = BigDecimal.valueOf(this).setScale(DOS_DECIMALES, RoundingMode.HALF_UP)
 
     private fun BigDecimal.coerceNonNegative(): BigDecimal = if (compareTo(BigDecimal.ZERO) < 0) BigDecimal.ZERO else this
@@ -102,18 +105,13 @@ object OcioCalculator {
         val fechaInicioPeriodo = presupuesto.fechaInicio
         val fechaFinPeriodo = calcularFechaFinPeriodo(fechaInicioPeriodo, presupuesto.periodicidad, ahoraMillis)
 
-        val gastosVariablesOcio = gastosVariables.filter { gasto ->
-            gasto.esOcio && gasto.fechaMillis != null &&
-                gasto.fechaMillis!! in fechaInicioPeriodo..fechaFinPeriodo
-        }
-        val gastosFijosOcio = gastosFijos.filter { gasto ->
-            gasto.esOcio && gasto.fechaMillis != null &&
-                gasto.fechaMillis!! in fechaInicioPeriodo..fechaFinPeriodo
-        }
-        val gastosOcioDelPeriodo = (
-            gastosVariablesOcio.sumOf { convertirAEquivalentePeriodo(it.cantidad, it.periodicidad, presupuesto.periodicidad) } +
-            gastosFijosOcio.sumOf { convertirAEquivalentePeriodo(it.cantidad, it.periodicidad, presupuesto.periodicidad) }
-        ).toBigDecimal().setScale(DOS_DECIMALES, RoundingMode.HALF_UP)
+        val gastosOcioDelPeriodo = calcularGastosOcioEnPeriodo(
+            gastosVariables = gastosVariables,
+            gastosFijos = gastosFijos,
+            fechaInicioPeriodo = fechaInicioPeriodo,
+            fechaFinPeriodo = fechaFinPeriodo,
+            periodicidadPresupuesto = presupuesto.periodicidad
+        )
 
         val presupuestoBase = presupuesto.montoPresupuestado.toBd()
         val remanenteAcumulado = presupuesto.remanenteAcumulado.toBd()
@@ -140,6 +138,37 @@ object OcioCalculator {
         )
     }
 
+    /**
+     * Total de gastos marcados como ocio atribuibles al período indicado, expresado en la
+     * periodicidad del presupuesto.
+     */
+    private fun calcularGastosOcioEnPeriodo(
+        gastosVariables: List<GastoVariable>,
+        gastosFijos: List<GastoFijo>,
+        fechaInicioPeriodo: Long,
+        fechaFinPeriodo: Long,
+        periodicidadPresupuesto: String
+    ): BigDecimal {
+        val gastosVariablesOcio = gastosVariables.filter { gasto ->
+            gasto.esOcio && perteneceAlPeriodo(gasto.fechaMillis, fechaInicioPeriodo, fechaFinPeriodo)
+        }
+        val gastosFijosOcio = gastosFijos.filter { gasto ->
+            gasto.esOcio && perteneceAlPeriodo(gasto.fechaMillis, fechaInicioPeriodo, fechaFinPeriodo)
+        }
+        return (
+            gastosVariablesOcio.sumOf { convertirAEquivalentePeriodo(it.cantidad, it.periodicidad, periodicidadPresupuesto) } +
+                gastosFijosOcio.sumOf { convertirAEquivalentePeriodo(it.cantidad, it.periodicidad, periodicidadPresupuesto) }
+            ).toBigDecimal().setScale(DOS_DECIMALES, RoundingMode.HALF_UP)
+    }
+
+    /**
+     * Un gasto de ocio pertenece al período cuando no tiene fecha (los movimientos recurrentes
+     * describen una agenda vigente, no una ocurrencia fechada) o cuando su fecha cae dentro del
+     * período evaluado (movimientos únicos).
+     */
+    private fun perteneceAlPeriodo(fechaMillis: Long?, inicio: Long, fin: Long): Boolean =
+        fechaMillis == null || fechaMillis in inicio..fin
+
     private fun convertirAEquivalentePeriodo(cantidad: Double, periodicidadGasto: String, periodicidadPresupuesto: String): Double {
         val mensual = BalanceCalculator.equivalenteMensualEstimado(cantidad, periodicidadGasto, null)
         return when (periodicidadPresupuesto) {
@@ -163,6 +192,72 @@ object OcioCalculator {
             }
             else -> ahoraMillis
         }
+    }
+
+    private fun sumarPeriodos(fechaBase: Long, periodicidad: String, periodos: Int): Long {
+        val calendar = java.util.Calendar.getInstance().apply { timeInMillis = fechaBase }
+        return when (periodicidad) {
+            PeriodicidadPresupuesto.SEMANAL.name.lowercase() -> {
+                calendar.add(java.util.Calendar.WEEK_OF_YEAR, periodos)
+                calendar.timeInMillis
+            }
+            PeriodicidadPresupuesto.MENSUAL.name.lowercase() -> {
+                calendar.add(java.util.Calendar.MONTH, periodos)
+                calendar.timeInMillis
+            }
+            else -> Long.MAX_VALUE
+        }
+    }
+
+    /**
+     * Lleva el presupuesto al período vigente cuando [ahoraMillis] ya superó el cierre del período
+     * reservado. Si el rollover está activo, el saldo no gastado de cada período cerrado se acumula
+     * en [PresupuestoOcio.remanenteAcumulado]; si está desactivado, el presupuesto se reinicia y el
+     * remanente vuelve a cero.
+     *
+     * Devuelve `null` cuando el presupuesto ya está en el período actual y no requiere cambios.
+     */
+    fun normalizarPeriodoActual(
+        presupuesto: PresupuestoOcio?,
+        gastosVariables: List<GastoVariable>,
+        gastosFijos: List<GastoFijo>,
+        ahoraMillis: Long
+    ): PresupuestoOcio? {
+        if (presupuesto == null) return null
+
+        val fechaBase = presupuesto.fechaInicio
+        val periodicidad = presupuesto.periodicidad
+        val presupuestoBase = presupuesto.montoPresupuestado.toBd()
+
+        var remanente = presupuesto.remanenteAcumulado.toBd()
+        var inicioPeriodo = fechaBase
+        var finPeriodo = sumarPeriodos(fechaBase, periodicidad, 1)
+        var periodosCerrados = 0
+
+        while (ahoraMillis > finPeriodo && periodosCerrados < MAX_PERIODOS_ROLLOVER && finPeriodo != Long.MAX_VALUE) {
+            remanente = if (presupuesto.rolloverEnabled) {
+                val gastado = calcularGastosOcioEnPeriodo(
+                    gastosVariables = gastosVariables,
+                    gastosFijos = gastosFijos,
+                    fechaInicioPeriodo = inicioPeriodo,
+                    fechaFinPeriodo = finPeriodo,
+                    periodicidadPresupuesto = periodicidad
+                )
+                (presupuestoBase + remanente - gastado).coerceNonNegative()
+            } else {
+                BigDecimal.ZERO
+            }
+            periodosCerrados++
+            inicioPeriodo = finPeriodo
+            finPeriodo = sumarPeriodos(fechaBase, periodicidad, periodosCerrados + 1)
+        }
+
+        if (periodosCerrados == 0) return null
+
+        return presupuesto.copy(
+            fechaInicio = inicioPeriodo,
+            remanenteAcumulado = remanente.toDouble()
+        )
     }
 
     private fun determinarEstado(
@@ -189,9 +284,10 @@ object OcioCalculator {
         presupuestoResult: OcioPresupuestoResult
     ): SimulacionCompraResult {
         val nuevoRestante = (presupuestoResult.presupuestoRestante - simulacionAmount).coerceNonNegative()
-        val nuevoPorcentaje = if (presupuestoResult.presupuestoConfigurado.compareTo(BigDecimal.ZERO) > 0) {
+        val presupuestoTotalDisponible = presupuestoResult.presupuestoConfigurado + presupuestoResult.remanenteAcumulado
+        val nuevoPorcentaje = if (presupuestoTotalDisponible.compareTo(BigDecimal.ZERO) > 0) {
             val nuevoGastado = presupuestoResult.gastosOcioDelPeriodo + simulacionAmount
-            (nuevoGastado * CIEN / presupuestoResult.presupuestoConfigurado)
+            (nuevoGastado * CIEN / presupuestoTotalDisponible)
                 .setScale(DOS_DECIMALES, RoundingMode.HALF_UP)
                 .coerceAtMost(CIEN)
         } else {

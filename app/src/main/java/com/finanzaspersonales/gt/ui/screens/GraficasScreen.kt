@@ -29,10 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
+import com.finanzaspersonales.gt.R
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
@@ -53,7 +55,7 @@ fun GraficasScreen(finanzasViewModel: FinanzasViewModel) {
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("Gráficas y resúmenes", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.charts_summary_title), style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
         InformesContent(finanzasViewModel)
     }
 }
@@ -81,19 +83,19 @@ fun InformesContent(finanzasViewModel: FinanzasViewModel, modifier: Modifier = M
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            "Equivalentes mensuales estimados a partir de tus registros; no son totales recibidos o pagados en un mes específico.",
+            stringResource(R.string.charts_disclaimer),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         if (state.isLoading) {
-            Text("Cargando tus datos…", style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.loading_data), style = MaterialTheme.typography.bodyMedium)
         } else if (state.error != null) {
-            Text(state.error ?: "No se pudieron cargar los datos.", color = MaterialTheme.colorScheme.error)
+            Text(state.error ?: stringResource(R.string.error_loading_data), color = MaterialTheme.colorScheme.error)
         } else if (balance == null || (state.ingresos.isEmpty() && state.gastosFijos.isEmpty() && state.gastosVariables.isEmpty() && state.deudas.isEmpty() && state.metas.isEmpty())) {
-            EmptyChartMessage("Aún no hay datos financieros para resumir. Agrega ingresos, gastos, deudas o metas.")
+            EmptyChartMessage(stringResource(R.string.no_financial_data))
         } else {
-            ChartSection("Equivalente mensual estimado") {
+            ChartSection(stringResource(R.string.estimated_monthly_equivalent)) {
                 val rows = FinancialChartData.fromBalance(balance)
                 Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf(
@@ -113,37 +115,48 @@ fun InformesContent(finanzasViewModel: FinanzasViewModel, modifier: Modifier = M
                 }
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Proyección mensual promedio: semanal × 52/12, quincenal (cada 15 días) × 365/15/12, diario × 365/12. Los movimientos únicos solo cuentan en el mes de su fecha. El saldo conserva valores negativos.",
+                    stringResource(R.string.chart_projection_note),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
-            ChartSection("Distribución de gastos por categoría") {
-                if (gastosPorCategoria.isEmpty()) EmptyChartMessage("Todavía no hay gastos registrados.")
+            ChartSection(stringResource(R.string.expense_distribution_title)) {
+                if (gastosPorCategoria.isEmpty()) EmptyChartMessage(stringResource(R.string.no_expenses_registered))
                 else AmountBars(gastosPorCategoria.map { (category, amount) -> ChartRow(category, amount) }, finanzasViewModel)
             }
 
-            ChartSection("Deudas registradas") {
+            ChartSection(stringResource(R.string.debts_registered_title)) {
                 val debts = state.deudas.map {
-                    ChartRow(it.nombre, it.montoTotal, "Pago estimado: ${finanzasViewModel.formatCurrency(BalanceCalculator.equivalenteMensualEstimado(it.pagoPeriodico, it.periodicidad, it.fechaMillis))}/mes")
+                    ChartRow(
+                        it.nombre,
+                        it.montoTotal,
+                        stringResource(
+                            R.string.debt_payment_estimated_detail,
+                            finanzasViewModel.formatCurrency(BalanceCalculator.equivalenteMensualEstimado(it.pagoPeriodico, it.periodicidad, it.fechaMillis))
+                        )
+                    )
                 }
-                if (debts.isEmpty()) EmptyChartMessage("No tienes deudas registradas.")
+                if (debts.isEmpty()) EmptyChartMessage(stringResource(R.string.no_debts_chart))
                 else AmountBars(debts, finanzasViewModel)
             }
 
-            ChartSection("Progreso de metas de ahorro") {
-                if (state.metas.isEmpty()) EmptyChartMessage("Todavía no hay metas de ahorro.")
+            ChartSection(stringResource(R.string.goals_progress_title)) {
+                if (state.metas.isEmpty()) EmptyChartMessage(stringResource(R.string.no_goals_chart))
                 else state.metas.forEach { meta ->
                     val progress = if (meta.cantidadObjetivo > 0.0) (meta.cantidadAhorrada / meta.cantidadObjetivo).coerceIn(0.0, 1.0) else 0.0
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Text(meta.nombre, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-                            Text("${(progress * 100).toInt()}%", style = MaterialTheme.typography.labelLarge)
+                            Text(stringResource(R.string.progress_percent, (progress * 100).toInt()), style = MaterialTheme.typography.labelLarge)
                         }
                         LinearProgressIndicator(progress = { progress.toFloat() }, modifier = Modifier.fillMaxWidth())
                         Text(
-                            "${finanzasViewModel.formatCurrency(meta.cantidadAhorrada)} de ${finanzasViewModel.formatCurrency(meta.cantidadObjetivo)}",
+                            stringResource(
+                                R.string.saved_of_objective,
+                                finanzasViewModel.formatCurrency(meta.cantidadAhorrada),
+                                finanzasViewModel.formatCurrency(meta.cantidadObjetivo)
+                            ),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -164,8 +177,14 @@ private fun FinancialChart(
     val expenseColor = MaterialTheme.colorScheme.error
     val incomeColor = MaterialTheme.colorScheme.tertiary
     val gridColor = MaterialTheme.colorScheme.outlineVariant
+    val axisMaxAmount = points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0
+    val description = stringResource(
+        R.string.chart_content_description,
+        chartType.toString(),
+        points.joinToString { "${it.label} ${formatAmount(it.amount)}" }
+    )
     Column {
-        androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(190.dp).semantics { contentDescription = "Gráfica $chartType: ${points.joinToString { "${it.label} ${formatAmount(it.amount)}" }}" }) {
+        androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(190.dp).semantics { contentDescription = description }) {
             val left = 18.dp.toPx(); val right = size.width - 18.dp.toPx()
             val top = 12.dp.toPx(); val bottom = size.height - 18.dp.toPx()
             val max = (points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0).coerceAtLeast(1.0)
@@ -194,9 +213,9 @@ private fun FinancialChart(
             }
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("−${formatAmount(points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0)}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-            Text("Q0.00", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
-            Text("+${formatAmount(points.maxOfOrNull { kotlin.math.abs(it.amount) } ?: 0.0)}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.End, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.chart_axis_negative, formatAmount(axisMaxAmount)), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.chart_axis_zero), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+            Text(stringResource(R.string.chart_axis_positive, formatAmount(axisMaxAmount)), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.End, modifier = Modifier.weight(1f))
         }
     }
 }

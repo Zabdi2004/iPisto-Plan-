@@ -33,11 +33,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.ui.components.ActionRow
 import com.finanzaspersonales.gt.ui.components.ConfirmDialog
 import com.finanzaspersonales.gt.viewmodel.AuthState
@@ -111,74 +113,74 @@ fun SeguridadScreen(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = goBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás", tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back_arrow), tint = MaterialTheme.colorScheme.primary)
                 }
                 Spacer(Modifier.width(4.dp))
-                Text("Seguridad y privacidad", fontSize = 20.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.security_privacy_title), fontSize = 20.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
             }
             Text(
-                "Administra el acceso a tu cuenta y tus datos.",
+                stringResource(R.string.security_privacy_subtitle),
                 fontSize = 13.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            ActionRow(Icons.Filled.Lock, "Cambiar contraseña", {
+            ActionRow(Icons.Filled.Lock, stringResource(R.string.change_password), {
                 oldPassword = ""
                 newPassword = ""
                 confirmPassword = ""
                 authViewModel.resetAuthState()
                 showPasswordDialog = true
             })
-            ActionRow(Icons.AutoMirrored.Filled.HelpOutline, "Pregunta de seguridad", {
+            ActionRow(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.security_question_button), {
                 questionInput = currentUser?.preguntaSeguridad ?: ""
                 answerInput = ""
                 authViewModel.resetAuthState()
                 showSecurityQuestionDialog = true
             })
-            ActionRow(Icons.Filled.Autorenew, "Nueva evaluación", { showNewEvaluationDialog = true })
-            ActionRow(Icons.Filled.Delete, "Eliminar cuenta y datos", { showDeleteDialog = true }, destructive = true)
+            ActionRow(Icons.Filled.Autorenew, stringResource(R.string.new_evaluation_action), { showNewEvaluationDialog = true })
+            ActionRow(Icons.Filled.Delete, stringResource(R.string.delete_account_button), { showDeleteDialog = true }, destructive = true)
         }
     }
 
     if (showPasswordDialog) AlertDialog(
         onDismissRequest = { if (authState != AuthState.Loading) showPasswordDialog = false },
-        title = { Text("Cambiar contraseña") },
+        title = { Text(stringResource(R.string.change_password_dialog_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(oldPassword, { oldPassword = it }, label = { Text("Contraseña actual") }, singleLine = true, visualTransformation = PasswordVisualTransformation())
-                OutlinedTextField(newPassword, { newPassword = it }, label = { Text("Nueva contraseña") }, singleLine = true, visualTransformation = PasswordVisualTransformation())
-                OutlinedTextField(confirmPassword, { confirmPassword = it }, label = { Text("Confirmar contraseña") }, singleLine = true, visualTransformation = PasswordVisualTransformation())
+                OutlinedTextField(oldPassword, { oldPassword = it }, label = { Text(stringResource(R.string.current_password_label)) }, singleLine = true, visualTransformation = PasswordVisualTransformation())
+                OutlinedTextField(newPassword, { newPassword = it }, label = { Text(stringResource(R.string.new_password_label)) }, singleLine = true, visualTransformation = PasswordVisualTransformation())
+                OutlinedTextField(confirmPassword, { confirmPassword = it }, label = { Text(stringResource(R.string.confirm_password_label)) }, singleLine = true, visualTransformation = PasswordVisualTransformation())
                 (authState as? AuthState.Error)?.let { Text(it.message, color = MaterialTheme.colorScheme.error) }
             }
         },
         confirmButton = {
             TextButton(enabled = authState != AuthState.Loading, onClick = { authViewModel.changePassword(oldPassword, newPassword, confirmPassword) }) {
-                Text(if (authState == AuthState.Loading) "Guardando…" else "Guardar")
+                Text(if (authState == AuthState.Loading) stringResource(R.string.saving_ellipsis) else stringResource(R.string.save_button))
             }
         },
-        dismissButton = { TextButton(onClick = { showPasswordDialog = false }) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = { showPasswordDialog = false }) { Text(stringResource(R.string.cancel_button)) } }
     )
 
     if (showSecurityQuestionDialog) AlertDialog(
         onDismissRequest = { if (authState != AuthState.Loading) { showSecurityQuestionDialog = false; authViewModel.resetAuthState() } },
-        title = { Text("Pregunta de seguridad") },
+        title = { Text(stringResource(R.string.security_question_dialog_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    text = "Se utilizará para recuperar el acceso a tu cuenta si olvidas tu contraseña.",
+                    text = stringResource(R.string.security_question_usage),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 OutlinedTextField(
                     value = questionInput,
                     onValueChange = { questionInput = it },
-                    label = { Text("Pregunta de seguridad") },
+                    label = { Text(stringResource(R.string.security_question_label)) },
                     singleLine = true
                 )
                 OutlinedTextField(
                     value = answerInput,
                     onValueChange = { answerInput = it },
-                    label = { Text("Respuesta secreta") },
+                    label = { Text(stringResource(R.string.secret_answer_label)) },
                     singleLine = true
                 )
                 (authState as? AuthState.Error)?.let { Text(it.message, color = MaterialTheme.colorScheme.error) }
@@ -189,35 +191,35 @@ fun SeguridadScreen(
                 enabled = authState != AuthState.Loading && questionInput.isNotBlank() && answerInput.isNotBlank(),
                 onClick = { authViewModel.setSecurityQuestion(questionInput, answerInput) }
             ) {
-                Text(if (authState == AuthState.Loading) "Guardando…" else "Guardar")
+                Text(if (authState == AuthState.Loading) stringResource(R.string.saving_ellipsis) else stringResource(R.string.save_button))
             }
         },
-        dismissButton = { TextButton(onClick = { showSecurityQuestionDialog = false; authViewModel.resetAuthState() }) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = { showSecurityQuestionDialog = false; authViewModel.resetAuthState() }) { Text(stringResource(R.string.cancel_button)) } }
     )
 
     if (showDeleteDialog) AlertDialog(
         onDismissRequest = { showDeleteDialog = false },
-        title = { Text("Eliminar cuenta") },
+        title = { Text(stringResource(R.string.delete_account_dialog_title)) },
         text = {
             Column {
-                Text("Se eliminarán tu cuenta y todos sus registros financieros. Esta acción no se puede deshacer.")
+                Text(stringResource(R.string.delete_account_dialog_message))
                 (authState as? AuthState.Error)?.let { Text(it.message, color = MaterialTheme.colorScheme.error) }
             }
         },
         confirmButton = {
             TextButton(enabled = authState != AuthState.Loading, onClick = {
                 currentUser?.let { deleteRequested = true; authViewModel.deleteUser(it.id) }
-            }) { Text(if (authState == AuthState.Loading) "Eliminando…" else "Eliminar", color = MaterialTheme.colorScheme.error) }
+            }) { Text(if (authState == AuthState.Loading) stringResource(R.string.deleting) else stringResource(R.string.delete_button), color = MaterialTheme.colorScheme.error) }
         },
-        dismissButton = { TextButton(onClick = { showDeleteDialog = false }) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.cancel_button)) } }
     )
 
     if (showNewEvaluationDialog) ConfirmDialog(
         onDismiss = { showNewEvaluationDialog = false },
         onConfirm = { financeViewModel?.nuevaEvaluacion() },
-        title = "Nueva Evaluación",
-        message = "¿Deseas comenzar una nueva evaluación? Se eliminarán todos tus datos financieros actuales.",
-        confirmText = "Confirmar",
+        title = stringResource(R.string.new_evaluation_title),
+        message = stringResource(R.string.new_evaluation_message),
+        confirmText = stringResource(R.string.confirm_button),
         confirmColor = MaterialTheme.colorScheme.error
     )
 }

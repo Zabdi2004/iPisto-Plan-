@@ -12,7 +12,9 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.ui.components.CircleIconButton
 
 /**
@@ -33,9 +35,9 @@ fun AppTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (onSettings != null) {
-            CircleIconButton(Icons.Filled.Settings, "Ajustes", onSettings)
+            CircleIconButton(Icons.Filled.Settings, stringResource(R.string.action_settings), onSettings)
             Spacer(Modifier.width(8.dp))
         }
-        CircleIconButton(Icons.AutoMirrored.Filled.Logout, "Cerrar sesión", onLogout)
+        CircleIconButton(Icons.AutoMirrored.Filled.Logout, stringResource(R.string.logout_button), onLogout)
     }
 }

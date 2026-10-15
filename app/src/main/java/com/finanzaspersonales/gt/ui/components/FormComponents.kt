@@ -12,11 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.text.DateFormat
 import java.util.Date
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.utils.MoneyInput
 import com.finanzaspersonales.gt.utils.CategoryNameValidator
 
@@ -97,11 +99,20 @@ fun PeriodicityDropdown(
     onPeriodicityChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Los valores canónicos se conservan como dato; solo se localiza su presentación.
     val periodicities = listOf("Único", "Diario", "Semanal", "Quincenal", "Mensual")
+    val labels = mapOf(
+        "Único" to stringResource(R.string.periodicity_unique),
+        "Diario" to stringResource(R.string.periodicity_daily),
+        "Semanal" to stringResource(R.string.periodicity_weekly),
+        "Quincenal" to stringResource(R.string.periodicity_biweekly),
+        "Mensual" to stringResource(R.string.periodicity_monthly)
+    )
     MenuDropdown(
         selectedValue = selectedPeriodicity,
         options = periodicities,
         onOptionClick = onPeriodicityChange,
+        optionLabels = { labels[it] ?: it },
         modifier = modifier
     )
 }
@@ -112,7 +123,7 @@ fun TransactionDateField(selectedDateMillis: Long, onDateSelected: (Long) -> Uni
     var showPicker by remember { mutableStateOf(false) }
     OutlinedButton(onClick = { showPicker = true }, modifier = Modifier.fillMaxWidth()) {
         val formatter = remember { DateFormat.getDateInstance().apply { timeZone = java.util.TimeZone.getTimeZone("UTC") } }
-        Text("Fecha del movimiento: ${formatter.format(Date(selectedDateMillis))}")
+        Text(stringResource(R.string.date_field_label, formatter.format(Date(selectedDateMillis))))
     }
     if (showPicker) {
         val pickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
@@ -122,9 +133,9 @@ fun TransactionDateField(selectedDateMillis: Long, onDateSelected: (Long) -> Uni
                 TextButton(onClick = {
                     pickerState.selectedDateMillis?.let(onDateSelected)
                     showPicker = false
-                }) { Text("Elegir fecha") }
+                }) { Text(stringResource(R.string.choose_date_button)) }
             },
-            dismissButton = { TextButton(onClick = { showPicker = false }) { Text("Cancelar") } }
+            dismissButton = { TextButton(onClick = { showPicker = false }) { Text(stringResource(R.string.cancel_button)) } }
         ) { DatePicker(state = pickerState) }
     }
 }
@@ -142,8 +153,11 @@ fun CategoryDropdown(
     var customCategory by remember { mutableStateOf("") }
     var customCategoryError by remember { mutableStateOf(false) }
     var customCategoryErrorMessage by remember { mutableStateOf("") }
+    val otherOption = stringResource(R.string.category_other_option)
+    val emptyCategoryMessage = stringResource(R.string.category_name_empty)
+    val duplicateCategoryMessage = stringResource(R.string.category_name_duplicate)
     val options = if (allowCustom) {
-        (categories + existingCategories).distinctBy { it.trim().lowercase() } + "Otra..."
+        (categories + existingCategories).distinctBy { it.trim().lowercase() } + otherOption
     } else {
         categories
     }
@@ -151,7 +165,7 @@ fun CategoryDropdown(
         selectedValue = selectedCategory,
         options = options,
         onOptionClick = { selected ->
-            if (selected == "Otra...") {
+            if (selected == otherOption) {
                 customCategory = ""
                 customCategoryError = false
                 customCategoryErrorMessage = ""
@@ -166,12 +180,12 @@ fun CategoryDropdown(
     if (showCustomCategoryDialog) {
         AlertDialog(
             onDismissRequest = { showCustomCategoryDialog = false },
-            title = { Text("Nueva categoría") },
+            title = { Text(stringResource(R.string.new_category_dialog_title)) },
             text = {
                 OutlinedTextField(
                     value = customCategory,
                     onValueChange = { customCategory = it; customCategoryError = false; customCategoryErrorMessage = "" },
-                    label = { Text("Nombre de categoría") },
+                    label = { Text(stringResource(R.string.category_name_label)) },
                     singleLine = true,
                     isError = customCategoryError,
                     supportingText = if (customCategoryError) ({ Text(customCategoryErrorMessage) }) else null
@@ -180,24 +194,24 @@ fun CategoryDropdown(
             confirmButton = {
                 TextButton(onClick = {
                     val name = customCategory.trim()
-                    when (CategoryNameValidator.validate(name, options.filterNot { it == "Otra..." })) {
+                    when (CategoryNameValidator.validate(name, options.filterNot { it == otherOption })) {
                         CategoryNameValidator.Error.EMPTY -> {
                             customCategoryError = true
-                            customCategoryErrorMessage = "Escribe un nombre para continuar."
+                            customCategoryErrorMessage = emptyCategoryMessage
                         }
                         CategoryNameValidator.Error.DUPLICATE -> {
                             customCategoryError = true
-                            customCategoryErrorMessage = "Esa categoría ya existe."
+                            customCategoryErrorMessage = duplicateCategoryMessage
                         }
                         null -> {
                             onCategoryChange(name)
                             showCustomCategoryDialog = false
                         }
                     }
-                }) { Text("Agregar") }
+                }) { Text(stringResource(R.string.add_category_button)) }
             },
             dismissButton = {
-                TextButton(onClick = { showCustomCategoryDialog = false }) { Text("Cancelar") }
+                TextButton(onClick = { showCustomCategoryDialog = false }) { Text(stringResource(R.string.cancel_button)) }
             }
         )
     }
@@ -208,22 +222,23 @@ fun MenuDropdown(
     selectedValue: String,
     options: List<String>,
     onOptionClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    optionLabels: (String) -> String = { it }
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val textFieldValue = TextFieldValue(selectedValue)
+    val textFieldValue = TextFieldValue(optionLabels(selectedValue))
 
     OutlinedTextField(
         value = textFieldValue,
         onValueChange = {},
         readOnly = true,
-        label = { Text("Seleccionar") },
+        label = { Text(stringResource(R.string.select_category)) },
         modifier = modifier.fillMaxWidth(),
         trailingIcon = {
             IconButton(onClick = { expanded = !expanded }) {
                 Icon(
                     imageVector = Icons.Default.ExpandMore,
-                    contentDescription = if (expanded) "Contraer" else "Expandir"
+                    contentDescription = if (expanded) stringResource(R.string.collapse_button) else stringResource(R.string.expand_button)
                 )
             }
         },
@@ -241,7 +256,7 @@ fun MenuDropdown(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { Text(optionLabels(option)) },
                     onClick = {
                         onOptionClick(option)
                         expanded = false

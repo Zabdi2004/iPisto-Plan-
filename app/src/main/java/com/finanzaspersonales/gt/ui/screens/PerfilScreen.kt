@@ -45,12 +45,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.data.local.entity.User
 import com.finanzaspersonales.gt.ui.components.CircleIconButton
 import com.finanzaspersonales.gt.ui.components.QuetzalMascot
@@ -128,13 +130,13 @@ fun PerfilScreen(
 
     if (showNameDialog) AlertDialog(
         onDismissRequest = { if (authState != AuthState.Loading) { showNameDialog = false; authViewModel.resetAuthState() } },
-        title = { Text("Editar nombre de usuario") },
+        title = { Text(stringResource(R.string.edit_username_dialog_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = editableName,
                     onValueChange = { editableName = it },
-                    label = { Text("Nombre de usuario") },
+                    label = { Text(stringResource(R.string.username_label)) },
                     singleLine = true
                 )
                 (authState as? AuthState.Error)?.let { Text(it.message, color = MaterialTheme.colorScheme.error) }
@@ -142,10 +144,10 @@ fun PerfilScreen(
         },
         confirmButton = {
             TextButton(enabled = authState != AuthState.Loading, onClick = { authViewModel.renameCurrentUser(editableName) }) {
-                Text(if (authState == AuthState.Loading) "Guardando…" else "Guardar")
+                Text(if (authState == AuthState.Loading) stringResource(R.string.saving_ellipsis) else stringResource(R.string.save_button))
             }
         },
-        dismissButton = { TextButton(onClick = { showNameDialog = false; authViewModel.resetAuthState() }) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = { showNameDialog = false; authViewModel.resetAuthState() }) { Text(stringResource(R.string.cancel_button)) } }
     )
 }
 
@@ -173,14 +175,14 @@ private fun ProfileHeader(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CircleIconButton(
-                    Icons.Filled.Settings, "Ajustes", onSettings,
+                    Icons.Filled.Settings, stringResource(R.string.action_settings), onSettings,
                     size = 42.dp, iconSize = 20.dp,
                     containerColor = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.width(10.dp))
                 CircleIconButton(
-                    Icons.AutoMirrored.Filled.Logout, "Cerrar sesión", onLogout,
+                    Icons.AutoMirrored.Filled.Logout, stringResource(R.string.logout_button), onLogout,
                     size = 42.dp, iconSize = 20.dp,
                     containerColor = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -191,13 +193,13 @@ private fun ProfileHeader(
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(
-                        text = user?.nombreUsuario ?: "Usuario",
+                        text = user?.nombreUsuario ?: stringResource(R.string.user_label),
                         fontSize = 26.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "Cuenta local",
+                        text = stringResource(R.string.account_local),
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Normal,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -210,13 +212,13 @@ private fun ProfileHeader(
             // Fila de acciones circulares: Seguridad y Editar nombre (con marco redondo visible).
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 CircleIconButton(
-                    Icons.Filled.Security, "Seguridad", onSecurity,
+                    Icons.Filled.Security, stringResource(R.string.security), onSecurity,
                     size = 48.dp, iconSize = 24.dp,
                     containerColor = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.primary
                 )
                 CircleIconButton(
-                    Icons.Filled.Edit, "Editar nombre", onEditName,
+                    Icons.Filled.Edit, stringResource(R.string.edit_username), onEditName,
                     size = 48.dp, iconSize = 24.dp,
                     containerColor = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.primary
@@ -234,8 +236,8 @@ private fun ProfileHeader(
                 Spacer(Modifier.width(6.dp))
                 Text(
                     text = user?.fechaCreacion?.let {
-                        "Miembro desde " + java.text.DateFormat.getDateInstance().format(java.util.Date(it))
-                    } ?: "Miembro del club iPisto",
+                        stringResource(R.string.member_since, java.text.DateFormat.getDateInstance().format(java.util.Date(it)))
+                    } ?: stringResource(R.string.member_since_unknown),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -290,7 +292,7 @@ private fun ProfileContentCard(
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    text = "Datos guardados localmente en este dispositivo",
+                    text = stringResource(R.string.data_saved_local),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f)
@@ -299,19 +301,19 @@ private fun ProfileContentCard(
             HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant)
 
             // Resumen completo (los informes quedan integrados dentro del resumen).
-            SectionHeader("Resumen")
-            SummaryTile("Dinero disponible", balance?.let { money(it.dineroDisponible) } ?: "—", IpistoPalette.Balance, Modifier.fillMaxWidth())
+            SectionHeader(stringResource(R.string.summary_label))
+            SummaryTile(stringResource(R.string.available_money_short), balance?.let { money(it.dineroDisponible) } ?: "—", IpistoPalette.Balance, Modifier.fillMaxWidth())
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SummaryTile("Ingresos", balance?.let { money(it.ingresosMensuales) } ?: "—", IpistoPalette.Income, Modifier.weight(1f))
-                SummaryTile("Gastos", balance?.let { money(it.gastosFijosMensuales + it.gastosVariablesMensuales + it.pagosDeudaMensuales) } ?: "—", IpistoPalette.Expense, Modifier.weight(1f))
+                SummaryTile(stringResource(R.string.income_label), balance?.let { money(it.ingresosMensuales) } ?: "—", IpistoPalette.Income, Modifier.weight(1f))
+                SummaryTile(stringResource(R.string.expenses_label), balance?.let { money(it.gastosFijosMensuales + it.gastosVariablesMensuales + it.pagosDeudaMensuales) } ?: "—", IpistoPalette.Expense, Modifier.weight(1f))
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SummaryTile("Deudas", balance?.let { money(it.deudaTotal) } ?: "—", MaterialTheme.colorScheme.tertiary, Modifier.weight(1f))
-                SummaryTile("Registros", registros?.toString() ?: "—", MaterialTheme.colorScheme.onSurface, Modifier.weight(1f))
+                SummaryTile(stringResource(R.string.debts_label), balance?.let { money(it.deudaTotal) } ?: "—", MaterialTheme.colorScheme.tertiary, Modifier.weight(1f))
+                SummaryTile(stringResource(R.string.records_count), registros?.toString() ?: "—", MaterialTheme.colorScheme.onSurface, Modifier.weight(1f))
             }
 
             // Toda la pantalla de informes, integrada debajo del resumen.
-            SectionHeader("Informes")
+            SectionHeader(stringResource(R.string.reports))
             financeViewModel?.let { InformesContent(it) }
 
             Spacer(Modifier.height(8.dp))

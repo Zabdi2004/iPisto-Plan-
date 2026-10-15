@@ -24,13 +24,20 @@ object PreferencesHelper {
         getPreferences(context).edit().putString(KEY_LANGUAGE, language).apply()
     }
 
-    fun getLanguage(context: Context): String =
-        getPreferences(context).getString(KEY_LANGUAGE, "es") ?: "es"
+    fun getLanguage(context: Context): String {
+        val lang = getPreferences(context).getString(KEY_LANGUAGE, "es") ?: "es"
+        return when (lang) {
+            "kq" -> "cak"
+            "qc" -> "quc"
+            else -> lang
+        }
+    }
 
     fun applyLanguage(context: Context, languageCode: String) {
         val locale = when (languageCode) {
             "en" -> Locale.ENGLISH
-            "quc" -> Locale("quc")
+            "cak", "kq" -> Locale("cak")
+            "quc", "qc" -> Locale("quc")
             else -> Locale("es")
         }
         Locale.setDefault(locale)

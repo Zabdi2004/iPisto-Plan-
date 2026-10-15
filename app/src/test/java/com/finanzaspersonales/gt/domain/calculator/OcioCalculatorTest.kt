@@ -436,4 +436,93 @@ class OcioCalculatorTest {
         assertTrue(result.porcentajeConsumido.compareTo(BigDecimal.valueOf(100)) <= 0)
         assertEquals(EstadoPresupuesto.AGOTADO, result.estadoPresupuesto)
     }
+
+    // ===== Gastos de ocio recurrentes sin fecha (agenda vigente) =====
+
+    @Test
+    fun presupuestoOcio_gastoVariableRecurrenteSinFecha_seContabiliza() {
+        val presupuesto = presupuestoOcio(1000.0, fechaInicio = ahora)
+        val gastoRecurrente = gastoVariableMensual(250.0, esOcio = true, fechaMillis = null)
+
+        val result = OcioCalculator.calcularPresupuestoOcio(presupuesto, listOf(gastoRecurrente), emptyList(), ahora)
+
+        assertBdEquals(bd(250.0), result.gastosOcioDelPeriodo)
+        assertBdEquals(bd(750.0), result.presupuestoRestante)
+    }
+
+    @Test
+    fun presupuestoOcio_gastoFijoRecurrenteSinFecha_seContabiliza() {
+        val presupuesto = presupuestoOcio(1000.0, fechaInicio = ahora)
+        val gastoFijoRecurrente = gastoFijoMensual(100.0, esOcio = true, fechaMillis = null)
+        val gastoFijoNormal = gastoFijoMensual(300.0, esOcio = false, fechaMillis = null)
+
+        val result = OcioCalculator.calcularPresupuestoOcio(presupuesto, emptyList(), listOf(gastoFijoRecurrente, gastoFijoNormal), ahora)
+
+        assertBdEquals(bd(100.0), result.gastosOcioDelPeriodo)
+    }
+
+    // ===== Normalización de periodo y rollover =====
+
+    private fun restarDias(millis: Long, dias: Long): Long = millis - dias * 24L * 3600_000
+
+    private fun gastoVariableSemanal(cantidad: Double, esOcio: Boolean = true) =
+        GastoVariable(userId = 1, nombre = "Gasto semanal", categoria = "Ocio", cantidad = cantidad, periodicidad = "Semanal", fechaMillis = null, esOcio = esOcio)
+
+    @Test
+    fun normalizarPeriodoActual_presupuestoNulo_devuelveNull() {
+        assertNull(OcioCalculator.normalizarPeriodoActual(null, emptyList(), emptyList(), ahora))
+    }
+
+    @Test
+    fun normalizarPeriodoActual_periodoVigente_devuelveNull() {
+        val presupuesto = presupuestoOcio(1000.0, fechaInicio = ahora, rolloverEnabled = true)
+
+        assertNull(OcioCalculator.normalizarPeriodoActual(presupuesto, emptyList(), emptyList(), ahora))
+    }
+
+    @Test
+    fun normalizarPeriodoActual_rolloverActivo_acumulaRemanenteNoGastado() {
+        val presupuesto = presupuestoOcio(
+            montoPresupuestado = 1000.0,
+            periodicidad = "semanal",
+            rolloverEnabled = true,
+            fechaInicio = restarDias(ahora, 10)
+        )
+        val gastoSemanal = gastoVariableSemanal(200.0)
+
+        val result = OcioCalculator.normalizarPeriodoActual(presupuesto, listOf(gastoSemanal), emptyList(), ahora)
+
+        assertTrue(result != null)
+        assertEquals(0, bd(800.0).compareTo(BigDecimal.valueOf(result!!.remanenteAcumulado).setScale(BD_SCALE, ROUND)))
+        assertTrue(result.fechaInicio > presupuesto.fechaInicio)
+    }
+
+    @Test
+    fun normalizarPeriodoActual_rolloverDesactivado_reiniciaRemanente() {
+        val presupuesto = presupuestoOcio(
+            montoPresupuestado = 1000.0,
+            periodicidad = "semanal",
+            rolloverEnabled = false,
+            fechaInicio = restarDias(ahora, 10),
+            remanenteAcumulado = 50.0
+        )
+
+        val result = OcioCalculator.normalizarPeriodoActual(presupuesto, emptyList(), emptyList(), ahora)
+
+        assertTrue(result != null)
+        assertEquals(0.0, result!!.remanenteAcumulado, 0.0001)
+        assertTrue(result.fechaInicio > presupuesto.fechaInicio)
+        assertNull(OcioCalculator.normalizarPeriodoActual(result, emptyList(), emptyList(), ahora))
+    }
+
+    @Test
+    fun simularCompra_conRemanente_usaPresupuestoTotalDisponible() {
+        val presupuesto = presupuestoOcio(1000.0, fechaInicio = ahora, remanenteAcumulado = 500.0)
+        val result = OcioCalculator.calcularPresupuestoOcio(presupuesto, emptyList(), emptyList(), ahora)
+
+        val simulacion = OcioCalculator.simularCompra(BigDecimal.valueOf(300.0), result)
+
+        assertEquals(0, bd(20.0).compareTo(simulacion.porcentajeConsumido))
+        assertBdEquals(bd(1200.0), simulacion.disponibleDespues)
+    }
 }

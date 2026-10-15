@@ -8,12 +8,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.data.local.entity.MetaAhorro
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 import com.finanzaspersonales.gt.ui.components.MetaAhorroDialog
@@ -32,7 +34,7 @@ fun MetaEditarScreen(
     }.value
 
     if (meta == null) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Meta no encontrada", style = MaterialTheme.typography.bodyLarge) }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(stringResource(R.string.goal_not_found), style = MaterialTheme.typography.bodyLarge) }
         return
     }
 
@@ -43,7 +45,7 @@ fun MetaEditarScreen(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
         uiState.value.error?.let { error ->
-            Text("No se completó la operación: $error", color = MaterialTheme.colorScheme.error)
+            Text(stringResource(R.string.operation_error, error), color = MaterialTheme.colorScheme.error)
         }
         if (showDialog) {
             MetaAhorroDialog(
@@ -72,16 +74,16 @@ fun MetaEditarScreen(
     if (showDiscardConfirmation) {
         AlertDialog(
             onDismissRequest = { showDiscardConfirmation = false },
-            title = { Text("Descartar cambios") },
-            text = { Text("Hay una edición en curso. ¿Quieres salir sin guardar los cambios?") },
+            title = { Text(stringResource(R.string.discard_changes_title)) },
+            text = { Text(stringResource(R.string.discard_changes_message)) },
             confirmButton = {
                 TextButton(onClick = {
                     showDiscardConfirmation = false
                     showDialog = false
                     navController.popBackStack()
-                }) { Text("Descartar") }
+                }) { Text(stringResource(R.string.discard_button)) }
             },
-            dismissButton = { TextButton(onClick = { showDiscardConfirmation = false }) { Text("Seguir editando") } }
+            dismissButton = { TextButton(onClick = { showDiscardConfirmation = false }) { Text(stringResource(R.string.continue_editing_button)) } }
         )
     }
 }

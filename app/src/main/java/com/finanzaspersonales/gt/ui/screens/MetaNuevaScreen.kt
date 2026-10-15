@@ -5,10 +5,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 import com.finanzaspersonales.gt.ui.components.MetaAhorroDialog
 
@@ -24,7 +26,7 @@ fun MetaNuevaScreen(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
         uiState.error?.let { error ->
-            Text("No se completó la operación: $error", color = MaterialTheme.colorScheme.error)
+            Text(stringResource(R.string.operation_error, error), color = MaterialTheme.colorScheme.error)
         }
         if (showDialog) {
             MetaAhorroDialog(

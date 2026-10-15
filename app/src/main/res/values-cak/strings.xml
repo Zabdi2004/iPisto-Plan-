@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traducción al idioma Kaqchikel. Traducido desde test/traducci_n_al_kaqchikel.md.
+     Las cadenas sin traducción disponible en el diccionario conservan el texto en español como fallback. -->
+<resources>
+    <string name="app_name">iPisto</string>
+    <string name="welcome_description">Administra tus finanzas de forma sencilla.</string>
+    <string name="login">tzijïk moloj</string>
+    <string name="create_account">tz\'ib\'anïk ajilab\'äl</string>
+    <string name="username">b\'i\' richin samajel</string>
+    <string name="password">ewal tz\'ib\'</string>
+    <string name="confirm_password">jikib\'axïk ewal tz\'ib\'</string>
+    <string name="error_user_exists">re\' b\'i\' richin samajel tz\'ib\'an chik.</string>
+    <string name="error_passwords_dont_match">ri ewal tz\'ib\' taq ma junam ta.</string>
+    <string name="account_created">ajilab\'äl tz\'ib\'an ütz.</string>
+    <string name="error_invalid_credentials">b\'i\' richin samajel o ewal tz\'ib\' ma ütz ta.</string>
+    <string name="show_password">k\'ut ewal tz\'ib\'</string>
+    <string name="hide_password">ewanïk ewal tz\'ib\'</string>
+    <string name="logout">tzapij moloj</string>
+    <string name="delete_account">yujïk ajilab\'äl</string>
+    <string name="confirm_delete_account">¿la jikïl wi xawaj kayuj aw-ajilab\'äl?</string>
+    <string name="delete_account_warning">re\' b\'anob\'äl kuyuj aw-ajilab\'äl chuqa\' ronojel aw-rutzijol pwäq-samaj pa re\' samajb\'äl.</string>
+    <string name="cancel">q\'atïk</string>
+    <string name="confirm">jikib\'axïk</string>
+    <string name="home">ruxe\'</string>
+    <string name="charts">wachib\'äl</string>
+    <string name="goals">rayib\'äl taq</string>
+    <string name="profile">wäch</string>
+    <string name="settings">ch\'ob\'onïk</string>
+    <string name="language">Kaqchikel</string>
+    <string name="change_password">k\'ex ewal tz\'ib\'</string>
+    <string name="education">tijonïk pwäq-samaj</string>
+    <string name="new_evaluation">k\'ak\'a\' ch\'ob\'onïk</string>
+    <string name="unlock_session">jaqik</string>
+    <string name="locked_session">moloj tz\'apäl</string>
+    <string name="unlocking">tz\'etonïk…</string>
+    <string name="unlock_error">ri ewal tz\'ib\' ma ütz ta</string>
+    <string name="forgot_password">¿xamestaj aw-ewal tz\'ib\'?</string>
+    <string name="recover_password">tzolinïk ewal tz\'ib\'</string>
+    <string name="security_question">tz\'onoj richin chajinïk</string>
+    <string name="security_answer">tzijol richin chajinïk</string>
+    <string name="restore_password">k\'exik ewal tz\'ib\'</string>
+    <string name="configure_security_question">ch\'ob\'onïk tz\'onoj richin chajinïk</string>
+    <string name="chart_lines">juch\'</string>
+    <string name="chart_bars">Barras</string>
+    <string name="chart_scatter">Dispersión</string>
+    <string name="view_charts">ila\' wachib\'äl</string>
+    <string name="navigation_home">ruxe\'</string>
+    <string name="navigation_reports">rutzijol</string>
+    <string name="navigation_goals">rayib\'äl taq</string>
+    <string name="navigation_profile">wäch</string>
+    <string name="navigation_ocio">etzanem</string>
+    <string name="navigation_add_record">k\'ak\'a\' tz\'ib\'anïk</string>
+    <string name="confirm_new_evaluation">¿xawaj katzij jun k\'ak\'a\' ch\'ob\'onïk?</string>
+    <string name="new_evaluation_warning">kayuj ronojel aw-rutzijol pwäq-samaj wakami.</string>
+    <string name="income">okem pwäq</string>
+    <string name="fixed_expenses">k\'isoj jikïl taq</string>
+    <string name="variable_expenses">k\'isoj jalatoj taq</string>
+    <string name="debts">k\'as taq</string>
+    <string name="available_money">pwäq k\'o</string>
+    <string name="total_debt">ronojel k\'as</string>
+    <string name="monthly_debt_payment">tojonïk chi ik\' richin k\'as taq</string>
+    <string name="percentage_used">kalju\'il k\'isom</string>
+    <string name="financial_status">b\'anob\'äl pwäq-samaj</string>
+    <string name="healthy">ütz</string>
+    <string name="caution">chajij</string>
+    <string name="critical">k\'ayew</string>
+    <string name="add_income">tzaqatisaj okem pwäq</string>
+    <string name="add_fixed_expense">tzaqatisaj k\'isoj jikïl</string>
+    <string name="add_variable_expense">tzaqatisaj k\'isoj jalatoj</string>
+    <string name="add_debt">tzaqatisaj k\'as</string>
+    <string name="add_goal">tzaqatisaj rayib\'äl</string>
+    <string name="edit">tz\'ib\'anïk</string>
+    <string name="remove">yujïk</string>
+    <string name="save">chajij</string>
+    <string name="name">b\'i\'</string>
+    <string name="category">ch\'ob\'ik</string>
+    <string name="amount">jaru\'al</string>
+    <string name="periodicity">meb\'al</string>
+    <string name="weekly">chi wuqu\' q\'ij</string>
+    <string name="biweekly">chi wo\'lajuj q\'ij</string>
+    <string name="monthly">chi ik\'</string>
+    <string name="total_debt_amount">rajil ronojel richin ri k\'as</string>
+    <string name="periodic_payment">tojonïk chi q\'ijul</string>
+    <string name="goal_objective">jaru\'al rayib\'äl</string>
+    <string name="current_savings">jaru\'al k\'olon</string>
+    <string name="monthly_contribution">ya\'oj chi ik\'</string>
+    <string name="currency_symbol">Q</string>
+    <string name="no_data_message">man k\'o ta rutzijol richin wachib\'äl.</string>
+    <string name="add_data_message">tzaqatisaj rutzijol richin kila\'.</string>
+    <string name="simulation_result">ronojel ch\'ob\'on</string>
+    <string name="projection_disclaimer">ri pach\'um taq xa tijonïk.</string>
+    <string name="education_savings">k\'olopwäq</string>
+    <string name="education_emergency_fund">yakb\'äl pwäq aninaqil</string>
+    <string name="education_investment">tikonïk pwäq</string>
+    <string name="education_risk">k\'ayewal</string>
+    <string name="education_diversification">jalajoj</string>
+    <string name="education_horizon">ruwa kaj richin tikonïk pwäq</string>
+
+    <!-- Empty states -->
+    <string name="no_income_registered">majun okem pwäq tz\'ib\'an</string>
+    <string name="no_fixed_expenses_registered">majun k\'isoj jikïl tz\'ib\'an</string>
+    <string name="no_variable_expenses_registered">majun k\'isoj jalatoj tz\'ib\'an</string>
+    <string name="no_debts_registered">majun k\'as tz\'ib\'an</string>
+    <string name="no_goals_registered">majun rayib\'äl tz\'ib\'an</string>
+
+    <!-- Authentication -->
+    <string name="auth_login">tzijïk moloj</string>
+    <string name="auth_username">b\'i\' richin samajel</string>
+    <string name="auth_password">ewal tz\'ib\'</string>
+    <string name="auth_hide_password">ewanïk ewal tz\'ib\'</string>
+    <string name="auth_show_password">k\'ut ewal tz\'ib\'</string>
+    <string name="auth_verifying">tz\'etonïk…</string>
+    <string name="auth_forgot_password">¿xamestaj aw-ewal tz\'ib\'?</string>
+    <string name="auth_no_account_create">¿man k\'o ta aw-ajilab\'äl? tz\'ib\'anïk ajilab\'äl</string>
+    <string name="auth_register">tz\'ib\'anïk ajilab\'äl</string>
+    <string name="auth_confirm_password">jikib\'axïk ewal tz\'ib\'</string>
+    <string name="auth_new_password">k\'ak\'a\' ewal tz\'ib\'</string>
+    <string name="auth_confirm_new_password">jikib\'axïk k\'ak\'a\' ewal tz\'ib\'</string>
+    <string name="auth_logout">tzapij moloj</string>
+    <string name="auth_has_account_login">¿k\'o chik aw-ajilab\'äl? tzijïk moloj</string>
+
+    <!-- Password recovery -->
+    <string name="recovery_title">tzolinïk ewal tz\'ib\'</string>
+    <string name="action_back">tzolin</string>
+    <string name="recovery_restore_access">k\'exik okem</string>
+    <string name="recovery_search_question">kanöj tz\'onoj</string>
+    <string name="recovery_verify_user">tz\'etonïk samajel…</string>
+    <string name="recovery_security_question">tz\'onoj richin chajinïk</string>
+    <string name="recovery_your_answer">aw-tzijol</string>
+    <string name="recovery_secret_answer">ewal tzijol</string>
+    <string name="recovery_reset_password">k\'exik ewal tz\'ib\'</string>
+    <string name="recovery_configure_question">ch\'ob\'onïk tz\'onoj richin chajinïk</string>
+    <string name="recovery_write_question">tz\'ib\'aj aw-tz\'onoj</string>
+    <string name="recovery_question_pet">¿achike ru-b\'i\' aw-tz\'i\'?</string>
+    <string name="recovery_question_city">¿pa jas tinamit xat-alax?</string>
+    <string name="recovery_question_food">¿achike aw-ajowel wa\'?</string>
+    <string name="recovery_question_school">¿achike ru-b\'i\' nab\'ey aw-tijob\'äl?</string>
+    <string name="recovery_question_custom">jun chik tz\'onoj</string>
+
+    <!-- Validations -->
+    <string name="msg_username_format">xa tz\'ib\', ajilab\'äl chuqa\' juch\'</string>
+    <string name="msg_password_min_length">ri ewal tz\'ib\' rajowaxik 6 tz\'ib\'</string>
+    <string name="msg_security_question_usage">koksax richin tzolinïk aw-ewal tz\'ib\'</string>
+
+    <!-- Settings -->
+    <string name="current_preferences">wakami ch\'ob\'onïk</string>
+    <string name="currency">pwäq</string>
+    <string name="currency_gtq">q\'uq\' aj-iximulew (Q / GTQ)</string>
+    <string name="currency_usd">Dólar ($ / USD)</string>
+    <string name="currency_eur">Euro (€ / EUR)</string>
+    <string name="security">chajinïk</string>
+    <string name="security_managed_in_profile">ewal tz\'ib\' chuqa\' yujïk ajilab\'äl pa aw-wäch</string>
+    <string name="select_app_language">cha\' ru-ch\'ab\'äl richin ri aplicación</string>
+    <string name="open_profile_security">jaqa\' wäch chuqa\' chajinïk</string>
+    <string name="local_data_notice">ri tz\'ib\'anïk taq chajin aj waral pa re\' samajb\'äl.</string>
+
+    <!-- Welcome -->
+    <string name="welcome_title">ütz petenik pa iPisto</string>
+    <string name="auth_verify_user">tz\'eta\' samajel</string>
+
+    <!-- Home -->
+    <string name="home_title">ruxe\'</string>
+    <string name="daily_tip_title">jun pixa\' richin wakami</string>
+    <string name="daily_tip_content">tz\'ib\'aj aw-k\'isoj co\'ol.</string>
+    <string name="available_money_label">pwäq k\'o</string>
+    <string name="estimated_monthly_income">okem pwäq chi ik\' ch\'ob\'on</string>
+    <string name="total_debt_label">ronojel k\'as</string>
+    <string name="no_data_start">man k\'o ta rutzijol. tzijïk tzaqatisaj okem pwäq chuqa\' k\'isoj.</string>
+
+    <!-- Financial sections -->
+    <string name="monthly_equivalent">junam chi ik\' ch\'ob\'on</string>
+    <string name="periodicity_format">%1$s: %2$s</string>
+    <string name="total_amount">rajil ronojel: %1$s</string>
+    <string name="monthly_payment_estimated">tojonïk chi ik\' ch\'ob\'on: %1$s</string>
+    <string name="saved_progress">k\'olon: %1$s / %2$s</string>
+    <string name="progress_percent">%1$d%%</string>
+    <string name="monthly_contribution_label">ya\'oj chi ik\': %1$s</string>
+
+    <!-- Delete dialogs -->
+    <string name="delete_income_title">yujïk okem pwäq</string>
+    <string name="delete_income_message">¿la jikïl wi kayuj \"%1$s\"?</string>
+    <string name="delete_fixed_expense_title">yujïk k\'isoj jikïl</string>
+    <string name="delete_fixed_expense_message">¿la jikïl wi kayuj \"%1$s\"?</string>
+    <string name="delete_variable_expense_title">yujïk k\'isoj jalatoj</string>
+    <string name="delete_variable_expense_message">¿la jikïl wi kayuj \"%1$s\"?</string>
+    <string name="delete_confirm">yujïk</string>
+
+    <!-- Metas -->
+    <string name="goals_title">rayib\'äl taq richin k\'olopwäq</string>
+    <string name="no_goals_registered_msg">majun rayib\'äl tz\'ib\'an.</string>
+    <string name="add_savings_goal">tzaqatisaj rayib\'äl richin k\'olopwäq</string>
+    <string name="progress_label">b\'eyal</string>
+    <string name="months_remaining_label">ik\' taq ch\'qa</string>
+    <string name="saved_amount">k\'olon: %1$s</string>
+    <string name="objective_amount">rayib\'äl: %1$s</string>
+    <string name="contributing_message">ya\'oj %1$s/ik\' → %2$d ik\' taq</string>
+    <string name="goal_achieved">¡rayib\'äl q\'axan! 🎉</string>
+    <string name="set_monthly_contribution">cha\' jun ya\'oj chi ik\' richin pach\'um</string>
+    <string name="goal_not_found">rayib\'äl ma riqom ta</string>
+    <string name="projection_title">pach\'um</string>
+    <string name="current_month">ik\' wakami</string>
+    <string name="month_format">ik\' %1$d (%2$s)</string>
+    <string name="projection_message">rik\'in ya\'oj %1$s/ik\', q\'axan rayib\'äl pa %2$d ik\' taq.</string>
+    <string name="projection_disclaimer_short">pixa\': pach\'um ch\'ob\'on.</string>
+    <string name="add_contribution_title">tzaqatisaj ya\'oj</string>
+    <string name="goal_label">rayib\'äl: %1$s</string>
+    <string name="saved_objective">k\'olon: %1$s / %2$s</string>
+    <string name="contribution_amount_label">jaru\'al ya\'oj (Q)</string>
+    <string name="add_contribution_button">tzaqatisaj ya\'oj</string>
+    <string name="confirm_contribution_title">jikib\'axïk ya\'oj</string>
+    <string name="confirm_contribution_message">¿tzaqatisaj %1$s pa \"%2$s\"?</string>
+    <string name="saving">chajin…</string>
+    <string name="confirm_button">jikib\'axïk</string>
+    <string name="edit_goal_title">tz\'ib\'anïk rayib\'äl</string>
+    <string name="new_goal_title">tzaqatisaj rayib\'äl richin k\'olopwäq</string>
+    <string name="discard_changes_title">tz\'ila\' k\'ex</string>
+    <string name="discard_changes_message">¿xawaj kel sin kachajij ri k\'ex?</string>
+    <string name="discard_button">tz\'ila\'</string>
+    <string name="continue_editing_button">tzeqelb\'enïk tz\'ib\'anïk</string>
+
+    <!-- Metas detail -->
+    <string name="back_button">tzolin</string>
+    <string name="progress_title">b\'eyal</string>
+    <string name="completed_label">ronojel</string>
+    <string name="financial_detail_title">rutzijol pwäq-samaj</string>
+    <string name="objective_label">rayib\'äl</string>
+    <string name="saved_label">k\'olon</string>
+    <string name="missing_label">majun</string>
+    <string name="monthly_contribution_detail">ya\'oj chi ik\'</string>
+    <string name="months_remaining_detail">ik\' taq ch\'qa</string>
+    <string name="estimated_date">q\'ij ch\'ob\'on</string>
+    <string name="status_label">b\'anob\'äl</string>
+    <string name="completed_status">¡ronojel! 🎉</string>
+    <string name="no_monthly_contribution">man k\'o ta ya\'oj chi ik\'</string>
+    <string name="actions_title">b\'anob\'äl taq</string>
+    <string name="add_contribution_action">tzaqatisaj ya\'oj</string>
+    <string name="edit_goal_action">tz\'ib\'anïk rayib\'äl</string>
+    <string name="delete_goal_action">yujïk rayib\'äl</string>
+    <string name="delete_goal_title">yujïk rayib\'äl</string>
+    <string name="delete_goal_message">¿la jikïl wi kayuj \"%1$s\"?</string>
+    <string name="deleting">yujoj…</string>
+
+    <!-- Profile -->
+    <string name="profile_title">aw-wäch</string>
+    <string name="account_created_date">ajilab\'äl aj waral · %1$s</string>
+    <string name="edit_username">tz\'ib\'anïk b\'i\'</string>
+    <string name="saved_summary">k\'isik chajin</string>
+    <string name="monthly_income_equiv">okem pwäq junam chi ik\'</string>
+    <string name="monthly_expenses_estimated">k\'isoj chuqa\' tojonïk chi ik\' ch\'ob\'on</string>
+    <string name="records_count">tz\'ib\'anïk taq</string>
+    <string name="tools_title">samajb\'äl taq</string>
+    <string name="savings_plan">ch\'ob\'onïk richin k\'olopwäq</string>
+    <string name="reports">rutzijol</string>
+    <string name="change_password_button">k\'ex ewal tz\'ib\'</string>
+    <string name="configure_security_question_button">ch\'ob\'onïk tz\'onoj richin chajinïk</string>
+    <string name="security_question_button">tz\'onoj richin chajinïk</string>
+    <string name="language_settings_button">ch\'ab\'äl chuqa\' ch\'ob\'onïk</string>
+    <string name="education_financiera_button">tijonïk pwäq-samaj</string>
+    <string name="logout_button">tzapij moloj</string>
+    <string name="delete_account_button">yujïk ajilab\'äl chuqa\' rutzijol</string>
+
+    <!-- Dialogs - Profile -->
+    <string name="edit_username_dialog_title">tz\'ib\'anïk b\'i\' richin samajel</string>
+    <string name="username_label">b\'i\' richin samajel</string>
+    <string name="change_password_dialog_title">k\'ex ewal tz\'ib\'</string>
+    <string name="current_password_label">ewal tz\'ib\' wakami</string>
+    <string name="new_password_label">k\'ak\'a\' ewal tz\'ib\'</string>
+    <string name="confirm_password_label">jikib\'axïk ewal tz\'ib\'</string>
+    <string name="security_question_dialog_title">tz\'onoj richin chajinïk</string>
+    <string name="security_question_usage">koksax richin tzolinïk okemwe xamestaj aw-ewal tz\'ib\'.</string>
+    <string name="security_question_label">tz\'onoj richin chajinïk</string>
+    <string name="secret_answer_label">ewal tzijol</string>
+    <string name="delete_account_dialog_title">yujïk ajilab\'äl</string>
+    <string name="delete_account_dialog_message">kayuj aw-ajilab\'äl chuqa\' ronojel rutzijol pwäq-samaj.</string>
+
+    <!-- Nuevo registro -->
+    <string name="new_record_title">k\'ak\'a\' tz\'ib\'anïk</string>
+    <string name="close_new_record">tzapij k\'ak\'a\' tz\'ib\'anïk</string>
+    <string name="expense_chip">k\'isoj</string>
+    <string name="income_chip">okem</string>
+    <string name="transfer_chip">Transferencia</string>
+    <string name="fixed_expense_chip">k\'isoj jikïl</string>
+    <string name="variable_expense_chip">k\'isoj jalatoj</string>
+    <string name="income_section">okem</string>
+    <string name="fixed_expense_section">k\'isoj jikïl</string>
+    <string name="variable_expense_section">k\'isoj jalatoj</string>
+    <string name="description_label">rutzijol</string>
+    <string name="salary_placeholder">Ej. rajil samaj</string>
+    <string name="weekly_purchase_placeholder">Ej. loq\'oj chi wuqu\' q\'ij</string>
+    <string name="amount_label">jaru\'al pa q\'uq\' (Q)</string>
+    <string name="save_error">man xchajij ta: %1$s</string>
+    <string name="unique_movements_note">ri silonïk taq xa jun paja\' pa q\'ij wakami.</string>
+    <string name="saving_ellipsis">chajin…</string>
+    <string name="save_record">chajij tz\'ib\'anïk</string>
+
+    <!-- Graficas -->
+    <string name="charts_summary_title">wachib\'äl chuqa\' k\'isik taq</string>
+    <string name="charts_disclaimer">junam chi ik\' ch\'ob\'on.</string>
+    <string name="loading_data">eqan aw-rutzijol…</string>
+    <string name="error_loading_data">man x-eqan ta rutzijol.</string>
+    <string name="no_financial_data">man k\'o ta rutzijol pwäq-samaj. tzaqatisaj okem, k\'isoj, k\'as o rayib\'äl.</string>
+    <string name="estimated_monthly_equivalent">junam chi ik\' ch\'ob\'on</string>
+    <string name="chart_projection_note">pach\'um chi ik\': chi wuqu\' q\'ij × 52/12, chi wo\'lajuj q\'ij × 365/15/12, chi q\'ij × 365/12.</string>
+    <string name="expense_distribution_title">jachom k\'isoj taq pa ch\'ob\'ik</string>
+    <string name="no_expenses_registered">majun k\'isoj tz\'ib\'an.</string>
+    <string name="debts_registered_title">k\'as taq tz\'ib\'an</string>
+    <string name="no_debts_chart">majun k\'as tz\'ib\'an.</string>
+    <string name="goals_progress_title">b\'eyal richin rayib\'äl taq k\'olopwäq</string>
+    <string name="no_goals_chart">majun rayib\'äl k\'olopwäq.</string>
+    <string name="chart_axis_negative">−%1$s</string>
+    <string name="chart_axis_zero">Q0.00</string>
+    <string name="chart_axis_positive">+%1$s</string>
+
+    <!-- Dialogs generic -->
+    <string name="cancel_button">q\'atïk</string>
+    <string name="save_button">chajij</string>
+    <string name="edit_button">tz\'ib\'anïk</string>
+    <string name="delete_button">yujïk</string>
+
+    <!-- Dialogs - Ingreso -->
+    <string name="add_income_dialog_title">tzaqatisaj okem</string>
+    <string name="edit_income_dialog_title">tz\'ib\'anïk okem</string>
+    <string name="income_name_label">b\'i\'</string>
+    <string name="income_name_placeholder">Ej: rajil samaj</string>
+    <string name="income_name_required">ri b\'i\' rajowaxik</string>
+    <string name="income_amount_label">jaru\'al (Q)</string>
+    <string name="income_amount_invalid">tz\'ib\'aj jaru\'al ütz k\'o pa 0</string>
+
+    <!-- Dialogs - Gasto Fijo -->
+    <string name="add_fixed_expense_dialog_title">tzaqatisaj k\'isoj jikïl</string>
+    <string name="edit_fixed_expense_dialog_title">tz\'ib\'anïk k\'isoj jikïl</string>
+    <string name="fixed_expense_name_label">b\'i\'</string>
+    <string name="fixed_expense_name_placeholder">Ej: q\'ajoj ja</string>
+    <string name="fixed_expense_name_required">ri b\'i\' rajowaxik</string>
+    <string name="fixed_expense_amount_label">jaru\'al (Q)</string>
+    <string name="fixed_expense_amount_invalid">tz\'ib\'aj jaru\'al ütz k\'o pa 0</string>
+
+    <!-- Dialogs - Gasto Variable -->
+    <string name="add_variable_expense_dialog_title">tzaqatisaj k\'isoj jalatoj</string>
+    <string name="edit_variable_expense_dialog_title">tz\'ib\'anïk k\'isoj jalatoj</string>
+    <string name="variable_expense_name_label">b\'i\'</string>
+    <string name="variable_expense_name_placeholder">Ej: Cine</string>
+    <string name="variable_expense_name_required">ri b\'i\' rajowaxik</string>
+    <string name="variable_expense_amount_label">jaru\'al (Q)</string>
+    <string name="variable_expense_amount_invalid">tz\'ib\'aj jaru\'al ütz k\'o pa 0</string>
+
+    <!-- Dialogs - Deuda -->
+    <string name="add_debt_dialog_title">tzaqatisaj k\'as</string>
+    <string name="edit_debt_dialog_title">tz\'ib\'anïk k\'as</string>
+    <string name="debt_name_label">b\'i\'</string>
+    <string name="debt_name_placeholder">Ej: Tarjeta de crédito</string>
+    <string name="debt_name_required">ri b\'i\' rajowaxik</string>
+    <string name="debt_total_amount_label">rajil ronojel (Q)</string>
+    <string name="debt_total_amount_invalid">tz\'ib\'aj rajil ütz k\'o pa 0</string>
+    <string name="debt_periodic_payment_label">tojonïk chi q\'ijul (Q)</string>
+    <string name="debt_periodic_payment_invalid">tz\'ib\'aj tojonïk ütz k\'o pa 0</string>
+
+    <!-- Dialogs - Meta -->
+    <string name="add_goal_dialog_title">tzaqatisaj rayib\'äl richin k\'olopwäq</string>
+    <string name="edit_goal_dialog_title">tz\'ib\'anïk rayib\'äl</string>
+    <string name="goal_name_label">b\'i\' richin ri rayib\'äl</string>
+    <string name="goal_name_placeholder">Ej: loq\'oj samajb\'äl</string>
+    <string name="goal_name_required">ri b\'i\' rajowaxik</string>
+    <string name="goal_objective_label">jaru\'al rayib\'äl (Q)</string>
+    <string name="goal_objective_invalid">tz\'ib\'aj jaru\'al k\'o pa 0</string>
+    <string name="goal_saved_label">k\'olon chik (Q)</string>
+    <string name="goal_saved_invalid">man k\'ayew ta</string>
+    <string name="goal_contribution_label">ya\'oj chi ik\' (Q)</string>
+    <string name="goal_contribution_invalid">ri ya\'oj rajowaxik ütz</string>
+
+    <!-- Category dropdown -->
+    <string name="select_category">cha\'</string>
+    <string name="new_category_dialog_title">k\'ak\'a\' ch\'ob\'ik</string>
+    <string name="category_name_label">b\'i\' richin ch\'ob\'ik</string>
+    <string name="category_name_empty">tz\'ib\'aj jun b\'i\'.</string>
+    <string name="category_name_duplicate">re\' ch\'ob\'ik k\'o chik.</string>
+    <string name="add_category_button">tzaqatisaj</string>
+    <string name="expand_button">riq\'ik</string>
+    <string name="collapse_button">q\'ochik</string>
+
+    <!-- Periodicity dropdown -->
+    <string name="periodicity_unique">xa jun</string>
+    <string name="periodicity_daily">chi q me\'</string>
+    <string name="periodicity_weekly">chi wuqu\' q\'ij</string>
+    <string name="periodicity_biweekly">chi wo\'lajuj q\'ij</string>
+    <string name="periodicity_monthly">chi ik\'</string>
+    <string name="date_field_label">q\'ij richin silonïk: %1$s</string>
+    <string name="choose_date_button">cha\' q\'ij</string>
+
+    <!-- Educacion Financiera -->
+    <string name="education_title">tijonïk pwäq-samaj</string>
+    <string name="education_subtitle">pixa\' richin aw-raxnaqil pwäq-samaj pa Iximulew</string>
+    <string name="education_disclaimer_full">pach\'um taq chuqa\' pixa\' xa tijonïk.</string>
+    <string name="education_consult_advisor">tz\'ononïk jun pixab\'oy pwäq-samaj.</string>
+
+    <string name="tip_50_30_20_title">b\'eyal 50/30/20</string>
+    <string name="tip_50_30_20_category">ch\'ob\'oj pwäq</string>
+    <string name="tip_50_30_20_content">jachom aw-okem pwäq: 50% rajowaxik (ja, wa\', b\'enb\'äl), 30% etzanem (loq\'oj), 20% k\'olopwäq chuqa\' tikonïk pwäq.</string>
+    <string name="tip_emergency_fund_title">yakb\'äl pwäq aninaqil</string>
+    <string name="tip_emergency_fund_category">chajinïk</string>
+    <string name="tip_emergency_fund_content">chajij 3-6 ik\' taq k\'isoj ruxe\' pa jun ajilab\'äl.</string>
+    <string name="tip_compound_interest_title">ral pwäq tunun</string>
+    <string name="tip_compound_interest_category">tikonïk pwäq</string>
+    <string name="tip_compound_interest_content">ri ral pwäq tunun nub\'än chi aw-ch\'akoj kub\'än jun chik ch\'akoj.</string>
+    <string name="tip_diversification_title">jalajoj</string>
+    <string name="tip_diversification_category">k\'ayewal</string>
+    <string name="tip_diversification_content">man katya\' ta ronojel saqmo\'l pa jun chakach. jalajoj: pwäq, wuj, to\'b\'äl, jastaq.</string>
+    <string name="tip_investment_horizon_title">ruwa kaj richin tikonïk pwäq</string>
+    <string name="tip_investment_horizon_category">ch\'ob\'onïk</string>
+    <string name="tip_investment_horizon_content">aw-ruwa kaj q\'ijul kub\'än ri k\'ayewal: ko\'ol q\'ijul (0-3 ik\') = chajinel.</string>
+    <string name="tip_smart_debt_title">k\'as</string>
+    <string name="tip_smart_debt_category">k\'as</string>
+    <string name="tip_smart_debt_content">ch\'ob\'ik k\'as ütz (tijonïk, ja, k\'ayij) chuqa\' k\'as ma ütz ta (k\'isb\'äl).</string>
+    <string name="tip_inflation_title">Inflación pa Iximulew</string>
+    <string name="tip_inflation_category">pwäq-samaj</string>
+    <string name="tip_inflation_content">ri Inflación pa Iximulew k\'isoj rajil pwäq. tikonïk pwäq richin k\'iyirilem.</string>
+    <string name="tip_automation_title">Automatización</string>
+    <string name="tip_automation_category">b\'anob\'äl</string>
+    <string name="tip_automation_content">ch\'ob\'onïk aw-k\'olopwäq aninaq: tojonïk aw-i\' nab\'ey.</string>
+    <string name="tip_zero_budget_title">ch\'ob\'oj pwäq ruxe\' majun</string>
+    <string name="tip_zero_budget_category">ch\'ob\'oj pwäq</string>
+    <string name="tip_zero_budget_content">ya\' chi ik\' jujun q\'uq\' pa jun ch\'ob\'ik: okem - k\'isoj - k\'olopwäq = majun.</string>
+    <string name="tip_asset_protection_title">chajinïk jastaq</string>
+    <string name="tip_asset_protection_category">jikïl</string>
+    <string name="tip_asset_protection_content">chajij aw-jastaq: jikïl aq\'omayel, jikïl ja.</string>
+
+    <!-- Ocio -->
+    <string name="ocio_title">pwäq richin etzanem</string>
+    <string name="ocio_available_money">pwäq k\'o richin etzanem</string>
+    <string name="ocio_budget_initial">ch\'ob\'oj pwäq ruxe\' richin q\'ijul</string>
+    <string name="ocio_spent">k\'isom pa etzanem</string>
+    <string name="ocio_remaining">ch\'qa</string>
+    <string name="ocio_consumed_percent">k\'isom richin ch\'ob\'oj pwäq</string>
+    <string name="ocio_no_budget">majun ch\'ob\'oj pwäq richin etzanem</string>
+    <string name="ocio_no_budget_desc">ch\'ob\'onïk jun ch\'ob\'oj pwäq richin etzanem.</string>
+    <string name="ocio_configure_budget">ch\'ob\'onïk ch\'ob\'oj pwäq</string>
+    <string name="ocio_budget_amount_label">jaru\'al richin ch\'ob\'oj pwäq (Q)</string>
+    <string name="ocio_budget_periodicity_label">meb\'al</string>
+    <string name="ocio_weekly">chi wuqu\' q\'ij</string>
+    <string name="ocio_monthly">chi ik\'</string>
+    <string name="ocio_rollover_label">k\'ama\' chik pa jun chik q\'ijul</string>
+    <string name="ocio_save_budget">chajij ch\'ob\'oj pwäq</string>
+    <string name="ocio_edit_budget">tz\'ib\'anïk ch\'ob\'oj pwäq</string>
+    <string name="ocio_delete_budget">yujïk ch\'ob\'oj pwäq</string>
+    <string name="ocio_delete_budget_confirm">¿yujïk ch\'ob\'oj pwäq richin etzanem?</string>
+    <string name="ocio_delete_budget_msg">kayuj ru-ch\'ob\'onïk richin ch\'ob\'oj pwäq.</string>
+    <string name="ocio_budget_consumed">xak\'is ronojel aw-ch\'ob\'oj pwäq richin etzanem</string>
+    <string name="ocio_zero_budget">majun ch\'ob\'oj pwäq k\'o richin etzanem wakami</string>
+    <string name="ocio_warning_75">xaköj 75% richin aw-ch\'ob\'oj pwäq etzanem</string>
+    <string name="ocio_warning_90">xaköj 90% richin aw-ch\'ob\'oj pwäq etzanem</string>
+    <string name="ocio_mark_as_ocio">tz\'ib\'aj achi\'el k\'isoj etzanem</string>
+    <string name="ocio_remove_ocio_flag">elesaxïk ch\'ob\'ik etzanem</string>
+    <string name="ocio_unclassified">man ch\'ob\'on ta</string>
+    <string name="ocio_classified_essential">k\'isoj rajowaxik</string>
+    <string name="ocio_classified_leisure">k\'isoj etzanem</string>
+    <string name="ocio_proximos_compromisos">k\'asb\'äl taq wakami</string>
+    <string name="ocio_simulation_title">ch\'ob\'ik loq\'oj</string>
+    <string name="ocio_purchase_amount_label">rajil richin loq\'oj (Q)</string>
+    <string name="ocio_simulation_available_before">k\'o nab\'ey</string>
+    <string name="ocio_simulation_available_after">k\'o chi rij</string>
+    <string name="ocio_simulation_consumed_percent">kuk\'is richin ch\'ob\'oj pwäq</string>
+    <string name="ocio_simulation_recommendation">pixa\'</string>
+    <string name="ocio_simulation_affordable">ya\'ik xaköj re\' loq\'oj.</string>
+    <string name="ocio_simulation_not_affordable">ma ya\'ik ta xaköj re\' loq\'oj.</string>
+    <string name="ocio_simulation_close_to_limit">chajij, xanajin pa k\'isb\'äl.</string>
+    <string name="ocio_simulation_simulate">Simular</string>
+    <string name="ocio_simulation_clear">ch\'ajch\'ojsaj</string>
+    <string name="ocio_nav_title">etzanem</string>
+    <string name="ocio_rollover_enabled">chik: %1$s</string>
+    <string name="ocio_rollover_disabled">ch\'ob\'oj pwäq k\'exik chi ik\'</string>
+    <string name="ocio_period_week">wuqu\' q\'ij</string>
+    <string name="ocio_period_month">ik\'</string>
+    <string name="ocio_gasto_ocio_vacio">majun k\'isoj tz\'ib\'an richin ch\'ob\'ik</string>
+    <string name="ocio_gasto_ocio_label">k\'isoj etzanem</string>
+    <string name="ocio_gasto_ocio_variable_title">k\'isoj jalatoj taq</string>
+    <string name="ocio_gasto_ocio_fijo_title">k\'isoj jikïl taq</string>
+    <string name="ocio_chip_label">etzanem</string>
+    <string name="ocio_clasificar_hint">tz\'ib\'aj k\'isoj etzanem richin ch\'ob\'oj pwäq.</string>
+
+    <!-- Additional UI -->
+    <string name="action_back_arrow">chi rij</string>
+    <string name="action_settings">ch\'ob\'onik</string>
+    <string name="config_subtitle">ch\'ab\'äl, pwäq chuqa\' rutzijol richin aplicación.</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_kaqchikel">Kaqchikel</string>
+    <string name="language_quiche">K\'iche\'</string>
+    <string name="navigation_education">tijonïk</string>
+    <string name="cd_info">rutzijol</string>
+    <string name="mascot_description">q\'uq\' richin iPisto</string>
+    <string name="operation_error">man xk\'is ta: %1$s</string>
+    <string name="income_label">okem pwäq</string>
+    <string name="expenses_label">k\'isoj taq</string>
+    <string name="debts_label">k\'as taq</string>
+    <string name="monthly_income_label">okem pwäq chi ik\'</string>
+    <string name="total_expenses">ronojel k\'isoj</string>
+    <string name="delete_debt_title">yujïk k\'as</string>
+    <string name="delete_debt_message">¿la jikïl wi kayuj \"%1$s\"?</string>
+    <string name="monthly_equivalent_detail">junam chi ik\' ch\'ob\'on · %1$s: %2$s</string>
+    <string name="debt_payment_period_detail">(%1$s: %2$s)</string>
+    <string name="debt_payment_estimated_detail">tojonïk ch\'ob\'on: %1$s/ik\'</string>
+    <string name="saved_of_objective">%1$s richin %2$s</string>
+    <string name="chart_content_description">wachib\'äl %1$s: %2$s</string>
+    <string name="delete_error">man xyuj ta: %1$s</string>
+    <string name="back_without_saving">tzolin sin kachajij ya\'oj</string>
+    <string name="amount_invalid_short">tz\'ib\'aj jaru\'al ütz</string>
+    <string name="category_other_option">jun chik...</string>
+    <string name="debt_chip">k\'as</string>
+    <string name="debt_description_label">b\'i\' richin ri k\'as</string>
+    <string name="description_required">tz\'ib\'aj jun rutzijol.</string>
+    <string name="debt_total_amount_field_label">rajil ronojel pa q\'uq\' (Q)</string>
+    <string name="amount_positive_limit">tz\'ib\'aj rajil ütz.</string>
+    <string name="payment_positive_limit">tz\'ib\'aj tojonïk ütz.</string>
+    <string name="debt_periodic_payment_field_label">tojonïk chi q\'ijul pa q\'uq\' (Q)</string>
+    <string name="user_label">samajel</string>
+    <string name="account_local">ajilab\'äl aj waral</string>
+    <string name="member_since">achb\'il k\'a %1$s</string>
+    <string name="member_since_unknown">achb\'il richin iPisto</string>
+    <string name="data_saved_local">rutzijol chajin aj waral pa re\' samajb\'äl</string>
+    <string name="summary_label">k\'isik</string>
+    <string name="available_money_short">pwäq k\'o</string>
+    <string name="security_privacy_title">chajinïk chuqa\' ewanil</string>
+    <string name="security_privacy_subtitle">ch\'ob\'onïk okem pa aw-ajilab\'äl chuqa\' aw-rutzijol.</string>
+    <string name="new_evaluation_action">k\'ak\'a\' ch\'ob\'onïk</string>
+    <string name="new_evaluation_title">k\'ak\'a\' ch\'ob\'onïk</string>
+    <string name="new_evaluation_message">¿xawaj katzij jun k\'ak\'a\' ch\'ob\'onïk?</string>
+    <string name="amount_invalid_greater_zero">tz\'ib\'aj rajil ütz k\'o pa 0</string>
+    <string name="budget_save_error">man xchajij ta ch\'ob\'oj pwäq</string>
+</resources>

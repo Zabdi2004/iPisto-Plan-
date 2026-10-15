@@ -7,12 +7,14 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.data.local.entity.MetaAhorro
 import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
 import com.finanzaspersonales.gt.ui.components.AmountTextField
@@ -33,7 +35,7 @@ fun MetaAgregarAporteScreen(
     }.value
 
     if (meta == null) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Meta no encontrada", style = MaterialTheme.typography.bodyLarge) }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(stringResource(R.string.goal_not_found), style = MaterialTheme.typography.bodyLarge) }
         return
     }
 
@@ -48,22 +50,22 @@ fun MetaAgregarAporteScreen(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Volver sin guardar el aporte")
+                Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back_without_saving))
             }
-            Text("AGREGAR APORTE", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.add_contribution_title), style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
         }
-        uiState.value.error?.let { error -> Text("No se completó la operación: $error", color = MaterialTheme.colorScheme.error) }
+        uiState.value.error?.let { error -> Text(stringResource(R.string.operation_error, error), color = MaterialTheme.colorScheme.error) }
         Spacer(modifier = Modifier.height(8.dp))
-        Text("Meta: ${meta.nombre}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text("Ahorrado: ${finanzasViewModel.formatCurrency(meta.cantidadAhorrada)} / ${finanzasViewModel.formatCurrency(meta.cantidadObjetivo)}", style = MaterialTheme.typography.bodyMedium)
+        Text(stringResource(R.string.goal_label, meta.nombre), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.saved_objective, finanzasViewModel.formatCurrency(meta.cantidadAhorrada), finanzasViewModel.formatCurrency(meta.cantidadObjetivo)), style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
         AmountTextField(
             value = androidx.compose.ui.text.input.TextFieldValue(aporte),
             onValueChange = { aporte = it.text; aporteError = false },
-            label = "Cantidad a aportar (Q)",
+            label = stringResource(R.string.contribution_amount_label),
             isError = aporteError,
-            errorText = if (aporteError) "Ingrese una cantidad válida" else null,
+            errorText = if (aporteError) stringResource(R.string.amount_invalid_short) else null,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -75,7 +77,7 @@ fun MetaAgregarAporteScreen(
                 aporteError = true
             }
         }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
-            Text("AGREGAR APORTE")
+            Text(stringResource(R.string.add_contribution_button))
         }
 
         if (showConfirm) {
@@ -90,10 +92,10 @@ fun MetaAgregarAporteScreen(
                         if (saved) { showConfirm = false; navController.popBackStack() }
                     }
                 },
-                title = "Confirmar aporte",
-                message = "¿Agregar ${finanzasViewModel.formatCurrency(MoneyInput.parseAmount(aporte) ?: 0.0)} a \"${meta.nombre}\"?" +
-                    (uiState.value.error?.let { "\n\nNo se pudo guardar: $it" } ?: ""),
-                confirmText = if (isSaving) "Guardando…" else "Confirmar",
+                title = stringResource(R.string.confirm_contribution_title),
+                message = stringResource(R.string.confirm_contribution_message, finanzasViewModel.formatCurrency(MoneyInput.parseAmount(aporte) ?: 0.0), meta.nombre) +
+                    (uiState.value.error?.let { "\n\n" + stringResource(R.string.save_error, it) } ?: ""),
+                confirmText = if (isSaving) stringResource(R.string.saving) else stringResource(R.string.confirm_button),
                 confirmColor = MaterialTheme.colorScheme.primary,
                 dismissOnConfirm = false,
                 confirmEnabled = !isSaving

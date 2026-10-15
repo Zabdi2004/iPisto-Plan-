@@ -100,7 +100,7 @@ fun IngresoItem(
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(formatter(monthly), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Income)
                     Text(
-                        "Equivalente mensual estimado · ${ingreso.periodicidad}: ${formatter(ingreso.cantidad)}",
+                        stringResource(R.string.monthly_equivalent_detail, ingreso.periodicidad, formatter(ingreso.cantidad)),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -193,7 +193,7 @@ fun GastoFijoItem(
                     Text(gasto.categoria, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text(formatter(monthly), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
                     Text(
-                        "Equivalente mensual estimado · ${gasto.periodicidad}: ${formatter(gasto.cantidad)}",
+                        stringResource(R.string.monthly_equivalent_detail, gasto.periodicidad, formatter(gasto.cantidad)),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -286,7 +286,7 @@ fun GastoVariableItem(
                     Text(gasto.categoria, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text(formatter(monthly), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Expense)
                     Text(
-                        "Equivalente mensual estimado · ${gasto.periodicidad}: ${formatter(gasto.cantidad)}",
+                        stringResource(R.string.monthly_equivalent_detail, gasto.periodicidad, formatter(gasto.cantidad)),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -387,11 +387,11 @@ fun DeudaItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("Monto total: ${formatter(deuda.montoTotal)}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Pago mensual estimado: ${formatter(monthlyPayment)}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.total_amount, formatter(deuda.montoTotal)), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.monthly_payment_estimated, formatter(monthlyPayment)), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
                 }
                 Text(
-                    "(${deuda.periodicidad}: ${formatter(deuda.pagoPeriodico)})",
+                    stringResource(R.string.debt_payment_period_detail, deuda.periodicidad, formatter(deuda.pagoPeriodico)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -484,8 +484,8 @@ fun MetaAhorroItem(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("Ahorrado: ${formatter(meta.cantidadAhorrada)} / ${formatter(meta.cantidadObjetivo)}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-                    Text("${(progress * 100).toInt()}%", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.secondary)
+                    Text(stringResource(R.string.saved_objective, formatter(meta.cantidadAhorrada), formatter(meta.cantidadObjetivo)), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                    Text(stringResource(R.string.progress_percent, (progress * 100).toInt()), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.secondary)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 // Custom progress bar using Row with weight
@@ -509,7 +509,7 @@ fun MetaAhorroItem(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    "Aporte mensual: ${formatter(meta.aporteMensual)}",
+                    stringResource(R.string.monthly_contribution_label, formatter(meta.aporteMensual)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

@@ -45,13 +45,13 @@ fun InicioScreen(
             .padding(16.dp)
     ) {
         Text(
-            text = "INICIO",
+            text = stringResource(R.string.home_title),
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary
         )
         uiState.error?.let { message ->
             Text(
-                text = "No se completó la operación: $message",
+                text = stringResource(R.string.operation_error, message),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -74,7 +74,7 @@ fun InicioScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "No hay datos suficientes. Comienza agregando ingresos y gastos.",
+                        text = stringResource(R.string.no_data_start),
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -103,14 +103,14 @@ fun InicioScreen(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         DashboardActionCard(
-                            title = "Ingresos",
+                            title = stringResource(R.string.income_label),
                             subtitle = finanzasViewModel.formatCurrency(balance.ingresosMensuales),
                             icon = Icons.AutoMirrored.Filled.TrendingUp,
                             accent = IpistoPalette.Income,
                             onClick = { navController.navigate(Screen.Ingresos) }
                         )
                         DashboardActionCard(
-                            title = "Gastos",
+                            title = stringResource(R.string.expenses_label),
                             subtitle = finanzasViewModel.formatCurrency(
                                 balance.gastosFijosMensuales + balance.gastosVariablesMensuales
                             ),
@@ -119,14 +119,14 @@ fun InicioScreen(
                             onClick = { navController.navigate(Screen.Gastos) }
                         )
                         DashboardActionCard(
-                            title = "Deudas",
+                            title = stringResource(R.string.debts_label),
                             subtitle = finanzasViewModel.formatCurrency(balance.deudaTotal),
                             icon = Icons.Filled.CreditCard,
                             accent = MaterialTheme.colorScheme.tertiary,
                             onClick = { navController.navigate(Screen.Deudas) }
                         )
                         DashboardActionCard(
-                            title = "Ocio",
+                            title = stringResource(R.string.navigation_ocio),
                             subtitle = uiState.dineroDisponibleOcio?.let {
                                 finanzasViewModel.formatCurrencyBd(it.dineroDisponible)
                             } ?: finanzasViewModel.formatCurrency(0.0),
@@ -158,7 +158,7 @@ private fun BalanceSummary(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = "DINERO DISPONIBLE",
+                    text = stringResource(R.string.available_money),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -176,13 +176,13 @@ private fun BalanceSummary(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             SummaryStatCard(
-                label = "INGRESO MENSUAL",
+                label = stringResource(R.string.monthly_income_label),
                 amount = finanzasViewModel.formatCurrency(balance.ingresosMensuales),
                 amountColor = IpistoPalette.Income,
                 modifier = Modifier.weight(1f)
             )
             SummaryStatCard(
-                label = "GASTOS TOTALES",
+                label = stringResource(R.string.total_expenses),
                 amount = finanzasViewModel.formatCurrency(gastosTotales),
                 amountColor = IpistoPalette.Expense,
                 modifier = Modifier.weight(1f)

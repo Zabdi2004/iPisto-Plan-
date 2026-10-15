@@ -50,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finanzaspersonales.gt.R
@@ -128,7 +129,17 @@ fun OcioScreen(
                 )
             }
 
-            if (state.gastosVariables.isNotEmpty()) {
+            val hayGastos = state.gastosVariables.isNotEmpty() || state.gastosFijos.isNotEmpty()
+            if (!hayGastos) {
+                Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+                    Text(
+                        stringResource(R.string.ocio_gasto_ocio_vacio),
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
                 GastosOcioSection(gastos = state.gastosVariables, finanzasViewModel = finanzasViewModel)
                 GastosFijosOcioSection(gastos = state.gastosFijos, finanzasViewModel = finanzasViewModel)
             }
@@ -314,24 +325,23 @@ private fun EmptyPresupuestoSection(onConfigureClick: () -> Unit) {
 
 @Composable
 private fun GastosOcioSection(gastos: List<com.finanzaspersonales.gt.data.local.entity.GastoVariable>, finanzasViewModel: FinanzasViewModel) {
-    val gastosOcio = gastos.filter { it.esOcio }
-    if (gastosOcio.isEmpty()) return
+    if (gastos.isEmpty()) return
 
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp)) {
-            Text(stringResource(R.string.ocio_gasto_ocio_label), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Expense)
+            Text(stringResource(R.string.ocio_gasto_ocio_variable_title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(stringResource(R.string.ocio_clasificar_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.height(8.dp))
-            gastosOcio.forEach { gasto ->
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column(Modifier.weight(1f)) {
-                        Text(gasto.nombre, style = MaterialTheme.typography.bodyMedium)
-                        Text(gasto.categoria, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    Text(finanzasViewModel.formatCurrency(gasto.cantidad), style = MaterialTheme.typography.bodyMedium, color = IpistoPalette.Expense)
-                    IconButton(onClick = { finanzasViewModel.marcarGastoVariableComoOcio(gasto.id, false) }) {
-                        Text(stringResource(R.string.ocio_remove_ocio_flag), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-                    }
-                }
+            gastos.forEach { gasto ->
+                OcioClasificacionRow(
+                    nombre = gasto.nombre,
+                    categoria = gasto.categoria,
+                    cantidad = gasto.cantidad,
+                    esOcio = gasto.esOcio,
+                    formatter = finanzasViewModel::formatCurrency,
+                    onToggle = { finanzasViewModel.marcarGastoVariableComoOcio(gasto.id, !gasto.esOcio) }
+                )
             }
         }
     }
@@ -339,26 +349,54 @@ private fun GastosOcioSection(gastos: List<com.finanzaspersonales.gt.data.local.
 
 @Composable
 private fun GastosFijosOcioSection(gastos: List<com.finanzaspersonales.gt.data.local.entity.GastoFijo>, finanzasViewModel: FinanzasViewModel) {
-    val gastosOcio = gastos.filter { it.esOcio }
-    if (gastosOcio.isEmpty()) return
+    if (gastos.isEmpty()) return
 
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp)) {
-            Text(stringResource(R.string.ocio_gasto_ocio_label), style = MaterialTheme.typography.titleMedium, color = IpistoPalette.Expense)
+            Text(stringResource(R.string.ocio_gasto_ocio_fijo_title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(modifier = Modifier.height(8.dp))
-            gastosOcio.forEach { gasto ->
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column(Modifier.weight(1f)) {
-                        Text(gasto.nombre, style = MaterialTheme.typography.bodyMedium)
-                        Text(gasto.categoria, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    Text(finanzasViewModel.formatCurrency(gasto.cantidad), style = MaterialTheme.typography.bodyMedium, color = IpistoPalette.Expense)
-                    IconButton(onClick = { finanzasViewModel.marcarGastoFijoComoOcio(gasto.id, false) }) {
-                        Text(stringResource(R.string.ocio_remove_ocio_flag), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-                    }
-                }
+            gastos.forEach { gasto ->
+                OcioClasificacionRow(
+                    nombre = gasto.nombre,
+                    categoria = gasto.categoria,
+                    cantidad = gasto.cantidad,
+                    esOcio = gasto.esOcio,
+                    formatter = finanzasViewModel::formatCurrency,
+                    onToggle = { finanzasViewModel.marcarGastoFijoComoOcio(gasto.id, !gasto.esOcio) }
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun OcioClasificacionRow(
+    nombre: String,
+    categoria: String,
+    cantidad: Double,
+    esOcio: Boolean,
+    formatter: (Double) -> String,
+    onToggle: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(nombre, style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(categoria, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Text(
+            formatter(cantidad),
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (esOcio) IpistoPalette.Expense else MaterialTheme.colorScheme.onSurface
+        )
+        FilterChip(
+            selected = esOcio,
+            onClick = onToggle,
+            label = { Text(stringResource(R.string.ocio_chip_label)) }
+        )
     }
 }
 
@@ -377,6 +415,8 @@ fun PresupuestoOcioDialog(
 
     var amountError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    val amountInvalidMessage = stringResource(R.string.amount_invalid_greater_zero)
+    val budgetSaveErrorMessage = stringResource(R.string.budget_save_error)
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -399,7 +439,7 @@ fun PresupuestoOcioDialog(
                         amountError = false
                     },
                     label = { Text(stringResource(R.string.ocio_budget_amount_label)) },
-                    supportingText = if (amountError) ({ Text("Ingresa un monto válido mayor a 0", color = MaterialTheme.colorScheme.error) }) else null,
+                    supportingText = if (amountError) ({ Text(amountInvalidMessage, color = MaterialTheme.colorScheme.error) }) else null,
                     singleLine = true,
                     isError = amountError,
                     colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
@@ -440,7 +480,7 @@ fun PresupuestoOcioDialog(
                 val parsed = MoneyInput.parseAmount(amount)
                 if (parsed == null || parsed <= 0) {
                     amountError = true
-                    errorMessage = "Ingresa un monto válido mayor a 0"
+                    errorMessage = amountInvalidMessage
                 } else {
                     amountError = false
                     errorMessage = null
@@ -455,7 +495,7 @@ fun PresupuestoOcioDialog(
                     )
                     onConfirm(presupuesto) { success ->
                         if (!success) {
-                            errorMessage = "No se pudo guardar el presupuesto de ocio"
+                            errorMessage = budgetSaveErrorMessage
                         }
                     }
                 }

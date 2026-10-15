@@ -5,9 +5,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.utils.MoneyInput
 
 @Composable
@@ -30,7 +32,7 @@ fun IngresoDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isEditing) "Editar Ingreso" else "Agregar Ingreso", style = MaterialTheme.typography.headlineSmall) },
+        title = { Text(if (isEditing) stringResource(R.string.edit_income_dialog_title) else stringResource(R.string.add_income_dialog_title), style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(
                 modifier = Modifier.padding(24.dp).widthIn(max = 320.dp),
@@ -39,10 +41,10 @@ fun IngresoDialog(
                 CustomTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = "Nombre",
-                    placeholder = "Ej: Salario",
+                    label = stringResource(R.string.income_name_label),
+                    placeholder = stringResource(R.string.income_name_placeholder),
                     isError = nameError,
-                    errorText = if (nameError) "El nombre es obligatorio" else null,
+                    errorText = if (nameError) stringResource(R.string.income_name_required) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -50,9 +52,9 @@ fun IngresoDialog(
                 AmountTextField(
                     value = amount,
                     onValueChange = { amount = it },
-                    label = "Cantidad (Q)",
+                    label = stringResource(R.string.income_amount_label),
                     isError = amountError,
-                    errorText = if (amountError) "Ingrese una cantidad válida mayor a 0" else null,
+                    errorText = if (amountError) stringResource(R.string.income_amount_invalid) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -63,7 +65,7 @@ fun IngresoDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
-                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+                saveError?.let { Text(stringResource(R.string.save_error, it), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
         },
         confirmButton = {
@@ -78,9 +80,9 @@ fun IngresoDialog(
                         onConfirm(name.text, amountValue, periodicity, dateMillis)
                     }
                 }
-            ) { Text("Guardar") }
+            ) { Text(stringResource(R.string.save_button)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel_button)) } }
     )
 }
 
@@ -110,7 +112,7 @@ fun GastoFijoDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isEditing) "Editar Gasto Fijo" else "Agregar Gasto Fijo", style = MaterialTheme.typography.headlineSmall) },
+        title = { Text(if (isEditing) stringResource(R.string.edit_fixed_expense_dialog_title) else stringResource(R.string.add_fixed_expense_dialog_title), style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(
                 modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
@@ -118,10 +120,10 @@ fun GastoFijoDialog(
                 CustomTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = "Nombre",
-                    placeholder = "Ej: Alquiler apartamento",
+                    label = stringResource(R.string.fixed_expense_name_label),
+                    placeholder = stringResource(R.string.fixed_expense_name_placeholder),
                     isError = nameError,
-                    errorText = if (nameError) "El nombre es obligatorio" else null,
+                    errorText = if (nameError) stringResource(R.string.fixed_expense_name_required) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -138,9 +140,9 @@ fun GastoFijoDialog(
                 AmountTextField(
                     value = amount,
                     onValueChange = { amount = it },
-                    label = "Cantidad (Q)",
+                    label = stringResource(R.string.fixed_expense_amount_label),
                     isError = amountError,
-                    errorText = if (amountError) "Ingrese una cantidad válida mayor a 0" else null,
+                    errorText = if (amountError) stringResource(R.string.fixed_expense_amount_invalid) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -151,7 +153,7 @@ fun GastoFijoDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
-                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+                saveError?.let { Text(stringResource(R.string.save_error, it), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
         },
         confirmButton = {
@@ -166,9 +168,9 @@ fun GastoFijoDialog(
                         onConfirm(name.text, category, amountValue, periodicity, dateMillis)
                     }
                 }
-            ) { Text("Guardar") }
+            ) { Text(stringResource(R.string.save_button)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel_button)) } }
     )
 }
 
@@ -198,7 +200,7 @@ fun GastoVariableDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isEditing) "Editar Gasto Variable" else "Agregar Gasto Variable", style = MaterialTheme.typography.headlineSmall) },
+        title = { Text(if (isEditing) stringResource(R.string.edit_variable_expense_dialog_title) else stringResource(R.string.add_variable_expense_dialog_title), style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(
                 modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
@@ -206,10 +208,10 @@ fun GastoVariableDialog(
                 CustomTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = "Nombre",
-                    placeholder = "Ej: Cine",
+                    label = stringResource(R.string.variable_expense_name_label),
+                    placeholder = stringResource(R.string.variable_expense_name_placeholder),
                     isError = nameError,
-                    errorText = if (nameError) "El nombre es obligatorio" else null,
+                    errorText = if (nameError) stringResource(R.string.variable_expense_name_required) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -226,9 +228,9 @@ fun GastoVariableDialog(
                 AmountTextField(
                     value = amount,
                     onValueChange = { amount = it },
-                    label = "Cantidad (Q)",
+                    label = stringResource(R.string.variable_expense_amount_label),
                     isError = amountError,
-                    errorText = if (amountError) "Ingrese una cantidad válida mayor a 0" else null,
+                    errorText = if (amountError) stringResource(R.string.variable_expense_amount_invalid) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -239,7 +241,7 @@ fun GastoVariableDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
-                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+                saveError?.let { Text(stringResource(R.string.save_error, it), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
         },
         confirmButton = {
@@ -254,9 +256,9 @@ fun GastoVariableDialog(
                         onConfirm(name.text, category, amountValue, periodicity, dateMillis)
                     }
                 }
-            ) { Text("Guardar") }
+            ) { Text(stringResource(R.string.save_button)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel_button)) } }
     )
 }
 
@@ -283,7 +285,7 @@ fun DeudaDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isEditing) "Editar Deuda" else "Agregar Deuda", style = MaterialTheme.typography.headlineSmall) },
+        title = { Text(if (isEditing) stringResource(R.string.edit_debt_dialog_title) else stringResource(R.string.add_debt_dialog_title), style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(
                 modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
@@ -291,10 +293,10 @@ fun DeudaDialog(
                 CustomTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = "Nombre",
-                    placeholder = "Ej: Tarjeta de crédito",
+                    label = stringResource(R.string.debt_name_label),
+                    placeholder = stringResource(R.string.debt_name_placeholder),
                     isError = nameError,
-                    errorText = if (nameError) "El nombre es obligatorio" else null,
+                    errorText = if (nameError) stringResource(R.string.debt_name_required) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -302,9 +304,9 @@ fun DeudaDialog(
                 AmountTextField(
                     value = montoTotal,
                     onValueChange = { montoTotal = it },
-                    label = "Monto total (Q)",
+                    label = stringResource(R.string.debt_total_amount_label),
                     isError = montoError,
-                    errorText = if (montoError) "Ingrese un monto válido mayor a 0" else null,
+                    errorText = if (montoError) stringResource(R.string.debt_total_amount_invalid) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -312,9 +314,9 @@ fun DeudaDialog(
                 AmountTextField(
                     value = pagoPeriodico,
                     onValueChange = { pagoPeriodico = it },
-                    label = "Pago periódico (Q)",
+                    label = stringResource(R.string.debt_periodic_payment_label),
                     isError = pagoError,
-                    errorText = if (pagoError) "Ingrese un pago válido mayor a 0" else null,
+                    errorText = if (pagoError) stringResource(R.string.debt_periodic_payment_invalid) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -325,7 +327,7 @@ fun DeudaDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (periodicity == "Único") TransactionDateField(dateMillis, { dateMillis = it })
-                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+                saveError?.let { Text(stringResource(R.string.save_error, it), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
         },
         confirmButton = {
@@ -343,9 +345,9 @@ fun DeudaDialog(
                         onConfirm(name.text, monto, pago, periodicity, dateMillis)
                     }
                 }
-            ) { Text("Guardar") }
+            ) { Text(stringResource(R.string.save_button)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel_button)) } }
     )
 }
 
@@ -371,7 +373,7 @@ fun MetaAhorroDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isEditing) "Editar Meta" else "Agregar Meta de Ahorro", style = MaterialTheme.typography.headlineSmall) },
+        title = { Text(if (isEditing) stringResource(R.string.edit_goal_dialog_title) else stringResource(R.string.add_goal_dialog_title), style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(
                 modifier = Modifier.padding(24.dp).widthIn(max = 320.dp)
@@ -379,10 +381,10 @@ fun MetaAhorroDialog(
                 CustomTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = "Nombre de la meta",
-                    placeholder = "Ej: Comprar computadora",
+                    label = stringResource(R.string.goal_name_label),
+                    placeholder = stringResource(R.string.goal_name_placeholder),
                     isError = nameError,
-                    errorText = if (nameError) "El nombre es obligatorio" else null,
+                    errorText = if (nameError) stringResource(R.string.goal_name_required) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -390,9 +392,9 @@ fun MetaAhorroDialog(
                 AmountTextField(
                     value = objetivo,
                     onValueChange = { objetivo = it },
-                    label = "Cantidad objetivo (Q)",
+                    label = stringResource(R.string.goal_objective_label),
                     isError = objetivoError,
-                    errorText = if (objetivoError) "Ingrese una cantidad mayor a 0" else null,
+                    errorText = if (objetivoError) stringResource(R.string.goal_objective_invalid) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -400,9 +402,9 @@ fun MetaAhorroDialog(
                 AmountTextField(
                     value = ahorrado,
                     onValueChange = { ahorrado = it },
-                    label = "Ya ahorrado (Q)",
+                    label = stringResource(R.string.goal_saved_label),
                     isError = ahorradoError,
-                    errorText = if (ahorradoError) "No puede ser negativo" else null,
+                    errorText = if (ahorradoError) stringResource(R.string.goal_saved_invalid) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -410,12 +412,12 @@ fun MetaAhorroDialog(
                 AmountTextField(
                     value = aporte,
                     onValueChange = { aporte = it },
-                    label = "Aporte mensual (Q)",
+                    label = stringResource(R.string.goal_contribution_label),
                     isError = aporteError,
-                    errorText = if (aporteError) "El aporte debe ser finito y no negativo" else null,
+                    errorText = if (aporteError) stringResource(R.string.goal_contribution_invalid) else null,
                     modifier = Modifier.fillMaxWidth()
                 )
-                saveError?.let { Text("No se pudo guardar: $it", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+                saveError?.let { Text(stringResource(R.string.save_error, it), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
         },
         confirmButton = {
@@ -436,9 +438,9 @@ fun MetaAhorroDialog(
                         onConfirm(name.text, obj, ahr, apr)
                     }
                 }
-            ) { Text("Guardar") }
+            ) { Text(stringResource(R.string.save_button)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel_button)) } }
     )
 }
 

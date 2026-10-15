@@ -59,7 +59,11 @@ fun ConfiguracionScreen(navController: NavHostController) {
     val activity = context as? android.app.Activity
     var selectedLanguage by remember { mutableStateOf(PreferencesHelper.getLanguage(context)) }
     var selectedCurrency by remember { mutableStateOf(PreferencesHelper.getCurrency(context)) }
-    val languageOptions = listOf("es" to "Español", "quc" to "K'iche'")
+    val languageOptions = listOf(
+        "es" to stringResource(R.string.language_spanish),
+        "cak" to stringResource(R.string.language_kaqchikel),
+        "quc" to stringResource(R.string.language_quiche)
+    )
     val currencyOptions = listOf(
         "gtq" to stringResource(R.string.currency_gtq),
         "usd" to stringResource(R.string.currency_usd),
@@ -83,7 +87,7 @@ fun ConfiguracionScreen(navController: NavHostController) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = goBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás", tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back_arrow), tint = MaterialTheme.colorScheme.primary)
                 }
                 Spacer(Modifier.width(4.dp))
                 Text(
@@ -94,14 +98,14 @@ fun ConfiguracionScreen(navController: NavHostController) {
                 )
             }
             Text(
-                text = "Idioma, moneda y datos de la aplicación.",
+                text = stringResource(R.string.config_subtitle),
                 fontSize = 13.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             SectionLabel(stringResource(R.string.current_preferences))
             SettingsGroup {
-                PreferenceInfo(Icons.Default.Language, stringResource(R.string.language), languageOptions.find { it.first == selectedLanguage }?.second ?: "Español")
+                PreferenceInfo(Icons.Default.Language, stringResource(R.string.language), languageOptions.find { it.first == selectedLanguage }?.second ?: stringResource(R.string.language_spanish))
                 PreferenceInfo(Icons.Default.Storage, stringResource(R.string.currency), currencyOptions.find { it.first == selectedCurrency }?.second ?: stringResource(R.string.currency_gtq))
                 PreferenceInfo(Icons.Default.Lock, stringResource(R.string.security), stringResource(R.string.security_managed_in_profile))
             }

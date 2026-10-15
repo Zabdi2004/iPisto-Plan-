@@ -298,9 +298,9 @@ Las fechas se almacenan como milisegundos Unix. Los registros antiguos a los que
 - Cuentas bancarias.
 - Transferencias entre cuentas.
 - Registro histórico completo de ocurrencias recurrentes.
-- Traducción completa y revisada al idioma K’iche’.
+- Traducción al idioma Kaqchikel (parcial: las cadenas sin traducción disponible conservan el texto en español como fallback).
 
-La opción de idioma K’iche’ selecciona el locale `qu`, pero actualmente no cuenta con un conjunto completo de traducciones revisadas.
+La opción de idioma Kaqchikel selecciona el locale `cak` y toma sus traducciones de `app/src/main/res/values-cak/strings.xml`. Las cadenas que no cuentan con traducción en el diccionario de pruebas conservan el texto original en español como valor por defecto.
 
 La configuración presenta las opciones que todavía no están disponibles, en lugar de ofrecer controles que aparenten funcionar sin implementar su comportamiento.
 

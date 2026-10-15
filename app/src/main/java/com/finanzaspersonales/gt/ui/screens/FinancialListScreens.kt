@@ -12,9 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.finanzaspersonales.gt.R
 import com.finanzaspersonales.gt.data.local.entity.Deuda
 import com.finanzaspersonales.gt.data.local.entity.GastoFijo
 import com.finanzaspersonales.gt.data.local.entity.GastoVariable
@@ -33,7 +35,7 @@ private fun FinancialListHeader(title: String, onBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_button))
         }
         Text(
             text = title,
@@ -61,10 +63,10 @@ fun IngresosScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        FinancialListHeader(title = "Ingresos", onBack = { navController.popBackStack() })
+        FinancialListHeader(title = stringResource(R.string.income_label), onBack = { navController.popBackStack() })
         uiState.error?.let { message ->
             Text(
-                text = "No se completó la operación: $message",
+                text = stringResource(R.string.operation_error, message),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -115,9 +117,9 @@ fun IngresosScreen(
         ConfirmDialog(
             onDismiss = { ingresoAEliminar = null },
             onConfirm = { finanzasViewModel.deleteIngreso(ingreso) },
-            title = "Eliminar ingreso",
-            message = "¿Estás seguro de eliminar \"${ingreso.nombre}\"? Esta acción no se puede deshacer.",
-            confirmText = "Eliminar",
+            title = stringResource(R.string.delete_income_title),
+            message = stringResource(R.string.delete_income_message, ingreso.nombre),
+            confirmText = stringResource(R.string.delete_confirm),
             confirmColor = MaterialTheme.colorScheme.error
         )
     }
@@ -146,10 +148,10 @@ fun GastosScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        FinancialListHeader(title = "Gastos", onBack = { navController.popBackStack() })
+        FinancialListHeader(title = stringResource(R.string.expenses_label), onBack = { navController.popBackStack() })
         uiState.error?.let { message ->
             Text(
-                text = "No se completó la operación: $message",
+                text = stringResource(R.string.operation_error, message),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -181,7 +183,8 @@ fun GastosScreen(
                     categoria = category,
                     cantidad = amount,
                     periodicidad = periodicity,
-                    fechaMillis = if (periodicity == "Único") dateMillis else null
+                    fechaMillis = if (periodicity == "Único") dateMillis else null,
+                    esOcio = editingGastoFijo?.esOcio ?: false
                 )
                 val close = { saved: Boolean ->
                     if (saved) {
@@ -217,7 +220,8 @@ fun GastosScreen(
                     categoria = category,
                     cantidad = amount,
                     periodicidad = periodicity,
-                    fechaMillis = if (periodicity == "Único") dateMillis else null
+                    fechaMillis = if (periodicity == "Único") dateMillis else null,
+                    esOcio = editingGastoVariable?.esOcio ?: false
                 )
                 val close = { saved: Boolean ->
                     if (saved) {
@@ -246,9 +250,9 @@ fun GastosScreen(
         ConfirmDialog(
             onDismiss = { gastoFijoAEliminar = null },
             onConfirm = { finanzasViewModel.deleteGastoFijo(gasto) },
-            title = "Eliminar gasto fijo",
-            message = "¿Estás seguro de eliminar \"${gasto.nombre}\"? Esta acción no se puede deshacer.",
-            confirmText = "Eliminar",
+            title = stringResource(R.string.delete_fixed_expense_title),
+            message = stringResource(R.string.delete_fixed_expense_message, gasto.nombre),
+            confirmText = stringResource(R.string.delete_confirm),
             confirmColor = MaterialTheme.colorScheme.error
         )
     }
@@ -257,9 +261,9 @@ fun GastosScreen(
         ConfirmDialog(
             onDismiss = { gastoVariableAEliminar = null },
             onConfirm = { finanzasViewModel.deleteGastoVariable(gasto) },
-            title = "Eliminar gasto variable",
-            message = "¿Estás seguro de eliminar \"${gasto.nombre}\"? Esta acción no se puede deshacer.",
-            confirmText = "Eliminar",
+            title = stringResource(R.string.delete_variable_expense_title),
+            message = stringResource(R.string.delete_variable_expense_message, gasto.nombre),
+            confirmText = stringResource(R.string.delete_confirm),
             confirmColor = MaterialTheme.colorScheme.error
         )
     }
@@ -282,10 +286,10 @@ fun DeudasScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        FinancialListHeader(title = "Deudas", onBack = { navController.popBackStack() })
+        FinancialListHeader(title = stringResource(R.string.debts_label), onBack = { navController.popBackStack() })
         uiState.error?.let { message ->
             Text(
-                text = "No se completó la operación: $message",
+                text = stringResource(R.string.operation_error, message),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -338,9 +342,9 @@ fun DeudasScreen(
         ConfirmDialog(
             onDismiss = { deudaAEliminar = null },
             onConfirm = { finanzasViewModel.deleteDeuda(deuda) },
-            title = "Eliminar deuda",
-            message = "¿Estás seguro de eliminar \"${deuda.nombre}\"? Esta acción no se puede deshacer.",
-            confirmText = "Eliminar",
+            title = stringResource(R.string.delete_debt_title),
+            message = stringResource(R.string.delete_debt_message, deuda.nombre),
+            confirmText = stringResource(R.string.delete_confirm),
             confirmColor = MaterialTheme.colorScheme.error
         )
     }
