@@ -3,26 +3,24 @@
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.finanzaspersonales.gt.navigation.AppNavHost
-import androidx.activity.viewModels
-import com.finanzaspersonales.gt.ui.screens.LoadingScreen
-import com.finanzaspersonales.gt.utils.PreferencesHelper
-import com.finanzaspersonales.gt.viewmodel.AuthState
-import com.finanzaspersonales.gt.viewmodel.AuthViewModel
-import com.finanzaspersonales.gt.viewmodel.FinanzasViewModel
-import com.finanzaspersonales.gt.ui.theme.FinanzasPersonalesGTTheme
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.finanzaspersonales.gt.navigation.AppNavHost
+import com.finanzaspersonales.gt.ui.screens.LoadingScreen
+import com.finanzaspersonales.gt.ui.theme.FinanzasPersonalesGTTheme
+import com.finanzaspersonales.gt.utils.PreferencesHelper
+import com.finanzaspersonales.gt.viewmodel.AuthState
+import com.finanzaspersonales.gt.viewmodel.AuthViewModel
 
 class MainActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels {
@@ -37,25 +35,31 @@ class MainActivity : ComponentActivity() {
         PreferencesHelper.applyLanguage(this, savedLanguage)
         PreferencesHelper.applyCurrency(this, PreferencesHelper.getCurrency(this))
 
-        val lockObserver = object : DefaultLifecycleObserver {
-            override fun onStop(owner: LifecycleOwner) { authViewModel.lock() }
+        val logoutObserver = object : DefaultLifecycleObserver {
+            override fun onStop(owner: LifecycleOwner) {
+                if (!PreferencesHelper.isLanguageChanging) {
+                    authViewModel.logout()
+                }
+            }
         }
-        ProcessLifecycleOwner.get().lifecycle.addObserver(lockObserver)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(logoutObserver)
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onDestroy(owner: LifecycleOwner) {
-                ProcessLifecycleOwner.get().lifecycle.removeObserver(lockObserver)
+                ProcessLifecycleOwner.get().lifecycle.removeObserver(logoutObserver)
                 lifecycle.removeObserver(this)
             }
         })
 
-        // If the Activity is being recreated after a language change, restore the
-        // previously unlocked session instead of forcing the lock screen.
+        // If the Activity is being recreated after a language or currency change,
+        // restore the session. On a cold start, log out so the user always has to
+        // log in again (the session dies when the app is closed). A plain
+        // configuration change (for example, rotating the device) keeps the session.
         val languageChangeInProgress = PreferencesHelper.isLanguageChanging
         val sessionUserId = (application as FinanzasApp).sessionManager.getCurrentUserId()
         if (languageChangeInProgress && sessionUserId != null) {
-            authViewModel.restoreUnlockedSession(sessionUserId)
-        } else {
-            sessionUserId?.let(authViewModel::checkExistingSession)
+            authViewModel.restoreSession(sessionUserId)
+        } else if (savedInstanceState == null) {
+            authViewModel.logout()
         }
 
         setContent {

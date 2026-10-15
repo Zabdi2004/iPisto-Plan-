@@ -1,6 +1,5 @@
 package com.finanzaspersonales.gt.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -32,7 +31,6 @@ fun RegisterScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel
 ) {
-    val context = LocalContext.current
     val predefinedQuestions = listOf(
         stringResource(R.string.recovery_question_pet),
         stringResource(R.string.recovery_question_city),
@@ -258,7 +256,11 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         TextButton(
-            onClick = { navController.navigate("login") }
+            onClick = {
+                if (!navController.popBackStack()) {
+                    navController.navigate("welcome")
+                }
+            }
         ) {
             Text(
                 text = hasAccountLoginStr,

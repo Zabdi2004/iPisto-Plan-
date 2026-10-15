@@ -30,10 +30,6 @@
     <string name="change_password">jalik retokib\'al</string>
     <string name="education">Tijonem rech Pwäq</string>
     <string name="new_evaluation">k\'ak\' Pajb\'al eta\'mab\'al</string>
-    <string name="unlock_session">utzoqopixik</string>
-    <string name="locked_session">Ch\'oboj tzapim</string>
-    <string name="unlocking">Tajinkinwelo</string>
-    <string name="unlock_error">le rotokib’al ma are taj</string>
     <string name="forgot_password">¿xasachik ri a retokib\'al?</string>
     <string name="recover_password">kutzir(ik) retokib\'al</string>
     <string name="security_question">Jas jikomal</string>

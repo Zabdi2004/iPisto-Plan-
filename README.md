@@ -166,7 +166,7 @@ La aplicación contempla autenticación local y separación de los datos financi
 - Registro e inicio de sesión locales.
 - Hash de contraseñas mediante PBKDF2 con sal.
 - Recuperación local de contraseña mediante preguntas de seguridad.
-- Bloqueo de acceso a las pantallas privadas.
+- Sesión de un solo inicio: al cerrar la aplicación la sesión finaliza, por lo que se debe iniciar sesión de nuevo en el siguiente arranque.
 - Persistencia mediante Room.
 - Migraciones explícitas para conservar los datos durante las actualizaciones de la base de datos.
 - Verificación de propiedad de los registros en las operaciones correspondientes.

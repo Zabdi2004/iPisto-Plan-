@@ -31,10 +31,6 @@ class AuthViewModel(
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
 
-    // The remembered session identifies the account; this process-only flag grants UI access.
-    private val _isUnlocked = MutableStateFlow(false)
-    val isUnlocked: StateFlow<Boolean> = _isUnlocked.asStateFlow()
-
     private val _recoveryQuestion = MutableStateFlow<String?>(null)
     val recoveryQuestion: StateFlow<String?> = _recoveryQuestion.asStateFlow()
 
@@ -91,7 +87,6 @@ class AuthViewModel(
                 if (registeredUser != null) {
                     _currentUser.value = registeredUser
                     sessionManager.saveSession(registeredUser.id, registeredUser.nombreUsuario)
-                    _isUnlocked.value = true
                 }
                 _authState.value = AuthState.Success
             }.onFailure { error ->
@@ -122,7 +117,6 @@ class AuthViewModel(
             result.onSuccess { user ->
                 _currentUser.value = user
                 sessionManager.saveSession(user.id, user.nombreUsuario)
-                _isUnlocked.value = true
                 _authState.value = AuthState.Success
             }.onFailure {
                 _authState.value = AuthState.Error("Nombre de usuario o contraseña incorrectos")
@@ -130,8 +124,9 @@ class AuthViewModel(
         }
     }
 
-    fun checkExistingSession(userId: Long) {
-        _isUnlocked.value = false
+    fun restoreSession(userId: Long) {
+        // Restores the session after an in-app operation that recreates the
+        // Activity (for example, changing the language).
         _authState.value = AuthState.Loading
         viewModelScope.launch {
             val user = runCatching { userRepository.getUserById(userId) }.getOrNull()
@@ -142,78 +137,14 @@ class AuthViewModel(
             } else {
                 sessionManager.logout()
                 _currentUser.value = null
-                _isUnlocked.value = false
                 _authState.value = AuthState.Idle
             }
-        }
-    }
-
-    fun restoreUnlockedSession(userId: Long) {
-        // Restores a session without requiring the user to unlock again after an
-        // in-app operation such as changing the language.
-        _authState.value = AuthState.Loading
-        viewModelScope.launch {
-            val user = runCatching { userRepository.getUserById(userId) }.getOrNull()
-            if (user != null) {
-                _currentUser.value = user
-                sessionManager.saveSession(user.id, user.nombreUsuario)
-                _isUnlocked.value = true
-                _authState.value = AuthState.Idle
-            } else {
-                sessionManager.logout()
-                _currentUser.value = null
-                _isUnlocked.value = false
-                _authState.value = AuthState.Idle
-            }
-        }
-    }
-
-    fun unlock(password: String) {
-        val user = _currentUser.value
-        if (user == null || !sessionManager.isLoggedIn() || sessionManager.getCurrentUserId() != user.id) {
-            _isUnlocked.value = false
-            _authState.value = AuthState.Error("No hay una sesión válida para desbloquear")
-            return
-        }
-        if (password.isBlank()) {
-            _isUnlocked.value = false
-            _authState.value = AuthState.Error("Escribe tu contraseña para continuar")
-            return
-        }
-
-        _authState.value = AuthState.Loading
-        viewModelScope.launch {
-            val valid = runCatching {
-                withContext(Dispatchers.Default) { PasswordHasher.verifyPassword(password, user.passwordHash) }
-            }.getOrDefault(false)
-            if (!valid) {
-                _isUnlocked.value = false
-                _authState.value = AuthState.Error("La contraseña es incorrecta")
-                return@launch
-            }
-
-            val authenticatedUser = if (PasswordHasher.needsUpgrade(user.passwordHash)) {
-                val upgradedHash = withContext(Dispatchers.Default) { PasswordHasher.hashPassword(password) }
-                userRepository.updateUser(user.copy(passwordHash = upgradedHash))
-                    .fold(onSuccess = { user.copy(passwordHash = upgradedHash) }, onFailure = { user })
-            } else user
-            _currentUser.value = authenticatedUser
-            _isUnlocked.value = true
-            _authState.value = AuthState.Success
-        }
-    }
-
-    fun lock() {
-        if (_currentUser.value != null && sessionManager.isLoggedIn()) {
-            _isUnlocked.value = false
-            _authState.value = AuthState.Idle
         }
     }
 
     fun logout() {
         sessionManager.logout()
         _currentUser.value = null
-        _isUnlocked.value = false
         _authState.value = AuthState.Idle
     }
 
@@ -279,7 +210,6 @@ class AuthViewModel(
             result.onSuccess {
                 sessionManager.logout()
                 _currentUser.value = null
-                _isUnlocked.value = false
                 _authState.value = AuthState.Idle
             }.onFailure { error ->
                 _authState.value = AuthState.Error(error.message ?: "Error al eliminar cuenta")
@@ -341,7 +271,6 @@ class AuthViewModel(
             result.onSuccess { updatedUser ->
                 _currentUser.value = updatedUser
                 sessionManager.saveSession(updatedUser.id, updatedUser.nombreUsuario)
-                _isUnlocked.value = true
                 _authState.value = AuthState.Success
             }.onFailure { error ->
                 _authState.value = AuthState.Error(error.message ?: "Error al recuperar la contraseña")

@@ -43,37 +43,23 @@ class AuthViewModelInstrumentedTest {
         context.deleteDatabase(databaseName)
     }
 
-    @Test fun registrationLoginDuplicateRejectionAndSessionRestoration() = runBlocking {
+    @Test fun registrationLoginLogoutAndDuplicateRejection() = runBlocking {
         viewModel.register("ipisto_test", "secreto123", "secreto123")
         assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
         val userId = viewModel.currentUser.value?.id ?: error("El registro no restauró el usuario")
         assertEquals(userId, session.getCurrentUserId())
 
+        // Closes the session: the next launch starts from the login screen again.
         viewModel.logout()
         assertNull(viewModel.currentUser.value)
         assertNull(session.getCurrentUserId())
 
-        viewModel.checkExistingSession(userId)
-        assertTrue(awaitState { it == AuthState.Idle } == AuthState.Idle)
-        assertEquals("ipisto_test", viewModel.currentUser.value?.nombreUsuario)
-        assertFalse(viewModel.isUnlocked.value)
-        viewModel.unlock("incorrecta")
-        assertTrue(awaitState { it is AuthState.Error } is AuthState.Error)
-        assertFalse(viewModel.isUnlocked.value)
-        viewModel.unlock("secreto123")
-        assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
-        assertTrue(viewModel.isUnlocked.value)
-        viewModel.lock()
-        assertFalse(viewModel.isUnlocked.value)
-
-        viewModel.logout()
         viewModel.login("ipisto_test", "incorrecta")
         assertTrue(awaitState { it is AuthState.Error } is AuthState.Error)
         assertNull(session.getCurrentUserId())
 
         viewModel.login("ipisto_test", "secreto123")
         assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
-        assertTrue(viewModel.isUnlocked.value)
         assertEquals(userId, session.getCurrentUserId())
 
         viewModel.logout()
@@ -108,9 +94,6 @@ class AuthViewModelInstrumentedTest {
         assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
         val userId = viewModel.currentUser.value?.id ?: error("Usuario no creado")
 
-        viewModel.lock()
-        assertFalse(viewModel.isUnlocked.value)
-
         viewModel.loadSecurityQuestion("recovery_user")
         withTimeout(5_000) {
             while (viewModel.recoveryQuestion.value == null) delay(25)
@@ -126,7 +109,6 @@ class AuthViewModelInstrumentedTest {
 
         viewModel.recoverPassword("recovery_user", "  firulais  ", "nuevaClave123", "nuevaClave123")
         assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
-        assertTrue(viewModel.isUnlocked.value)
         assertEquals(userId, session.getCurrentUserId())
 
         viewModel.logout()
@@ -135,7 +117,7 @@ class AuthViewModelInstrumentedTest {
 
         viewModel.login("recovery_user", "nuevaClave123")
         assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
-        assertTrue(viewModel.isUnlocked.value)
+        assertEquals(userId, session.getCurrentUserId())
     }
 
     @Test fun profileSecurityQuestionConfigurationAndUserWithoutRecovery() = runBlocking {
@@ -162,7 +144,7 @@ class AuthViewModelInstrumentedTest {
 
         viewModel.recoverPassword("no_recovery_user", "antigua guatemala", "nuevaClave456", "nuevaClave456")
         assertTrue(awaitState { it is AuthState.Success } is AuthState.Success)
-        assertTrue(viewModel.isUnlocked.value)
+        assertTrue(session.isLoggedIn())
     }
 
     private suspend fun awaitState(predicate: (AuthState) -> Boolean): AuthState = withTimeout(30_000) {

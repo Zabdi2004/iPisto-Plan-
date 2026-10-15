@@ -28,10 +28,6 @@
     <string name="change_password">Cambiar contraseña</string>
     <string name="education">EDUCACIÓN FINANCIERA</string>
     <string name="new_evaluation">NUEVA EVALUACIÓN</string>
-    <string name="unlock_session">Desbloquear</string>
-    <string name="locked_session">Sesión bloqueada</string>
-    <string name="unlocking">Verificando…</string>
-    <string name="unlock_error">La contraseña es incorrecta</string>
     <string name="forgot_password">¿Olvidaste tu contraseña?</string>
     <string name="recover_password">Recuperar contraseña</string>
     <string name="security_question">Pregunta de seguridad</string>

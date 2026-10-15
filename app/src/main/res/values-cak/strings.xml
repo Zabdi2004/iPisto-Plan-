@@ -30,10 +30,6 @@
     <string name="change_password">k\'ex ewal tz\'ib\'</string>
     <string name="education">tijonïk pwäq-samaj</string>
     <string name="new_evaluation">k\'ak\'a\' ch\'ob\'onïk</string>
-    <string name="unlock_session">jaqik</string>
-    <string name="locked_session">moloj tz\'apäl</string>
-    <string name="unlocking">tz\'etonïk…</string>
-    <string name="unlock_error">ri ewal tz\'ib\' ma ütz ta</string>
     <string name="forgot_password">¿xamestaj aw-ewal tz\'ib\'?</string>
     <string name="recover_password">tzolinïk ewal tz\'ib\'</string>
     <string name="security_question">tz\'onoj richin chajinïk</string>
